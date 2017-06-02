@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Territótio Inimigo</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="css/normalize.css" type="text/css"/>
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>        	
+        <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery.queryloader2.js"></script>
+        <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="js/controls-key.js"></script>
+        
+        <script>
+        $(document).ready(function (){
+            $("body").queryLoader2({barHeight: '5', percentage: true, onComplete: function(){
+                init(4, 200);        
+            }});
+        });
+        </script>
+        
+    </head>
+    <body>
+        <div id="barraLateral">
+            <div id="infos">
+                <div id="pontos">0 Pontos</div>
+                <div id="vidas"></div>
+                <div id="cash">$ 00,00</div>
+                <div id="contentFuel">
+                    <div id="fuel"><div id="barFuel"></div></div>
+                    <div id="maskFuel"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palco">
+            <div id="obstaculos"></div>  
+        </div>
+        <div id="airplaneContent" class="desligado pes0">
+            <div id="airplane"></div>
+            <div id="airplanePropeller"></div>
+            <div id="airplaneImpact"></div>
+            <div id="airplaneSmoke"></div>
+            <div id="airplaneFire"></div>
+        </div>
+        <div id="planoSuperior">
+            <div id="nuvens"></div>
+        </div>
+        <div id="objects" class="objects">
+            <div id="obj0" class="object"><img src="images/obstacles/Ob-0.png"/></div>
+            <div id="obj1" class="object"><img src="images/obstacles/Ob-1.png"/></div>
+            <div id="obj2" class="object"><img src="images/obstacles/Ob-2.png"/></div>
+            <div id="obj3" class="object"><img src="images/obstacles/Ob-3.png"/></div>
+            <div id="obj4" class="object"><img src="images/obstacles/Ob-4.png"/></div>
+        </div>
+        <div id="objects_other" class="objects">
+            <div id="cloud0" class="cloud"><img src="images/other/cloud-0.png"/></div>
+            <div id="cloud1" class="cloud"><img src="images/other/cloud-1.png"/></div>
+            <div id="cloud2" class="cloud"><img src="images/other/cloud-2.png"/></div>
+            <div id="cloud3" class="cloud"><img src="images/other/cloud-3.png"/></div>
+            <div id="life0" class="object life"><img src="images/other/life-1.gif"/></div>
+            <div id="fuel0" class="object fuel"><img src="images/other/fuel-1.gif"/></div>
+        </div>
+        <!-- Sons -->
+        <audio class="audio" id="audio-p40-partida" preload="auto">
+            <source src="sounds/P40-partida.ogg">
+            <source src="sounds/P40-partida.wav">
+            <source src="sounds/P40-partida.mp3">
+        </audio>
+        <audio class="audio" id="audio-p40-subindo" preload="auto">
+            <source src="sounds/P40-subindo.ogg">
+            <source src="sounds/P40-subindo.wav">
+            <source src="sounds/P40-subindo.mp3">
+        </audio>
+        <audio class="audio" id="audio-p40-voando" preload="auto">
+            <source src="sounds/P40-voando.ogg">
+            <source src="sounds/P40-voando.wav">
+            <source src="sounds/P40-voando.mp3">
+        </audio>
+        <audio class="audio" id="audio-p40-explosao" preload="auto">
+            <source src="sounds/P40-explosao.ogg">
+            <source src="sounds/P40-explosao.wav">
+            <source src="sounds/P40-explosao.mp3">
+        </audio>
+        <div id="panelPause">
+            <br/><br/>PAUSE<br/><br/>
+            [&ShortDownArrow;] Resume | [R] Restart
+        </div>
+    </body>
+</html>
