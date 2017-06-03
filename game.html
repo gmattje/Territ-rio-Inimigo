@@ -7,59 +7,142 @@
         <link rel="stylesheet" href="css/style.css" type="text/css"/>        	
         <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/jquery.queryloader2.js"></script>
+        <script type="text/javascript" src="js/casas-e-pecas.js"></script>
         <script type="text/javascript" src="js/game.js"></script>
         <script type="text/javascript" src="js/controls-key.js"></script>
+        <script type="text/javascript" src="js/recupera-infos.js"></script>
         
         <script>
         $(document).ready(function (){
             $("body").queryLoader2({barHeight: '5', percentage: true, onComplete: function(){
-                init(4, 200);        
+                init();        
             }});
         });
         </script>
         
     </head>
     <body>
-        <div id="barraLateral">
-            <div id="infos">
-                <div id="pontos">0 Pontos</div>
-                <div id="vidas"></div>
-                <div id="cash">$ 00,00</div>
-                <div id="contentFuel">
-                    <div id="fuel"><div id="barFuel"></div></div>
-                    <div id="maskFuel"></div>
-                </div>
+        <div class="barraLateral esquerda campo-cima">
+            <div class="infos">
+                <h2 class="time timeA">Time A</h2>
+                <h3 class="nomePeca"></h3>
+                <div class="vidas"></div>
+                <div class="imagem-demo"></div>
+                <div class="movimentacao infoBasica"></div>
+                <div class="alcance infoBasica"></div>
+                <div class="dano infoBasica"></div>
+                <div class="tiros infoBasica"></div>
+                <div class="adicional infoBasica"></div>
             </div>
+            <div class="btnAtaque">ATACAR!</div>
+        </div>
+        <div class="barraLateral direita campo-baixo">
+            <div class="infos">
+                <h2 class="time timeB">Time B</h2>
+                <h3 class="nomePeca"></h3>
+                <div class="vidas"></div>
+                <div class="imagem-demo"></div>
+                <div class="movimentacao infoBasica"></div>
+                <div class="alcance infoBasica"></div>
+                <div class="dano infoBasica"></div>
+                <div class="tiros infoBasica"></div>
+                <div class="adicional infoBasica"></div>
+            </div>
+            <div class="btnAtaque">ATACAR!</div>
         </div>
         <div id="palco">
-            <div id="obstaculos"></div>  
+            <div class="campo cima">
+                <div class="casa a1 aeroporto"></div>
+                <div class="casa b1 montanha"></div>
+                <div class="casa c1"></div>
+                <div class="casa d1 base"></div>
+                <div class="casa e1"></div>
+                <div class="casa f1 montanha"></div>
+                <div class="casa g1 aeroporto"></div>
+                <div class="casa a2 montanha"></div>
+                <div class="casa b2"></div>
+                <div class="casa c2 montanha"></div>
+                <div class="casa d2"></div>
+                <div class="casa e2 montanha"></div>
+                <div class="casa f2"></div>
+                <div class="casa g2 montanha"></div>
+                <div class="casa a3"></div>
+                <div class="casa b3 montanha"></div>
+                <div class="casa c3"></div>
+                <div class="casa d3 montanha"></div>
+                <div class="casa e3"></div>
+                <div class="casa f3 montanha"></div>
+                <div class="casa g3"></div>
+                <div class="casa a4 montanha"></div>
+                <div class="casa b4"></div>
+                <div class="casa c4 montanha"></div>
+                <div class="casa d4"></div>
+                <div class="casa e4 montanha"></div>
+                <div class="casa f4"></div>
+                <div class="casa g4 montanha"></div>
+                <div class="casa a5"></div>
+                <div class="casa b5 montanha"></div>
+                <div class="casa c5"></div>
+                <div class="casa d5 montanha"></div>
+                <div class="casa e5"></div>
+                <div class="casa f5 montanha"></div>
+                <div class="casa g5"></div>
+            </div>
+            <div class="divisao"></div>
+            <div class="campo baixo">
+                <div class="casa a1"></div>
+                <div class="casa b1 montanha"></div>
+                <div class="casa c1"></div>
+                <div class="casa d1 montanha"></div>
+                <div class="casa e1"></div>
+                <div class="casa f1 montanha"></div>
+                <div class="casa g1"></div>
+                <div class="casa a2 montanha"></div>
+                <div class="casa b2"></div>
+                <div class="casa c2 montanha"></div>
+                <div class="casa d2"></div>
+                <div class="casa e2 montanha"></div>
+                <div class="casa f2"></div>
+                <div class="casa g2 montanha"></div>
+                <div class="casa a3"></div>
+                <div class="casa b3 montanha"></div>
+                <div class="casa c3"></div>
+                <div class="casa d3 montanha"></div>
+                <div class="casa e3"></div>
+                <div class="casa f3 montanha"></div>
+                <div class="casa g3"></div>
+                <div class="casa a4 montanha"></div>
+                <div class="casa b4"></div>
+                <div class="casa c4 montanha"></div>
+                <div class="casa d4"></div>
+                <div class="casa e4 montanha"></div>
+                <div class="casa f4"></div>
+                <div class="casa g4 montanha"></div>
+                <div class="casa a5 aeroporto"></div>
+                <div class="casa b5 montanha"></div>
+                <div class="casa c5"></div>
+                <div class="casa d5 base"></div>
+                <div class="casa e5"></div>
+                <div class="casa f5 montanha"></div>
+                <div class="casa g5 aeroporto"></div>
+            </div>
         </div>
-        <div id="airplaneContent" class="desligado pes0">
-            <div id="airplane"></div>
-            <div id="airplanePropeller"></div>
-            <div id="airplaneImpact"></div>
-            <div id="airplaneSmoke"></div>
-            <div id="airplaneFire"></div>
-        </div>
-        <div id="planoSuperior">
-            <div id="nuvens"></div>
-        </div>
-        <div id="objects" class="objects">
-            <div id="obj0" class="object"><img src="images/obstacles/Ob-0.png"/></div>
-            <div id="obj1" class="object"><img src="images/obstacles/Ob-1.png"/></div>
-            <div id="obj2" class="object"><img src="images/obstacles/Ob-2.png"/></div>
-            <div id="obj3" class="object"><img src="images/obstacles/Ob-3.png"/></div>
-            <div id="obj4" class="object"><img src="images/obstacles/Ob-4.png"/></div>
-        </div>
-        <div id="objects_other" class="objects">
-            <div id="cloud0" class="cloud"><img src="images/other/cloud-0.png"/></div>
-            <div id="cloud1" class="cloud"><img src="images/other/cloud-1.png"/></div>
-            <div id="cloud2" class="cloud"><img src="images/other/cloud-2.png"/></div>
-            <div id="cloud3" class="cloud"><img src="images/other/cloud-3.png"/></div>
-            <div id="life0" class="object life"><img src="images/other/life-1.gif"/></div>
-            <div id="fuel0" class="object fuel"><img src="images/other/fuel-1.gif"/></div>
+        <div id="pecas">
+            <div class="peca revolver cima"><img src="pecas/revolver-campo-cima.png"/></div>
+            <div class="peca revolver baixo"><img src="pecas/revolver-campo-baixo.png"/></div>
+            <div class="peca metralhadora cima"><img src="pecas/metralhadora-campo-cima.png"/></div>
+            <div class="peca metralhadora baixo"><img src="pecas/metralhadora-campo-baixo.png"/></div>
+            <div class="peca granada cima"><img src="pecas/granada-campo-cima.png"/></div>
+            <div class="peca granada baixo"><img src="pecas/granada-campo-baixo.png"/></div>
+            <div class="peca tanque cima"><img src="pecas/tanque-campo-cima.png"/></div>
+            <div class="peca tanque baixo"><img src="pecas/tanque-campo-baixo.png"/></div>
+            <div class="peca sniper cima"><img src="pecas/sniper-campo-cima.png"/></div>
+            <div class="peca sniper baixo"><img src="pecas/sniper-campo-baixo.png"/></div>
+            <div class="peca aviao cima"><img src="pecas/aviao-campo-cima.png"/></div>
+            <div class="peca aviao baixo"><img src="pecas/aviao-campo-baixo.png"/></div>
         </div>
         <!-- Sons -->
+        <!--
         <audio class="audio" id="audio-p40-partida" preload="auto">
             <source src="sounds/P40-partida.ogg">
             <source src="sounds/P40-partida.wav">
@@ -80,6 +163,7 @@
             <source src="sounds/P40-explosao.wav">
             <source src="sounds/P40-explosao.mp3">
         </audio>
+        -->
         <div id="panelPause">
             <br/><br/>PAUSE<br/><br/>
             [&ShortDownArrow;] Resume | [R] Restart

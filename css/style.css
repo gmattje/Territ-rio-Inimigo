@@ -3,8 +3,9 @@ html, body {
     overflow: hidden;
 }
 
-#barraLateral {
+.barraLateral {
     position: absolute;
+    top: 0;
     width: 150px;
     height: 100%;
     display: block;
@@ -12,163 +13,177 @@ html, body {
     color: #FFF;
     overflow-x: hidden;
     z-index: 9;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
-#barraLateral #infos {
+.barraLateral.esquerda {
+    left: 0;
+}
+
+.barraLateral.direita {
+    right: 0;
+}
+
+.barraLateral .infos {
     position: relative;
     width: 100%;
     height: 100px;
     display: block; 
+    font-size: 9pt;
 }
 
-#barraLateral #infos #pontos {
-    position: relative;
-    float: left;
-    width: 100%;
-    display: block;
+.barraLateral .infos .time {
     padding: 5px;
-    border-bottom: 1px solid #666;
+    color: #FFF;
+    margin: 0;
 }
 
-#barraLateral #infos #vidas {
-    position: relative;
-    float: left;
-    width: 100%;
-    display: block;
-    padding: 5px;
-    border-bottom: 1px solid #666;
+.barraLateral .infos .time.timeA {
+    background-color: #cc0000;
 }
 
-#barraLateral #infos #vidas .vida {
+.barraLateral .infos .time.timeB {
+    background-color: #000099;
+}
+
+.barraLateral .vidas .vida {
     width: 16px;
     height: 15px;
     display: block;
-    float: left;
-    background-image: url('../images/interface/heart.png');
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 5px 5px 0;
+    background-image: url('../images/heart.png');
     background-repeat: no-repeat;
 }
 
-#barraLateral #infos #vidas .off {
-    background-position: -16px 0px;
-}
-
-#barraLateral #infos #cash {
-    position: relative;
-    float: left;
-    width: 100%;
-    display: block;
+.barraLateral .imagem-demo {
+    background-color: #FFF;
     padding: 5px;
-    border-bottom: 1px solid #666;
 }
 
-#barraLateral #infos #contentFuel {
-    position: relative;
-    float: left;
-    width: 116px;
-    height: 328px;
-    display: block;
+.barraLateral .imagem-demo img {
+    max-width: 100%;
+}
+
+.barraLateral .infoBasica {
     margin-top: 10px;
-    margin-left: 14px;
-    background-color: red;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #FFF;
 }
 
-#barraLateral #infos #contentFuel #fuel {
-    position: relative;
-    float: left;
-    width: 116px;
-    height: 246px;
+.barraLateral .btnAtaque {
+    position: absolute;
+    bottom: 5px;
+    width: 78%;
+    text-align: center;
+    padding: 5px;
+    background-color: red;
+    cursor: pointer;
+    display: none;
+}
+
+.barraLateral .btnAtaque.visible {
     display: block;
-    margin-top: 28px;
-    background-color: red;
-}
-
-#barraLateral #infos #contentFuel #fuel #barFuel {
-    position: absolute;
-    width: 100%;
-    bottom: 0px;
-    background-color: green;
-}
-
-#barraLateral #infos #contentFuel #maskFuel {
-    position: absolute;
-    width: 116px;
-    height: 328px;
-    background-image: url('../images/interface/fuel.png');
-    z-index: 10;
-}
-
-.objects {
-    position: absolute;
-    top: -1000%;
-    opacity: 0;
-}
-
-.objects img {
-    float: left;
 }
 
 #palco {
     position: absolute;
     width: 100%;
     height: 100%;
-    right: 0px;
+    left: 150px;
     display: block;
-    z-index: 1;  
+    z-index: 1; 
+    background-image: url(../images/areia-pattern.jpg);
 }
 
-#palco #obstaculos {
-    position: absolute;
-    bottom: 0px;
-    padding-bottom: 100%;
-    background-image: url('../images/patterns/snow.jpg');
-    background-position: 100% 100%;
-}
-
-#palco #obstaculos .linha {
-    width: 100%;
+#palco .campo {
+    width: 98%;
+    display: block;
     float: left;
+    box-sizing: border-box;
 }
 
-#palco #obstaculos .linha .object, #palco #obstaculos .linha .crash {
-    float: left;    
-}
-
-#palco #obstaculos .linha .object.crash {
-    background-image: url('../images/obstacles/crashed.jpg');
+#palco .campo .casa {
+    border: 1px dotted #a59173;
+    width: 14%;
+    height: 60px;
+    display: block;
+    float: left;
+    box-sizing: border-box;
     background-size: 100% 100%;
 }
 
-#palco #obstaculos .linha .object.life.crash, #palco #obstaculos .linha .object.fuel.crash {
-    visibility: hidden;
+#palco .campo .casa.selecionada.ataque {
+    background-color: #c3aa85;
 }
 
-#palco #obstaculos .linha .crash img {
-    visibility: hidden;
+#palco .campo .casa.selecionada.defesa {
+    background-color: #c39085;
 }
 
-#planoSuperior {
-    position: absolute;
+#palco .campo .casa.montanha {
+    background-image: url(../images/montanha.png);
+}
+
+#palco .campo.cima .casa.base {
+    background-image: url(../images/bandeira-time1.png);
+}
+
+#palco .campo.baixo .casa.base {
+    background-image: url(../images/bandeira-time2.png);
+}
+
+#palco .campo .casa.aeroporto {
+    background-image: url(../images/aeroporto.png);
+}
+
+#palco .divisao {
     width: 100%;
-    height: 100%;
-    right: 0px;
+    height: 10px;
     display: block;
-    z-index: 10;    
-}
-
-#planoSuperior #nuvens {
-    position: absolute;
-    bottom: 0px;
-    padding-bottom: 100%;
-}
-
-#planoSuperior #nuvens .linha {
-    width: 100%;
     float: left;
-    margin-bottom: 600px;
+    box-sizing: border-box;
+    background-image: url(../images/arame-pattern.png);
 }
 
-#planoSuperior #nuvens .linha .cloud {
-    float: left;
+#pecas {
+    display: none;
+}
+
+.peca {
+    margin: 0 auto;
+    height: 100%;
+}
+
+.peca img {
+    max-height: 100%;
+}
+
+.peca.revolver {
+    width: 24px;
+}
+
+.peca.metralhadora {
+    width: 26px;
+}
+
+.peca.granada {
+    width: 50px;
+    padding: 10% 0;
+}
+
+.peca.sniper {
+    width: 49px;
+}
+
+.peca.tanque {
+    width: 27px;
+}
+
+.peca.aviao {
+    width: 47px;
 }
 
 #panelPause {
@@ -182,186 +197,4 @@ html, body {
     text-align: center;
     font-size: 20pt;
     color: #FFF;
-}
-
-#airplaneContent {
-    position: absolute;
-    width: auto;
-    height: 148px;
-    display: block;
-    bottom: 5px;
-    left: 50%;
-    /*margin-left: -74px;*/
-    z-index: 9;
-    transition: transform 2s linear;
-    transition: -ms-transform 2s linear;
-    transition: -webkit-transform 2s linear;    
-}
-
-#airplaneContent.pes0 {
-    transform: scale(0.6);   
-    -ms-transform: scale(0.6);
-    -webkit-transform: scale(0.6);
-}
-
-#airplaneContent.pes10 {
-    transform: scale(0.8); 
-    -ms-transform: scale(0.8);
-    -webkit-transform: scale(0.8);
-}
-
-#airplaneContent.pes1000 {
-    transform: scale(1); 
-    -ms-transform: scale(1);
-    -webkit-transform: scale(1);
-}
-
-#airplaneContent #airplane {
-    position: absolute;
-    height: 148px;
-    display: block;
-    background-image: url('../images/airplanes/airplane-p40.png');
-    background-repeat: no-repeat;
-    z-index: 9;
-}
-
-#airplaneContent.desligado #airplane, #airplaneContent.frente #airplane {
-    width: 171px;
-    background-position: 0px 0px;
-}
-
-#airplaneContent.esquerda #airplane {
-   width: 146px;
-   background-position: -316px 0px; 
-}
-
-#airplaneContent.direita #airplane {
-    width: 146px;
-    background-position: -170px 0px;
-}
-
-#airplaneContent.explosion {
-    transition: transform .3s linear;
-    transition: -ms-transform .3s linear;
-    transition: -webkit-transform .3s linear;
-    transform: scale(1.5); 
-    -ms-transform: scale(1.5);
-    -webkit-transform: scale(1.5);
-}
-
-#airplaneContent.explosion #airplane {
-    width: 171px;
-    background-position: 0px -148px;
-}
-
-#airplaneContent #airplanePropeller {
-    position: absolute;
-    height: 150px;
-    display: block;
-    background-image: url('../images/airplanes/airplane-p40-propeller.gif');
-    background-repeat: no-repeat;
-    z-index: 10;
-}
-
-#airplaneContent.desligado #airplanePropeller {
-    width: 171px;
-    background-position: 0px 0px;
-}
-
-#airplaneContent.frente #airplanePropeller {
-    width: 171px;
-    background-position: -171px 0px;
-}
-
-#airplaneContent.esquerda #airplanePropeller {
-   width: 146px;
-   background-position: -356px 0px;
-}
-
-#airplaneContent.direita #airplanePropeller {
-   width: 146px;
-   background-position: -341px 0px;
-}
-
-#airplaneContent #airplaneImpact {
-    position: absolute;
-    top: -8px;
-    left: -4px;
-    height: 161px;
-    display: block;
-    background-image: url('../images/airplanes/airplane-p40-impact.gif');
-    background-repeat: no-repeat;
-    z-index: 7;
-    display: none;
-}
-
-#airplaneContent.desligado #airplaneImpact, #airplaneContent.frente #airplaneImpact {
-    top: -4px;
-    left: -5px;
-    width: 181px;
-    background-position: 0px 0px;
-}
-
-#airplaneContent.esquerda #airplaneImpact {
-    width: 156px;
-    background-position: -337px 0px;
-}
-
-#airplaneContent.direita #airplaneImpact {
-    width: 156px;
-    background-position: -181px 0px;
-}
-
-#airplaneContent #airplaneFire {
-    position: absolute;
-    height: 148px;
-    display: block;
-    background-image: url('../images/airplanes/airplane-p40-fire.gif');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    z-index: 8;
-    display: none;
-}
-
-#airplaneContent #airplaneFire, #airplaneContent.frente #airplaneFire {
-    width: 171px;
-}
-
-#airplaneContent.esquerda #airplaneFire, #airplaneContent.direita #airplaneFire {
-   width: 146px; 
-}
-
-#airplaneContent #airplaneSmoke {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    display: block;
-    background-image: url('../images/airplanes/airplane-p40-smoke.gif');
-    background-repeat: no-repeat;
-    z-index: 6;
-    display: none;
-}
-
-#airplaneContent.frente #airplaneSmoke {
-    width: 171px;
-    background-position: 0px 0px;
-}
-
-#airplaneContent.esquerda #airplaneSmoke {
-   width: 146px;
-   background-position: -187px 0px;
-}
-
-#airplaneContent.direita #airplaneSmoke {
-   width: 146px;
-   background-position: -175px 0px;
-}
-
-#palco .pontoNegativo {
-    position: absolute;
-    z-index: 9;
-    color: red;
-    font-size: 30pt;
-    right: 30px;
-    bottom: -100%;
 }
