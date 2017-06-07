@@ -3,285 +3,355 @@ var casas = {
     'campo-cima': {
         'a1': {
             tipo: 'aeroporto',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b1': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c1': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd1': {
             tipo: 'base',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e1': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f1': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g1': {
             tipo: 'aeroporto',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b2': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd2': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f2': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b3': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd3': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f3': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b4': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd4': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f4': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a5': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b5': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c5': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd5': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e5': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f5': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g5': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         }
     },
     'campo-baixo': {
         'a1': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b1': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c1': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd1': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e1': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f1': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g1': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b2': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd2': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f2': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g2': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b3': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd3': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f3': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g3': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b4': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd4': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f4': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g4': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'a5': {
             tipo: 'aeroporto',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'b5': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'c5': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'd5': {
             tipo: 'base',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'e5': {
             tipo: 'normal',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'f5': {
             tipo: 'montanha',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         },
         'g5': {
             tipo: 'aeroporto',
-            ocupada: ''
+            ocupacao1: '',
+            ocupacao2: ''
         }
     }
 }

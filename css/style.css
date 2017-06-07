@@ -58,6 +58,17 @@ html, body {
     background-repeat: no-repeat;
 }
 
+.barraLateral .gasolina .gas {
+    width: 12px;
+    height: 15px;
+    display: block;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 5px 5px 0;
+    background-image: url('../images/gas.png');
+    background-repeat: no-repeat;
+}
+
 .barraLateral .imagem-demo {
     background-color: #FFF;
     padding: 5px;
@@ -154,36 +165,18 @@ html, body {
 
 .peca {
     margin: 0 auto;
+    width: 100%;
     height: 100%;
+    text-align: center;
 }
 
 .peca img {
     max-height: 100%;
-}
-
-.peca.revolver {
-    width: 24px;
-}
-
-.peca.metralhadora {
-    width: 26px;
+    cursor: pointer;
 }
 
 .peca.granada {
-    width: 50px;
     padding: 10% 0;
-}
-
-.peca.sniper {
-    width: 49px;
-}
-
-.peca.tanque {
-    width: 27px;
-}
-
-.peca.aviao {
-    width: 47px;
 }
 
 #panelPause {
