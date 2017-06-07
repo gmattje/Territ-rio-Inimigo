@@ -1,2 +1,2 @@
-# Territ-rio-Inimigo
-Jogo em HTML5 + Javascript
+# Territorio-Inimigo
+Jogo em HTML5 + CSS + Javascript
