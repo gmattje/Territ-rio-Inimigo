@@ -1,9 +1,12 @@
 //funções para cada tecla do teclado
 $(document).keydown(function(e){
     
-    //tecla r - restart
-    if(e.keyCode == 82) {
-        restart(true);
+    //tecla r - restart ou F5
+    if(e.keyCode == 82 || e.keyCode == 116) {
+        restart();
+        e.keyCode = 0;
+        e.returnValue = false;
+        return false;
     } 
     
 });

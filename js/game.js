@@ -1,5 +1,9 @@
 //recupera variáveis
 
+//tamanho das casas
+var tamanhoCasasW = 0;
+var tamanhoCasasH = 0;
+
 //turno
 var turnoAtacante = "cima";
 var turnoDefesa = "baixo";
@@ -14,9 +18,8 @@ var varPlay = false;
 //função de inicialização
 function init(){
     reorganizaTabuleiro();
-    populaCampos();
-    ativaRecuperacaoDeDados();
-    ativaControlesMouseu();
+    organizaPecas();
+    ativaControlesMouse();
 }
 
 //calcula tamanho das casas e organiza tabuleiro
@@ -24,28 +27,52 @@ function reorganizaTabuleiro(){
     //zera tudo
     $('#palco').removeAttr('style');
     $('#palco .campo').removeAttr('style');
-    $('#palco .campo .casa').removeAttr('style');
     //refaz calculos
     $('#palco').css('width',getDocWidth()+'px');
     var tamanhoCampoW = $('#palco .campo').width();
     var tamanhoCampoH = ($('#palco').height()/2)-5 //desconta a metade do tamanho da divisao
     var margemCampoL = (getDocWidth()-tamanhoCampoW)/2;
-    var tamanhoCasasW = (tamanhoCampoW/7)-1;
-    var tamanhoCasasH = tamanhoCampoH/5;
+    tamanhoCasasW = (tamanhoCampoW/7)-1;
+    tamanhoCasasH = tamanhoCampoH/5;
     $('#palco .campo .casa').css('width',tamanhoCasasW+'px').css('height',tamanhoCasasH+'px');
     $('#palco .campo').css('margin-left',margemCampoL+'px');
 }
 
 //coloca as pecas em seus lugares
-function populaCampos(){
+function organizaPecas(){
+    //zera
+    $('#palco .casa .peca').remove();
+    $.each(casas['campo-cima'], function(index){
+        casas['campo-cima'][index].ocupacao1 = "";
+        casas['campo-cima'][index].ocupacao2 = "";
+    });
+    $.each(casas['campo-baixo'], function(index){
+        casas['campo-baixo'][index].ocupacao1 = "";
+        casas['campo-baixo'][index].ocupacao2 = "";
+    });
+    
     //varre pecas
     $.each(pecas, function(index){ 
         var tipoPeca = this.tipo;
-        var campoPeca = this.campoAtual;
+        var campoPeca = this.exercito;
+        var campoOcupado = this.campoAtual;
         var casaOcupada = this.casaAtual;
-        $('#pecas .' + tipoPeca + '.' + campoPeca).clone().appendTo('.campo.' + campoPeca + ' .casa.' +casaOcupada).attr('id',index);
-        casas['campo-'+campoPeca][casaOcupada].ocupacao1 = index;
+        //se a peça já não tenha sido perdida pelo exercito
+        if(campoOcupado !== 0 && casaOcupada !== 0) { 
+            var novaPeca = $('#pecas .' + tipoPeca + '.' + campoPeca).clone().appendTo('.campo.' + campoOcupado + ' .casa.' +casaOcupada).attr('id',index).attr('onclick','selecionaPecaParaTurno("' + index + '")');
+            this.xAtual = $(novaPeca).offset().left;
+            this.yAtual = $(novaPeca).offset().top;
+            if(casas['campo-'+campoOcupado][casaOcupada].ocupacao1 == "") {
+                casas['campo-'+campoOcupado][casaOcupada].ocupacao1 = index;
+            } else if(casas['campo-'+campoOcupado][casaOcupada].ocupacao2 == "") {
+                casas['campo-'+campoOcupado][casaOcupada].ocupacao2 = index;
+                $('.campo.' + campoOcupado + ' .casa.' + casaOcupada).addClass('ocupacaoDupla');
+            }
+        }
     });
+    
+    ativaRecuperacaoDeDados();
+    
 }
 
 function ativaRecuperacaoDeDados() {
@@ -116,42 +143,36 @@ function exibeDadosPeca(peca, campo){
     }
 }
 
-function ativaControlesMouseu(){
+function selecionaPecaParaTurno(peca){
     
-    //seleciona pecas para o turno
-    $('#palco .casa').click(function(){
-        var arrCampo = $(this).parent().attr('class').split(' ');
-        var campo = arrCampo[1];
-        var arrCasa = $(this).attr('class').split(' ');
-        var casa = arrCasa[1];
-        var ocupada = casas['campo-' + campo][casa].ocupacao1;
-        if(ocupada !== "") {
-            if(turnoAtacante == "cima" && pecas[ocupada].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") {
-                alert('É preciso selecionar sua peça primeiro');
-                return false;
-            } else if(turnoAtacante == "baixo" && pecas[ocupada].exercito == "cima" && pecaSelecionadaCampoAtaque == "") {
-                alert('É preciso selecionar sua peça primeiro');
-                return false;
-            } else {
-                if((pecaSelecionadaCampoAtaque == "") || (pecaSelecionadaCampoAtaque != "" && pecas[ocupada].exercito == turnoAtacante)) {
-                    $('.campo.' + turnoAtacante + ' .casa').removeClass('selecionada').removeClass('ataque');
-                    $('.campo.' + turnoDefesa + ' .casa').removeClass('selecionada').removeClass('defesa');
-                    $(this).addClass('selecionada ataque');
-                    pecaSelecionadaCampoAtaque = ocupada;
-                    pecaSelecionadaCampoDefesa = "";
-                } else {
-                    $('.campo.' + turnoDefesa + ' .casa').removeClass('selecionada').removeClass('defesa');
-                    $(this).addClass('selecionada defesa');
-                    pecaSelecionadaCampoDefesa = ocupada;
-                }
-            }
-        }
-        if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "") {
-            habilitaIniciarTurno();
+    if(turnoAtacante == "cima" && pecas[peca].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") {
+        alert('É preciso selecionar sua peça primeiro');
+        return false;
+    } else if(turnoAtacante == "baixo" && pecas[peca].exercito == "cima" && pecaSelecionadaCampoAtaque == "") {
+        alert('É preciso selecionar sua peça primeiro');
+        return false;
+    } else {
+        if((pecaSelecionadaCampoAtaque == "") || (pecaSelecionadaCampoAtaque != "" && pecas[peca].exercito == turnoAtacante)) {
+            $('.campo.' + turnoAtacante + ' .casa').removeClass('selecionada').removeClass('ataque');
+            $('.campo.' + turnoDefesa + ' .casa').removeClass('selecionada').removeClass('defesa');
+            $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada ataque');
+            pecaSelecionadaCampoAtaque = peca;
+            pecaSelecionadaCampoDefesa = "";
         } else {
-            desabilitaIniciarTurno();
+            $('.campo.' + turnoDefesa + ' .casa').removeClass('selecionada').removeClass('defesa');
+            $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada defesa');
+            pecaSelecionadaCampoDefesa = peca;
         }
-    });
+    }
+    if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "") {
+        habilitaIniciarTurno();
+    } else {
+        desabilitaIniciarTurno();
+    }
+    
+}
+
+function ativaControlesMouse(){
     
     //clique para rodar ataque
     $('.barraLateral .btnAtaque').click(function(){
@@ -177,10 +198,108 @@ function ativaControlesMouseu(){
         var arrayCampo = $(e.currentTarget).parent().attr('class').split(" ");
         var campo = arrayCampo[1];
         var idPecaMovimentada = ui.item.attr('id');
-        console.log(campo, casa, idPecaMovimentada);
+        //deixa sempre o novo em primeiro para validacao de movimento
+        $('.casa.' + casa + ' div.peca').each(function(index){
+            if(index == 0 && $(this).attr('id') != idPecaMovimentada) {
+                ui.item.after($(this));
+            }
+        });
         //com todos os dados valida movimentacao
+        validaMovimentacaoPeca(idPecaMovimentada, campo, casa);
     });
     
+}
+
+function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
+    //validacoes do sniper
+    if(pecas[peca].tipo == "sniper") {
+        retornaMovimentoDaPeca(peca, 'Os atiradores de elite não podem se mover');
+    }
+    //validacoes do aviao
+    if(pecas[peca].tipo == "aviao") {
+        //valida quantidade de casas movimentadas
+        var movimentos = quantidadeDeCasasMovimentada(peca);
+        if(pecas[peca].gasolina >= movimentos) {
+            //verifica casa livre
+            if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
+                retornaMovimentoDaPeca(peca, 'Esta casa está ocupada');
+            } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 == "") {
+                pecas[peca].gasolina = pecas[peca].gasolina - movimentos;
+                GravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2');
+            } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 == "") {
+                pecas[peca].gasolina = pecas[peca].gasolina - movimentos;
+                GravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1');
+            }
+        } else {
+            retornaMovimentoDaPeca(peca, 'Este avião não tem gasolina o suficiente');
+        }
+    }
+    //validacoes de outras pecas
+    if(pecas[peca].tipo != "sniper" && pecas[peca].tipo != "aviao") {
+        //valida quantidade de casas movimentadas
+        var movimentos = quantidadeDeCasasMovimentada(peca);
+        if(movimentos <= 2) {
+            if(casas['campo-' + campoDestino][casaDestino].tipo == "montanha"){
+                retornaMovimentoDaPeca(peca, 'Esta peça não pode se mover sobre montanhas');
+            } else if(casas['campo-' + campoDestino][casaDestino].tipo == "base"){
+                retornaMovimentoDaPeca(peca, 'Esta peça não pode se mover sobre as bases');
+            } else {
+                if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != ""){
+                    retornaMovimentoDaPeca(peca, 'Esta casa está ocupada');
+                } else {
+                    GravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1');
+                }
+            }
+        } else {
+            retornaMovimentoDaPeca(peca, 'Este peça pode mover-se uma casa por vez');
+        }
+    }
+}
+
+function quantidadeDeCasasMovimentada(peca) {
+    var widthCasa = Math.round(tamanhoCasasW);
+    var heightCasa = Math.round(tamanhoCasasH);
+    var xFinal = Math.round($('#' + peca + '.peca').offset().left);
+    var yFinal = Math.round($('#' + peca + '.peca').offset().top);
+    var xAtual = Math.round(pecas[peca].xAtual);
+    var yAtual = Math.round(pecas[peca].yAtual);
+    
+    //calcula quantidades de movimentos eixo x
+    var qtdX = Math.abs(xFinal-xAtual)/widthCasa;
+    var qtdY = Math.abs(yFinal-yAtual)/heightCasa;
+    var total = Math.round(qtdX+qtdY);
+    return total;
+}
+
+function GravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao){
+    
+    //desocupa casa anterior
+    if(casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 = peca) {
+        casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 = "";
+    } else if(casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 = peca) {
+        casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 = "";
+    }
+    $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).removeClass('ocupacaoDupla');
+    
+    //ocupa nova casa
+    casas['campo-' + campoDestino][casaDestino][ocupacao] = peca;
+    pecas[peca].campoAtual = campoDestino;
+    pecas[peca].casaAtual = casaDestino;
+    pecas[peca].xAtual = $('#' + peca + '.peca').offset().left;
+    pecas[peca].yAtual = $('#' + peca + '.peca').offset().top; 
+    //se nova casa estiver com duas ocupacoes
+    if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
+        $('.campo.' + campoDestino + ' .casa.' + casaDestino).addClass('ocupacaoDupla');
+    } else {
+        $('.campo.' + campoDestino + ' .casa.' + casaDestino).removeClass('ocupacaoDupla');
+    }
+    
+}
+
+function retornaMovimentoDaPeca(peca, motivo){
+    organizaPecas();
+    zeraBarrasLaterais();
+    alert("Movimento não permitido: " + motivo);
 }
 
 function habilitaIniciarTurno(){
@@ -201,7 +320,12 @@ function rodaAtaque(){
         if(pecas[pecaSelecionadaCampoDefesa].vida != '-1') {
             pecas[pecaSelecionadaCampoDefesa].vida = pecas[pecaSelecionadaCampoDefesa].vida-pecas[pecaSelecionadaCampoAtaque].dano;
             if(pecas[pecaSelecionadaCampoDefesa].vida <= 0) {
-                casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupada = "";
+                if(casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao1 == pecaSelecionadaCampoDefesa) {
+                    casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao1 = "";
+                } else if(casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao2 == pecaSelecionadaCampoDefesa) {
+                    casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao2 = "";
+                }
+                pecas[pecaSelecionadaCampoDefesa].campoAtual = 0;
                 pecas[pecaSelecionadaCampoDefesa].casaAtual = 0;
                 $('.casa.selecionada.defesa').empty();
             }
@@ -230,12 +354,8 @@ function muted(status){
     
 }
 
-function restart(confirmacao){
-    if(confirmacao == true) {
-        if(confirm('Deseja realmente reiniciar?')) { 
-            window.location.reload(true);
-        }
-    } else { 
+function restart(){
+    if(confirm('Deseja realmente reiniciar?')) { 
         window.location.reload(true);
     }
 }

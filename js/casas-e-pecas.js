@@ -178,177 +178,177 @@ var casas = {
         }
     },
     'campo-baixo': {
-        'a1': {
+        'a6': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'b1': {
+        'b6': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'c1': {
+        'c6': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'd1': {
+        'd6': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'e1': {
+        'e6': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'f1': {
+        'f6': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'g1': {
+        'g6': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'a2': {
+        'a7': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'b2': {
+        'b7': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'c2': {
+        'c7': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'd2': {
+        'd7': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'e2': {
+        'e7': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'f2': {
+        'f7': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'g2': {
+        'g7': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'a3': {
+        'a8': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'b3': {
+        'b8': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'c3': {
+        'c8': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'd3': {
+        'd8': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'e3': {
+        'e8': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'f3': {
+        'f8': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'g3': {
+        'g8': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'a4': {
+        'a9': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'b4': {
+        'b9': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'c4': {
+        'c9': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'd4': {
+        'd9': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'e4': {
+        'e9': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'f4': {
+        'f9': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'g4': {
+        'g9': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'a5': {
+        'a10': {
             tipo: 'aeroporto',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'b5': {
+        'b10': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'c5': {
+        'c10': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'd5': {
+        'd10': {
             tipo: 'base',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'e5': {
+        'e10': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'f5': {
+        'f10': {
             tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
-        'g5': {
+        'g10': {
             tipo: 'aeroporto',
             ocupacao1: '',
             ocupacao2: ''
@@ -364,6 +364,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'a5',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -377,6 +379,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'c5',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -390,6 +394,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'e5',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -403,6 +409,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'g5',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -415,7 +423,9 @@ var pecas = {
         tipo: 'revolver',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'a1',
+        casaAtual: 'a6',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -428,7 +438,9 @@ var pecas = {
         tipo: 'revolver',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'c1',
+        casaAtual: 'c6',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -441,7 +453,9 @@ var pecas = {
         tipo: 'revolver',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'e1',
+        casaAtual: 'e6',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -454,7 +468,9 @@ var pecas = {
         tipo: 'revolver',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'g1',
+        casaAtual: 'g6',
+        xAtual: 0,
+        yAtual: 0,
         vida: 1,
         dano: 1,
         tiros: -1,
@@ -468,6 +484,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'b4',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -481,6 +499,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'd4',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -494,6 +514,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'f4',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -506,7 +528,9 @@ var pecas = {
         tipo: 'metralhadora',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'b2',
+        casaAtual: 'b7',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -519,7 +543,9 @@ var pecas = {
         tipo: 'metralhadora',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'd2',
+        casaAtual: 'd7',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -532,7 +558,9 @@ var pecas = {
         tipo: 'metralhadora',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'f2',
+        casaAtual: 'f7',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -546,6 +574,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'a3',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -559,6 +589,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'c3',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -572,6 +604,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'e3',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -585,6 +619,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'g3',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -597,7 +633,9 @@ var pecas = {
         tipo: 'granada',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'a3',
+        casaAtual: 'a8',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -610,7 +648,9 @@ var pecas = {
         tipo: 'granada',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'c3',
+        casaAtual: 'c8',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -623,7 +663,9 @@ var pecas = {
         tipo: 'granada',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'e3',
+        casaAtual: 'e8',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -636,7 +678,9 @@ var pecas = {
         tipo: 'granada',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'g3',
+        casaAtual: 'g8',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 1,
         tiros: -1,
@@ -650,6 +694,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'b1',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 2,
         tiros: 2,
@@ -663,6 +709,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'f1',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 2,
         tiros: 2,
@@ -675,7 +723,9 @@ var pecas = {
         tipo: 'sniper',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'b5',
+        casaAtual: 'b10',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 2,
         tiros: 2,
@@ -688,7 +738,9 @@ var pecas = {
         tipo: 'sniper',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'f5',
+        casaAtual: 'f10',
+        xAtual: 0,
+        yAtual: 0,
         vida: 2,
         dano: 2,
         tiros: 2,
@@ -702,6 +754,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'c1',
+        xAtual: 0,
+        yAtual: 0,
         vida: 3,
         dano: 2,
         tiros: 1,
@@ -716,6 +770,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'e1',
+        xAtual: 0,
+        yAtual: 0,
         vida: 3,
         dano: 2,
         tiros: 1,
@@ -729,7 +785,9 @@ var pecas = {
         tipo: 'tanque',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'c5',
+        casaAtual: 'c10',
+        xAtual: 0,
+        yAtual: 0,
         vida: 3,
         dano: 2,
         tiros: 1,
@@ -743,7 +801,9 @@ var pecas = {
         tipo: 'tanque',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'e5',
+        casaAtual: 'e10',
+        xAtual: 0,
+        yAtual: 0,
         vida: 3,
         dano: 2,
         tiros: 1,
@@ -758,6 +818,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'a1',
+        xAtual: 0,
+        yAtual: 0,
         vida: -1,
         dano: 3,
         tiros: 1,
@@ -773,6 +835,8 @@ var pecas = {
         exercito: 'cima',
         campoAtual: 'cima',
         casaAtual: 'g1',
+        xAtual: 0,
+        yAtual: 0,
         vida: -1,
         dano: 3,
         tiros: 1,
@@ -787,7 +851,9 @@ var pecas = {
         tipo: 'aviao',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'a5',
+        casaAtual: 'a10',
+        xAtual: 0,
+        yAtual: 0,
         vida: -1,
         dano: 3,
         tiros: 1,
@@ -802,7 +868,9 @@ var pecas = {
         tipo: 'aviao',
         exercito: 'baixo',
         campoAtual: 'baixo',
-        casaAtual: 'g5',
+        casaAtual: 'g10',
+        xAtual: 0,
+        yAtual: 0,
         vida: -1,
         dano: 3,
         tiros: 1,
