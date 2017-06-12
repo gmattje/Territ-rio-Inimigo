@@ -25,9 +25,11 @@ function init(){
 //calcula tamanho das casas e organiza tabuleiro
 function reorganizaTabuleiro(){
     //zera tudo
+    $('#plano-inferior').removeAttr('style');
     $('#palco').removeAttr('style');
     $('#palco .campo').removeAttr('style');
     //refaz calculos
+    $('#plano-inferior').css('width',getDocWidth()+'px');
     $('#palco').css('width',getDocWidth()+'px');
     var tamanhoCampoW = $('#palco .campo').width();
     var tamanhoCampoH = ($('#palco').height()/2)-5 //desconta a metade do tamanho da divisao
@@ -81,10 +83,12 @@ function ativaRecuperacaoDeDados() {
         var peca = $(this).attr('id');
         var campo = pecas[peca].exercito;
         exibeDadosPeca(peca, campo);
+        exibeRaioDeAtaque(peca);
     });
     
     $('#palco .casa .peca').mouseleave(function(){
         zeraBarrasLaterais();
+        zeraRaioDeAtaque();
     });
 
 }
@@ -141,6 +145,63 @@ function exibeDadosPeca(peca, campo){
             $('<div>').prependTo('.barraLateral.campo-' + campo + ' .infos div.vidas').addClass('vida');
         } 
     }
+}
+
+function exibeRaioDeAtaque(peca){
+    zeraRaioDeAtaque();
+    var wCasa = 0;
+    var hCasa = 0;
+    var x1Alcance = 0;
+    var x2Alcance = 0;
+    var y1Alcance = 0;
+    var y2Alcance = 0;
+    var posicaoRaioX = 0;
+    var posicaoRaioY = 0;
+    var tamanhoRaioW = 0;
+    var tamanhoRaioH = 0; 
+    
+    if(pecas[peca].tipo == "tanque") {
+        tamanhoRaioW = tamanhoCasasW*7;
+        tamanhoRaioH = tamanhoCasasH;
+        posicaoRaioX = $('.casa.a1').offset().left-tamanhoCasasW;
+        posicaoRaioY = 0;
+        if(pecas[peca].exercito == "cima"){
+            posicaoRaioY = pecas[peca].yAtual+(tamanhoCasasH*2);
+        } else {
+            posicaoRaioY = pecas[peca].yAtual-(tamanhoCasasH*2);
+        }
+    } else if(pecas[peca].tipo == "sniper") {
+        tamanhoRaioW = tamanhoCasasW*7;
+        tamanhoRaioH = tamanhoCasasH*5;
+        posicaoRaioX = $('.casa.a1').offset().left-tamanhoCasasW;
+        posicaoRaioY = 0;
+        if(pecas[peca].exercito == "cima"){
+            posicaoRaioY = $('.casa.a1').offset().top;
+        } else {
+            posicaoRaioY = $('.casa.a5').offset().top+tamanhoCasasH;
+        }
+    } else {
+        if(pecas[peca].tipo == "aviao" || pecas[peca].tipo == "revolver" || pecas[peca].tipo == "metralhadora"){
+            var alcance = 1;
+        } else if(pecas[peca].tipo == "granada") {
+            var alcance = 2;
+        }
+        wCasa = tamanhoCasasW*alcance;
+        hCasa = tamanhoCasasH*alcance;
+        x1Alcance = Math.round(pecas[peca].xAtual-wCasa);
+        x2Alcance = Math.round(pecas[peca].xAtual+wCasa);
+        y1Alcance = Math.round(pecas[peca].yAtual-hCasa);
+        y2Alcance = Math.round(pecas[peca].yAtual+hCasa);
+        posicaoRaioX = (x1Alcance-tamanhoCasasW)-2;
+        posicaoRaioY = y1Alcance;
+        tamanhoRaioW = (x2Alcance-x1Alcance)+tamanhoCasasW;
+        tamanhoRaioH = (y2Alcance-y1Alcance)+tamanhoCasasH; 
+    }
+    $('#raio-ataque').removeClass('hidden').css('width',tamanhoRaioW).css('height',tamanhoRaioH).css('left',posicaoRaioX).css('top',posicaoRaioY);
+}
+
+function zeraRaioDeAtaque(){
+    $('#raio-ataque').addClass('hidden');
 }
 
 function selecionaPecaParaTurno(peca){
@@ -238,7 +299,7 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
     if(pecas[peca].tipo != "sniper" && pecas[peca].tipo != "aviao") {
         //valida quantidade de casas movimentadas
         var movimentos = quantidadeDeCasasMovimentada(peca);
-        if(movimentos <= 2) {
+        if(movimentos == 1) {
             if(casas['campo-' + campoDestino][casaDestino].tipo == "montanha"){
                 retornaMovimentoDaPeca(peca, 'Esta peça não pode se mover sobre montanhas');
             } else if(casas['campo-' + campoDestino][casaDestino].tipo == "base"){
@@ -265,9 +326,16 @@ function quantidadeDeCasasMovimentada(peca) {
     var yAtual = Math.round(pecas[peca].yAtual);
     
     //calcula quantidades de movimentos eixo x
-    var qtdX = Math.abs(xFinal-xAtual)/widthCasa;
-    var qtdY = Math.abs(yFinal-yAtual)/heightCasa;
-    var total = Math.round(qtdX+qtdY);
+    var qtdX = Math.round(Math.abs(xFinal-xAtual)/widthCasa);
+    var qtdY = Math.round(Math.abs(yFinal-yAtual)/heightCasa);
+    
+    //se andou na diagonal, conta apenas 1 movimento
+    var total = 0
+    if(qtdX == 1 && qtdY == 1) {
+        total = 1;
+    } else {
+        total = qtdX+qtdY;
+    }
     return total;
 }
 
