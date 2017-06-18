@@ -1,6 +1,8 @@
 //recupera variáveis
 
-//tamanho das casas
+//tamanhos tabuleiro
+var marginLeftCampos = 0;
+var tamanhoDivisaoH = 0;
 var tamanhoCasasW = 0;
 var tamanhoCasasH = 0;
 
@@ -11,6 +13,12 @@ var turnoDefesa = "baixo";
 //pecas selecionadas
 var pecaSelecionadaCampoAtaque = "";
 var pecaSelecionadaCampoDefesa = "";
+
+//areas de ataque da peca selecionada
+var posicaoRaioAtaqueX = 0;
+var posicaoRaioAtaqueY = 0;
+var tamanhoRaioAtaqueW = 0;
+var tamanhoRaioAtaqueH = 0;
 
 //se jogo está rolando
 var varPlay = false;
@@ -33,11 +41,12 @@ function reorganizaTabuleiro(){
     $('#palco').css('width',getDocWidth()+'px');
     var tamanhoCampoW = $('#palco .campo').width();
     var tamanhoCampoH = ($('#palco').height()/2)-5 //desconta a metade do tamanho da divisao
-    var margemCampoL = (getDocWidth()-tamanhoCampoW)/2;
+    marginLeftCampos = (getDocWidth()-tamanhoCampoW)/2;
+    tamanhoDivisaoH = $('#palco .divisao').height();
     tamanhoCasasW = (tamanhoCampoW/7)-1;
     tamanhoCasasH = tamanhoCampoH/5;
     $('#palco .campo .casa').css('width',tamanhoCasasW+'px').css('height',tamanhoCasasH+'px');
-    $('#palco .campo').css('margin-left',margemCampoL+'px');
+    $('#palco .campo').css('margin-left',marginLeftCampos+'px');
 }
 
 //coloca as pecas em seus lugares
@@ -62,8 +71,6 @@ function organizaPecas(){
         //se a peça já não tenha sido perdida pelo exercito
         if(campoOcupado !== 0 && casaOcupada !== 0) { 
             var novaPeca = $('#pecas .' + tipoPeca + '.' + campoPeca).clone().appendTo('.campo.' + campoOcupado + ' .casa.' +casaOcupada).attr('id',index).attr('onclick','selecionaPecaParaTurno("' + index + '")');
-            this.xAtual = $(novaPeca).offset().left;
-            this.yAtual = $(novaPeca).offset().top;
             if(casas['campo-'+campoOcupado][casaOcupada].ocupacao1 == "") {
                 casas['campo-'+campoOcupado][casaOcupada].ocupacao1 = index;
             } else if(casas['campo-'+campoOcupado][casaOcupada].ocupacao2 == "") {
@@ -73,8 +80,67 @@ function organizaPecas(){
         }
     });
     
+    gravaPosicoesPecas();
     ativaRecuperacaoDeDados();
     
+}
+
+function gravaPosicoesPecas() {
+    $.each(pecas, function(index){
+        
+        var wCasa = 0;
+        var hCasa = 0;
+        var x1Alcance = 0;
+        var x2Alcance = 0;
+        var y1Alcance = 0;
+        var y2Alcance = 0;
+        
+        //se a peça já não tenha sido perdida pelo exercito
+        if(this.campoAtual !== 0 && this.casaAtual !== 0) {
+            
+            //grava x e y da posicao atual
+            this.xAtual = $('#' + index + '.peca').position().left;
+            this.yAtual = $('#' + index + '.peca').offset().top;
+            
+            //grava raios de ataque
+            if(this.tipo == "tanque") {
+                this.alcanceAtualW = tamanhoCasasW*7;
+                this.alcanceAtualH = tamanhoCasasH;
+                this.alcanceAtualX = $('.casa.a1').position().left+marginLeftCampos;
+                if(this.exercito == "cima"){
+                    this.alcanceAtualY = this.yAtual+(tamanhoCasasH*2);
+                } else {
+                    this.alcanceAtualY = this.yAtual-(tamanhoCasasH*2);
+                }
+            } else if(this.tipo == "sniper") {
+                this.alcanceAtualW = tamanhoCasasW*7;
+                this.alcanceAtualH = tamanhoCasasH*5;
+                this.alcanceAtualX = $('.casa.a1').position().left+marginLeftCampos;
+                if(this.exercito == "cima"){
+                    this.alcanceAtualY = $('.casa.a1').offset().top;
+                } else {
+                    this.alcanceAtualY = $('.casa.a5').offset().top+tamanhoCasasH+tamanhoDivisaoH;
+                }
+            } else {
+                if(this.tipo == "aviao" || this.tipo == "revolver" || this.tipo == "metralhadora"){
+                    var alcance = 1;
+                } else if(this.tipo == "granada") {
+                    var alcance = 2;
+                }
+                wCasa = tamanhoCasasW*alcance;
+                hCasa = tamanhoCasasH*alcance;
+                x1Alcance = Math.round(this.xAtual-wCasa);
+                x2Alcance = Math.round(this.xAtual+wCasa);
+                y1Alcance = Math.round(this.yAtual-hCasa);
+                y2Alcance = Math.round(this.yAtual+hCasa);
+                this.alcanceAtualX = x1Alcance+marginLeftCampos;
+                this.alcanceAtualY = y1Alcance;
+                this.alcanceAtualW = (x2Alcance-x1Alcance)+tamanhoCasasW;
+                this.alcanceAtualH = (y2Alcance-y1Alcance)+tamanhoCasasH; 
+            }
+            
+        }
+    });
 }
 
 function ativaRecuperacaoDeDados() {
@@ -148,56 +214,11 @@ function exibeDadosPeca(peca, campo){
 }
 
 function exibeRaioDeAtaque(peca){
-    zeraRaioDeAtaque();
-    var wCasa = 0;
-    var hCasa = 0;
-    var x1Alcance = 0;
-    var x2Alcance = 0;
-    var y1Alcance = 0;
-    var y2Alcance = 0;
-    var posicaoRaioX = 0;
-    var posicaoRaioY = 0;
-    var tamanhoRaioW = 0;
-    var tamanhoRaioH = 0; 
-    
-    if(pecas[peca].tipo == "tanque") {
-        tamanhoRaioW = tamanhoCasasW*7;
-        tamanhoRaioH = tamanhoCasasH;
-        posicaoRaioX = $('.casa.a1').offset().left-tamanhoCasasW;
-        posicaoRaioY = 0;
-        if(pecas[peca].exercito == "cima"){
-            posicaoRaioY = pecas[peca].yAtual+(tamanhoCasasH*2);
-        } else {
-            posicaoRaioY = pecas[peca].yAtual-(tamanhoCasasH*2);
-        }
-    } else if(pecas[peca].tipo == "sniper") {
-        tamanhoRaioW = tamanhoCasasW*7;
-        tamanhoRaioH = tamanhoCasasH*5;
-        posicaoRaioX = $('.casa.a1').offset().left-tamanhoCasasW;
-        posicaoRaioY = 0;
-        if(pecas[peca].exercito == "cima"){
-            posicaoRaioY = $('.casa.a1').offset().top;
-        } else {
-            posicaoRaioY = $('.casa.a5').offset().top+tamanhoCasasH;
-        }
-    } else {
-        if(pecas[peca].tipo == "aviao" || pecas[peca].tipo == "revolver" || pecas[peca].tipo == "metralhadora"){
-            var alcance = 1;
-        } else if(pecas[peca].tipo == "granada") {
-            var alcance = 2;
-        }
-        wCasa = tamanhoCasasW*alcance;
-        hCasa = tamanhoCasasH*alcance;
-        x1Alcance = Math.round(pecas[peca].xAtual-wCasa);
-        x2Alcance = Math.round(pecas[peca].xAtual+wCasa);
-        y1Alcance = Math.round(pecas[peca].yAtual-hCasa);
-        y2Alcance = Math.round(pecas[peca].yAtual+hCasa);
-        posicaoRaioX = (x1Alcance-tamanhoCasasW)-2;
-        posicaoRaioY = y1Alcance;
-        tamanhoRaioW = (x2Alcance-x1Alcance)+tamanhoCasasW;
-        tamanhoRaioH = (y2Alcance-y1Alcance)+tamanhoCasasH; 
+    //só exibe raio para exercito atacante
+    if(pecas[peca].exercito == turnoAtacante){
+        zeraRaioDeAtaque();
+        $('#raio-ataque').removeClass('hidden').css('width',pecas[peca].alcanceAtualW).css('height',pecas[peca].alcanceAtualH).css('left',pecas[peca].alcanceAtualX).css('top',pecas[peca].alcanceAtualY);
     }
-    $('#raio-ataque').removeClass('hidden').css('width',tamanhoRaioW).css('height',tamanhoRaioH).css('left',posicaoRaioX).css('top',posicaoRaioY);
 }
 
 function zeraRaioDeAtaque(){
@@ -206,23 +227,26 @@ function zeraRaioDeAtaque(){
 
 function selecionaPecaParaTurno(peca){
     
-    if(turnoAtacante == "cima" && pecas[peca].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") {
-        alert('É preciso selecionar sua peça primeiro');
-        return false;
-    } else if(turnoAtacante == "baixo" && pecas[peca].exercito == "cima" && pecaSelecionadaCampoAtaque == "") {
+    if((turnoAtacante == "cima" && pecas[peca].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") || (turnoAtacante == "baixo" && pecas[peca].exercito == "cima" && pecaSelecionadaCampoAtaque == "")) {
         alert('É preciso selecionar sua peça primeiro');
         return false;
     } else {
         if((pecaSelecionadaCampoAtaque == "") || (pecaSelecionadaCampoAtaque != "" && pecas[peca].exercito == turnoAtacante)) {
-            $('.campo.' + turnoAtacante + ' .casa').removeClass('selecionada').removeClass('ataque');
-            $('.campo.' + turnoDefesa + ' .casa').removeClass('selecionada').removeClass('defesa');
+            $('.campo .casa.selecionada.ataque').removeClass('selecionada').removeClass('ataque');
+            $('.campo .casa.selecionada.defesa').removeClass('selecionada').removeClass('defesa');
             $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada ataque');
             pecaSelecionadaCampoAtaque = peca;
             pecaSelecionadaCampoDefesa = "";
         } else {
-            $('.campo.' + turnoDefesa + ' .casa').removeClass('selecionada').removeClass('defesa');
-            $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada defesa');
-            pecaSelecionadaCampoDefesa = peca;
+            //valida se a peca está no campo de ataque
+            if(!pecaEstaNoCampoDeAtaque(peca)) {
+                alert('Esta peça está fora do raio de ataque');
+                return false;
+            } else {    
+                $('.campo .casa.selecionada.defesa').removeClass('selecionada').removeClass('defesa');
+                $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada defesa');
+                pecaSelecionadaCampoDefesa = peca;
+            }
         }
     }
     if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "") {
@@ -231,6 +255,22 @@ function selecionaPecaParaTurno(peca){
         desabilitaIniciarTurno();
     }
     
+}
+
+function pecaEstaNoCampoDeAtaque(peca) {
+    var raio_x1 = pecas[pecaSelecionadaCampoAtaque].alcanceAtualX; 
+    var raio_x2 = raio_x1+pecas[pecaSelecionadaCampoAtaque].alcanceAtualW;
+    var raio_y1 = pecas[pecaSelecionadaCampoAtaque].alcanceAtualY; 
+    var raio_y2 = raio_y1+pecas[pecaSelecionadaCampoAtaque].alcanceAtualH;
+    var peca_x1 = Math.round(pecas[peca].xAtual);
+    var peca_x2 = Math.round(pecas[peca].xAtual+tamanhoCasasW);
+    var peca_y1 = Math.round(pecas[peca].yAtual);
+    var peca_y2 = Math.round(pecas[peca].yAtual+tamanhoCasasH);
+    if(raio_x1 <= (peca_x1 + marginLeftCampos) && raio_y1 <= (peca_y1 + tamanhoDivisaoH) && raio_y2 > peca_y1 && raio_x2 > (peca_x1 + marginLeftCampos) && (raio_y2 + tamanhoDivisaoH) >= peca_y2) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function ativaControlesMouse(){
@@ -320,7 +360,7 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
 function quantidadeDeCasasMovimentada(peca) {
     var widthCasa = Math.round(tamanhoCasasW);
     var heightCasa = Math.round(tamanhoCasasH);
-    var xFinal = Math.round($('#' + peca + '.peca').offset().left);
+    var xFinal = Math.round($('#' + peca + '.peca').position().left);
     var yFinal = Math.round($('#' + peca + '.peca').offset().top);
     var xAtual = Math.round(pecas[peca].xAtual);
     var yAtual = Math.round(pecas[peca].yAtual);
@@ -353,14 +393,16 @@ function GravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao){
     casas['campo-' + campoDestino][casaDestino][ocupacao] = peca;
     pecas[peca].campoAtual = campoDestino;
     pecas[peca].casaAtual = casaDestino;
-    pecas[peca].xAtual = $('#' + peca + '.peca').offset().left;
-    pecas[peca].yAtual = $('#' + peca + '.peca').offset().top; 
     //se nova casa estiver com duas ocupacoes
     if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
         $('.campo.' + campoDestino + ' .casa.' + casaDestino).addClass('ocupacaoDupla');
     } else {
         $('.campo.' + campoDestino + ' .casa.' + casaDestino).removeClass('ocupacaoDupla');
     }
+    
+    //nova posicao da peca e novo raio de ataque
+    gravaPosicoesPecas(); 
+    exibeRaioDeAtaque(peca);
     
 }
 
