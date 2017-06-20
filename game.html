@@ -3,10 +3,12 @@
     <head>
         <title>Territótio Inimigo</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="js/jquery-ui-1.12.1.custom/jquery-ui.min.css">
+        <link rel="stylesheet" href="js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css">
         <link rel="stylesheet" href="css/normalize.css" type="text/css"/>
         <link rel="stylesheet" href="css/style.css" type="text/css"/>        	
         <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/jquery.queryloader2.js"></script>
         <script type="text/javascript" src="js/casas-e-pecas.js"></script>
         <script type="text/javascript" src="js/game.js"></script>
@@ -27,9 +29,15 @@
         
     </head>
     <body>
+        <div id="mensagem-erro" title="Atenção">
+            <p>
+                <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+                <span class="mensagem"></span>
+            </p>
+        </div>
         <div class="barraLateral esquerda campo-cima">
             <div class="infos">
-                <h2 class="time timeA">Time A</h2>
+                <h2 class="time timeA">VERMELHO</h2>
                 <h3 class="nomePeca"></h3>
                 <div class="vidas"></div>
                 <div class="gasolina"></div>
@@ -40,11 +48,12 @@
                 <div class="tiros infoBasica"></div>
                 <div class="adicional infoBasica"></div>
             </div>
+            <div class="dados"></div>
             <div class="btnAtaque">ATACAR!</div>
         </div>
         <div class="barraLateral direita campo-baixo">
             <div class="infos">
-                <h2 class="time timeB">Time B</h2>
+                <h2 class="time timeB">AZUL</h2>
                 <h3 class="nomePeca"></h3>
                 <div class="vidas"></div>
                 <div class="gasolina"></div>
@@ -55,12 +64,18 @@
                 <div class="tiros infoBasica"></div>
                 <div class="adicional infoBasica"></div>
             </div>
+            <div class="dados"></div>
             <div class="btnAtaque">ATACAR!</div>
         </div>
         <div id="plano-inferior">
             <div id="raio-ataque" class="hidden"></div>
         </div>
         <div id="palco">
+            <div class="infos-gerais">
+                <div class="timer"></div>
+                <div class="turno"></div>
+                <div class="exercitos"></div>
+            </div>
             <div class="campo cima">
                 <div class="casa a1 aeroporto"></div>
                 <div class="casa b1 montanha"></div>

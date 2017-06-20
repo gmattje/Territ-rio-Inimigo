@@ -3,6 +3,10 @@ html, body {
     overflow: hidden;
 }
 
+#mensagem-erro {
+    display: none;
+}
+
 .barraLateral {
     position: absolute;
     top: 0;
@@ -84,10 +88,31 @@ html, body {
     border-bottom: 1px dotted #FFF;
 }
 
+.barraLateral .dados {
+    position: absolute;
+    bottom: 5px;
+    width: 78%;
+    text-align: center;
+    padding: 5px;
+    background-color: #FFF;
+    display: none;
+    color: #000;
+    font-size: 8pt;
+}
+
+.barraLateral .dados.visible {
+    display: block;
+}
+
+.barraLateral .dados img {
+    max-width: 100%;
+}
+
 .barraLateral .btnAtaque {
     position: absolute;
     bottom: 5px;
     width: 78%;
+    height: 18px;
     text-align: center;
     padding: 5px;
     background-color: red;
@@ -112,10 +137,13 @@ html, body {
 #raio-ataque {
     position: absolute;
     z-index: 9;
-    /*background-color: rgba(255, 255, 255, 0.6);*/
     background-image: url(../images/raio-ataque.gif);
     background-size: 100% 100%;
     border-radius: 10%;
+}
+
+#raio-ataque.campoParaquedista {
+    background-image: url(../images/raio-paraquedista.gif);
 }
 
 #raio-ataque.hidden {
@@ -129,6 +157,21 @@ html, body {
     left: 150px;
     display: block;
     z-index: 2;
+}
+
+#palco .infos-gerais {
+    width: 100%;
+    height: 20px;
+    background-color: #000;
+    color: #FFF;
+    text-align: center;
+    display: block;
+    font-size: 8pt;
+    line-height: 14pt;
+}
+
+#palco .infos-gerais div {
+    display: inline;
 }
 
 #palco .campo {
