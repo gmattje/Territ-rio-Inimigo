@@ -13,20 +13,25 @@ html, body {
     width: 150px;
     height: 100%;
     display: block;
-    background-color: #000;
-    color: #FFF;
+    color: #000;
     overflow-x: hidden;
     z-index: 9;
     padding: 10px;
     box-sizing: border-box;
+    background-repeat: repeat-y;
+    box-shadow: 0px 0px 10px #000;
 }
 
 .barraLateral.esquerda {
     left: 0;
+    padding-right: 18px;
+    background-image: url(../images/bck-barra-lateral-esquerda.jpg);
 }
 
 .barraLateral.direita {
     right: 0;
+    padding-left: 18px;
+    background-image: url(../images/bck-barra-lateral-direita.jpg);
 }
 
 .barraLateral .infos {
@@ -34,13 +39,17 @@ html, body {
     width: 100%;
     height: 100px;
     display: block; 
-    font-size: 9pt;
+    font-size: 8pt;
 }
 
 .barraLateral .infos .time {
     padding: 5px;
     color: #FFF;
     margin: 0;
+    text-align: center;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
 }
 
 .barraLateral .infos .time.timeA {
@@ -75,7 +84,9 @@ html, body {
 
 .barraLateral .imagem-demo {
     background-color: #FFF;
-    padding: 5px;
+    padding: 0 5px;
+    box-shadow: 0px 0px 10px #000 inset;
+    border-radius: 5px;
 }
 
 .barraLateral .imagem-demo img {
@@ -90,11 +101,11 @@ html, body {
 
 .barraLateral .dados {
     position: absolute;
-    bottom: 5px;
-    width: 78%;
+    bottom: 0;
+    left: 0;
+    width: 140px;
     text-align: center;
     padding: 5px;
-    background-color: #FFF;
     display: none;
     color: #000;
     font-size: 8pt;
@@ -108,14 +119,37 @@ html, body {
     max-width: 100%;
 }
 
+.barraLateral .timer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 118px;
+    text-align: center;
+    padding: 5px 5px 5px 27px;
+    background-color: #FFF;
+    display: none;
+    color: #000;
+    font-size: 8pt;
+    background-image: url(../images/cronometro.gif);
+    background-repeat: no-repeat;
+    background-position: 5px 5px;
+}
+
+.barraLateral .timer.visible {
+    display: block;
+}
+
 .barraLateral .btnAtaque {
     position: absolute;
-    bottom: 5px;
-    width: 78%;
+    bottom: 0;
+    left: 0;
+    width: 140px;
     height: 18px;
     text-align: center;
     padding: 5px;
     background-color: red;
+    color: #FFF;
+    font-weight: bold;
     cursor: pointer;
     display: none;
 }
@@ -193,6 +227,10 @@ html, body {
     overflow: hidden;
 }
 
+#palco .campo .casa.selecionavel {
+    cursor: pointer;
+}
+
 #palco .campo .casa.selecionada.ataque {
     background-color: rgba(195, 170, 133, 0.63);
 }
@@ -226,7 +264,7 @@ html, body {
     background-image: url(../images/arame-pattern.png);
 }
 
-#pecas {
+#dados, #pecas {
     display: none;
 }
 
@@ -251,10 +289,6 @@ html, body {
 .peca img {
     max-height: 100%;
     cursor: pointer;
-}
-
-.peca.granada {
-    padding: 10% 0;
 }
 
 #panelPause {

@@ -9,6 +9,9 @@ setInterval(function() {
 
 //recupera variáveis
 
+var nomeJogadorVermelho = "VERMELHO";
+var nomeJogadorAzul = "AZUL";
+
 //tamanhos tabuleiro
 var marginLeftCampos = 0;
 var tamanhoDivisaoH = 0;
@@ -17,6 +20,7 @@ var tamanhoCasasH = 0;
 
 //turno
 var timerMovimentacao = "";
+var timerParaquedista = "";
 var numDoTurno = 0;
 var turnoVencedor = "";
 var bloqueioEscolhaParaquedista = false;
@@ -24,6 +28,7 @@ var turnoAtacante = "cima";
 var turnoDefesa = "baixo";
 
 //pecas selecionadas
+var pecaParaReposicao = "";
 var pecaSelecionadaCampoAtaque = "";
 var pecaSelecionadaCampoDefesa = "";
 
@@ -32,10 +37,24 @@ var varPlay = false;
 
 //função de inicialização
 function init(){
+    nomesDosJogadores();
     reorganizaTabuleiro();
     organizaPecas();
     ativaControlesMouse();
     preparaNovoTurno();
+}
+
+function nomesDosJogadores(){
+    var player1 = getUrlVars()["pl1"];
+    var player2 = getUrlVars()["pl2"];
+    if(player1 != "") {
+        nomeJogadorVermelho = getUrlVars()["pl1"];
+        $('.barraLateral.esquerda h2.timeA').html(nomeJogadorVermelho);
+    }
+    if(player2 != "") {
+        nomeJogadorAzul = getUrlVars()["pl2"];
+        $('.barraLateral.direita h2.timeB').html(nomeJogadorAzul);
+    }
 }
 
 //calcula tamanho das casas e organiza tabuleiro
@@ -209,7 +228,8 @@ function zeraBarrasLaterais(){
 
 function exibeDadosPeca(peca, campo){
     $('.barraLateral.campo-' + campo + ' .infos h3.nomePeca').html(pecas[peca].nome);
-    $('.barraLateral.campo-' + campo + ' .infos div.imagem-demo').html('<img src="pecas/' + pecas[peca].tipo + '-demo.png">');
+    $('.barraLateral.campo-' + campo + ' .infos div.imagem-demo').empty();
+    $('#pecas .peca.' + pecas[peca].tipo + '.demo').clone().appendTo('.barraLateral.campo-' + campo + ' .infos div.imagem-demo');
     $('.barraLateral.campo-' + campo + ' .infos div.movimentacao').html('Movimentação: ' + pecas[peca].movimentacao);
     $('.barraLateral.campo-' + campo + ' .infos div.alcance').html('Alcance: ' + pecas[peca].alcance);
     $('.barraLateral.campo-' + campo + ' .infos div.dano').html('Dano: ' + pecas[peca].dano + ' vida(s)');
@@ -244,13 +264,14 @@ function exibeDadosPeca(peca, campo){
 }
 
 function exibeRaioDeAtaque(peca){
-zeraRaioDeAtaque();
-if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros != "0"){
-    $('#raio-ataque').removeClass('hidden').css('width',pecas[peca].alcanceAtualW).css('height',pecas[peca].alcanceAtualH).css('left',pecas[peca].alcanceAtualX).css('top',pecas[peca].alcanceAtualY);
-} else if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros == "0" && pecas[peca].tipo == "aviao"){
-    bloqueioEscolhaParaquedista = true;
-    $('#raio-ataque').removeClass('hidden').addClass('campoParaquedista').css('width',pecas[peca].alcanceAtualW).css('height',pecas[peca].alcanceAtualH).css('left',pecas[peca].alcanceAtualX).css('top',pecas[peca].alcanceAtualY);
-}
+    if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros != "0"){
+        zeraRaioDeAtaque();
+        $('#raio-ataque').removeClass('hidden').css('width',pecas[peca].alcanceAtualW).css('height',pecas[peca].alcanceAtualH).css('left',pecas[peca].alcanceAtualX).css('top',pecas[peca].alcanceAtualY);
+    } else if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros == "0" && pecas[peca].tipo == "aviao"){
+        zeraRaioDeAtaque();
+        bloqueioEscolhaParaquedista = true;
+        $('#raio-ataque').removeClass('hidden').addClass('campoParaquedista').css('width',pecas[peca].alcanceAtualW).css('height',pecas[peca].alcanceAtualH).css('left',pecas[peca].alcanceAtualX).css('top',pecas[peca].alcanceAtualY);
+    }
 }
 
 function zeraRaioDeAtaque(){
@@ -318,6 +339,27 @@ function ativaControlesMouse(){
     //clique para rodar ataque
     $('.barraLateral .btnAtaque').click(function(){
         rodaAtaque(1);
+    });
+    
+    //seleciona casa para pouso do paraquedista
+    $('#palco .casa').click(function(){
+        if(bloqueioEscolhaParaquedista){
+            var classesCampo = $(this).parent().attr('class').split(' ');
+            var classes = $(this).attr('class').split(' ');
+            var campo = classesCampo[1];
+            var casa = classes[1];
+            if(!casaEstaNoCampoDePouso(casa)){
+                mensagemDeErro('Esta casa não está no campo de pouso do paraquedista');
+            } else {
+                if(casas['campo-'+campo][casa].ocupacao1 != "" || casas['campo-'+campo][casa].ocupacao2 != ""){
+                    mensagemDeErro('Esta casa já está ocupada');
+                } else if (casas['campo-'+campo][casa].tipo != "normal") {
+                    mensagemDeErro('Esta peça não pode ser colocada nesta casa');
+                } else {
+                    repoePecaNoTabuleiro(pecaParaReposicao, casa);
+                }                
+            }
+        }
     });
     
     //seleciona peca para movimentar-se
@@ -479,14 +521,17 @@ function rodaAtaque(numTentativa){
     var numeroDadoDefesa = Math.floor(Math.random() * 6 + 1);
     $('.barraLateral .btnAtaque').removeClass('visible');
     $('.barraLateral .dados').addClass('visible');
-    $('.barraLateral.campo-' + turnoAtacante + ' .dados').html('<img src="images/dado-ataque.gif"/>');
-    $('.barraLateral.campo-' + turnoDefesa + ' .dados').html('<img src="images/dado-defesa.gif"/>');
+    $('.barraLateral .dados').empty();
+    $('#dados .dado.dado-ataque-gif').clone().appendTo('.barraLateral.campo-' + turnoAtacante + ' .dados');
+    $('#dados .dado.dado-defesa-gif').clone().appendTo('.barraLateral.campo-' + turnoDefesa + ' .dados');
     //resultados dos dados
     setTimeout(function(){
-        $('.barraLateral.campo-' + turnoAtacante + ' .dados').html('<img src="images/dado-ataque-' + numeroDadoAtaque + '.png"/>');
+        $('.barraLateral.campo-' + turnoAtacante + ' .dados').empty();
+        $('#dados .dado.dado-ataque-' + numeroDadoAtaque).clone().appendTo('.barraLateral.campo-' + turnoAtacante + ' .dados');
     }, 2000);
     setTimeout(function(){
-        $('.barraLateral.campo-' + turnoDefesa + ' .dados').html('<img src="images/dado-defesa-' + numeroDadoDefesa + '.png"/>');
+        $('.barraLateral.campo-' + turnoDefesa + ' .dados').empty();
+        $('#dados .dado.dado-defesa-' + numeroDadoDefesa).clone().appendTo('.barraLateral.campo-' + turnoDefesa + ' .dados');
     }, 3000);   
     setTimeout(function(){
         //se ataque venceu
@@ -495,15 +540,7 @@ function rodaAtaque(numTentativa){
             if(pecas[pecaSelecionadaCampoDefesa].vida != '-1') {
                 pecas[pecaSelecionadaCampoDefesa].vida = pecas[pecaSelecionadaCampoDefesa].vida-pecas[pecaSelecionadaCampoAtaque].dano;
                 if(pecas[pecaSelecionadaCampoDefesa].vida <= 0) {
-                    if(casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao1 == pecaSelecionadaCampoDefesa) {
-                        casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao1 = "";
-                    } else if(casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao2 == pecaSelecionadaCampoDefesa) {
-                        casas['campo-'+pecas[pecaSelecionadaCampoDefesa].campoAtual][pecas[pecaSelecionadaCampoDefesa].casaAtual].ocupacao2 = "";
-                    }
-                    pecas[pecaSelecionadaCampoDefesa].campoAtual = 0;
-                    pecas[pecaSelecionadaCampoDefesa].casaAtual = 0;
-                    $('.casa.selecionada.defesa #' + pecaSelecionadaCampoDefesa + '.peca').remove();
-                    $('.casa.selecionada.defesa').removeClass('ocupacaoDupla');
+                    retiraPecaDoTabuleiro(pecaSelecionadaCampoDefesa);
                     exibeResultadosGerais();
                 }
             }
@@ -523,13 +560,45 @@ function rodaAtaque(numTentativa){
     }, 4000);
 }
 
+function retiraPecaDoTabuleiro(peca){
+    if(casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 == peca) {
+        casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 = "";
+    } else if(casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 == peca) {
+        casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 = "";
+    }
+    $('.casa.' + pecas[peca].casaAtual).removeClass('ocupacaoDupla');
+    $('.casa.' + pecas[peca].casaAtual + ' #' + peca + '.peca').remove();
+    pecas[peca].campoAtual = 0;
+    pecas[peca].casaAtual = 0;
+    organizaPecas();
+}
+
+function repoePecaNoTabuleiro(peca, casa){
+    var campo = "";
+    $.each(casas['campo-cima'], function(index){
+        if(casa == index){
+            campo = "cima";
+        }
+    });
+    $.each(casas['campo-baixo'], function(index){
+        if(casa == index){
+            campo = "baixo";
+        }
+    });
+    pecas[peca].campoAtual = campo;
+    pecas[peca].casaAtual = casa;
+    pecas[peca].vida = 1;
+    pecaParaReposicao = "";
+    organizaPecas();
+    preparaNovoTurno();
+}
+
 function resultadoDoTurno(resultado){
     //alert(resultado + " venceu");
-    $('.barraLateral.campo-' + turnoDefesa + ' .dados').removeClass('visible');
+    $('.barraLateral .dados').removeClass('visible');
     turnoVencedor = resultado;
     //se peça de ataque for aviao
     if(pecas[pecaSelecionadaCampoAtaque].tipo == "aviao"){
-        $('.barraLateral .dados').removeClass('visible');
         liberaParaquedista();
     } else {
         liberaMovimentacao();
@@ -548,14 +617,42 @@ function liberaParaquedista(){
         alert("O exército não teve peça do tipo revolver perdida, então não tem o que repor");
         liberaMovimentacao();
     } else {
+        pecaParaReposicao = revolverPerdido;
+        $('#palco .casa').addClass('selecionavel');
         exibeRaioDeAtaque(pecaSelecionadaCampoAtaque);
+        var segundosParaquedista = 10;
+        timerParaquedista = setInterval(function(){
+            $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').html('Você tem ' + segundosParaquedista + ' segundos para posicionar um paraquedista');
+            segundosParaquedista--;
+            if(segundosParaquedista < 0){
+                preparaNovoTurno();
+            }
+        }, 1000);
+    }
+}
+
+function casaEstaNoCampoDePouso(casa) {
+    var raio_x1 = pecas[pecaSelecionadaCampoAtaque].alcanceAtualX; 
+    var raio_x2 = raio_x1+pecas[pecaSelecionadaCampoAtaque].alcanceAtualW;
+    var raio_y1 = pecas[pecaSelecionadaCampoAtaque].alcanceAtualY; 
+    var raio_y2 = raio_y1+pecas[pecaSelecionadaCampoAtaque].alcanceAtualH;
+    var xCasa = $('.casa.' + casa).position().left;
+    var yCasa = $('.casa.' + casa).offset().top;
+    var casa_x1 = Math.round(xCasa+marginLeftCampos);
+    var casa_x2 = Math.round(xCasa+tamanhoCasasW);
+    var casa_y1 = Math.round(yCasa+tamanhoDivisaoH);
+    var casa_y2 = Math.round(yCasa+tamanhoCasasH);
+    if(raio_x1 <= (casa_x1 + marginLeftCampos) && raio_y1 <= (casa_y1 + tamanhoDivisaoH) && raio_y2 > casa_y1 && raio_x2 > (casa_x1 + marginLeftCampos) && (raio_y2 + tamanhoDivisaoH) >= casa_y2) {
+        return true;
+    } else {
+        return false;
     }
 }
 
 function liberaMovimentacao(){
     var segundosMovimentacao = 10;
     timerMovimentacao = setInterval(function(){
-        $('.barraLateral.campo-' + turnoAtacante + ' .dados').html('Você tem ' + segundosMovimentacao + ' segundos para movimentar uma de suas peças');
+        $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').html('Você tem ' + segundosMovimentacao + ' segundos para movimentar uma de suas peças');
         segundosMovimentacao--;
         if(segundosMovimentacao < 0){
             preparaNovoTurno();
@@ -565,10 +662,19 @@ function liberaMovimentacao(){
 
 function preparaNovoTurno(){
     clearInterval(timerMovimentacao);
+    clearInterval(timerParaquedista);
+    $('#palco .casa').removeClass('selecionavel');
     $('.barraLateral .dados').removeClass('visible');
+    $('.barraLateral .timer').removeClass('visible');
+    if(bloqueioEscolhaParaquedista){
+        bloqueioEscolhaParaquedista = false;
+        retiraPecaDoTabuleiro(pecaSelecionadaCampoAtaque);
+    }
+    pecaParaReposicao = "";
     pecaSelecionadaCampoAtaque = "";
     pecaSelecionadaCampoDefesa = "";
     zeraBarrasLaterais();
+    zeraRaioDeAtaque();
     numDoTurno = numDoTurno+1;
     turnoVencedor = "";
     if(turnoAtacante == "cima") {
@@ -623,6 +729,19 @@ function getDocHeight(){
     document.body.clientHeight
     );
     return height;
+}
+
+//variaveis do navegador
+function getUrlVars(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
 }
 
 function gameOver(){  
