@@ -11,6 +11,7 @@ setInterval(function() {
 
 var nomeJogadorVermelho = "VERMELHO";
 var nomeJogadorAzul = "AZUL";
+var nomeJogadorCampeao = "";
 
 //tamanhos tabuleiro
 var marginLeftCampos = 0;
@@ -22,6 +23,7 @@ var tamanhoCasasH = 0;
 var timerMovimentacao = "";
 var timerParaquedista = "";
 var numDoTurno = 0;
+var turnoEminenteFim = 0;
 var turnoVencedor = "";
 var bloqueioEscolhaParaquedista = false;
 var turnoAtacante = "cima";
@@ -33,7 +35,7 @@ var pecaSelecionadaCampoAtaque = "";
 var pecaSelecionadaCampoDefesa = "";
 
 //se jogo está rolando
-var varPlay = false;
+var fimDeJogo = false;
 
 //função de inicialização
 function init(){
@@ -126,8 +128,9 @@ function gravaPosicoesPecas() {
         if(this.campoAtual !== 0 && this.casaAtual !== 0) {
             
             //grava x e y da posicao atual
-            this.xAtual = $('#' + index + '.peca').position().left;
-            this.yAtual = $('#' + index + '.peca').offset().top;
+            //faz o calculo pela casa ocupada para tratar raios de pecas que estajam dentro da mesma casa
+            this.xAtual = $('.casa.' + this.casaAtual).position().left;
+            this.yAtual = $('.casa.' + this.casaAtual).offset().top;
             
             //grava raios de ataque
             if(this.tipo == "tanque") {
@@ -166,28 +169,43 @@ function gravaPosicoesPecas() {
                 this.alcanceAtualH = (y2Alcance-y1Alcance)+tamanhoCasasH; 
             }
             
+            //se a peça esta no ultimo nivel do exercito inimigo
+            if((this.exercito == "baixo" && (this.casaAtual == "c1" || this.casaAtual == "e1")) || (this.exercito == "cima" && (this.casaAtual == "c10" || this.casaAtual == "e10"))){
+                if(turnoEminenteFim == 0 || turnoEminenteFim < numDoTurno) {
+                    turnoEminenteFim = numDoTurno+2;
+                } else if(turnoEminenteFim > 0 && numDoTurno == turnoEminenteFim) {
+                    fimDeJogo = true;
+                    if(this.exercito == "cima") {
+                        nomeJogadorCampeao = nomeJogadorVermelho;
+                    } else {
+                        nomeJogadorCampeao = nomeJogadorAzul;
+                    }
+                    gameOver();
+                }
+                console.log(numDoTurno, turnoEminenteFim);               
+            }
+            
         }
     });
 }
 
 function ativaRecuperacaoDeDados() {
 
-    
-        $('#palco .casa .peca').mouseover(function(){
-            if(bloqueioEscolhaParaquedista == false) {
-                var peca = $(this).attr('id');
-                var campo = pecas[peca].exercito;
-                exibeDadosPeca(peca, campo);
-                exibeRaioDeAtaque(peca);
-            }
-        });
+    $('#palco .casa .peca').mouseover(function(){
+        if(bloqueioEscolhaParaquedista == false) {
+            var peca = $(this).attr('id');
+            var campo = pecas[peca].exercito;
+            exibeDadosPeca(peca, campo);
+            exibeRaioDeAtaque(peca);
+        }
+    });
 
-        $('#palco .casa .peca').mouseleave(function(){
-            if(bloqueioEscolhaParaquedista == false) {
-                zeraBarrasLaterais();
-                zeraRaioDeAtaque();
-            }
-        });
+    $('#palco .casa .peca').mouseleave(function(){
+        if(bloqueioEscolhaParaquedista == false) {
+            zeraBarrasLaterais();
+            zeraRaioDeAtaque();
+        }
+    });
 
 }
 
@@ -206,24 +224,6 @@ function exibeResultadosGerais(){
     });
     $('#palco .infos-gerais .turno').html(' | Turno atual: ' + numDoTurno);
     $('#palco .infos-gerais .exercitos').html(" | Peças restantes do exército vermelho: " + qtdPecasExercitoCima + " | Peças restantes do exército azul: " + qtdPecasExercitoBaixo);
-}
-
-function zeraBarrasLaterais(){
-    $('.barraLateral .infos h3.nomePeca').empty();
-    $('.barraLateral .infos div.vidas').empty();
-    $('.barraLateral .infos div.gasolina').empty();
-    $('.barraLateral .infos div.imagem-demo').empty();
-    $('.barraLateral .infos div.movimentacao').empty();
-    $('.barraLateral .infos div.alcance').empty();
-    $('.barraLateral .infos div.dano').empty();
-    $('.barraLateral .infos div.tiros').empty();
-    $('.barraLateral .infos div.adicional').empty();
-    if(pecaSelecionadaCampoAtaque != "") {
-        exibeDadosPeca(pecaSelecionadaCampoAtaque, turnoAtacante);
-    }    
-    if(pecaSelecionadaCampoDefesa != "") {
-        exibeDadosPeca(pecaSelecionadaCampoDefesa, turnoDefesa);
-    }
 }
 
 function exibeDadosPeca(peca, campo){
@@ -263,6 +263,24 @@ function exibeDadosPeca(peca, campo){
     }
 }
 
+function zeraBarrasLaterais(){
+    $('.barraLateral .infos h3.nomePeca').empty();
+    $('.barraLateral .infos div.vidas').empty();
+    $('.barraLateral .infos div.gasolina').empty();
+    $('.barraLateral .infos div.imagem-demo').empty();
+    $('.barraLateral .infos div.movimentacao').empty();
+    $('.barraLateral .infos div.alcance').empty();
+    $('.barraLateral .infos div.dano').empty();
+    $('.barraLateral .infos div.tiros').empty();
+    $('.barraLateral .infos div.adicional').empty();
+    if(pecaSelecionadaCampoAtaque != "") {
+        exibeDadosPeca(pecaSelecionadaCampoAtaque, turnoAtacante);
+    }    
+    if(pecaSelecionadaCampoDefesa != "") {
+        exibeDadosPeca(pecaSelecionadaCampoDefesa, turnoDefesa);
+    }
+}
+
 function exibeRaioDeAtaque(peca){
     if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros != "0"){
         zeraRaioDeAtaque();
@@ -279,7 +297,6 @@ function zeraRaioDeAtaque(){
 }
 
 function selecionaPecaParaTurno(peca){
-    
     //só seleciona se turno ainda não tem resultado
     if(turnoVencedor == "") {
         if((turnoAtacante == "cima" && pecas[peca].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") || (turnoAtacante == "baixo" && pecas[peca].exercito == "cima" && pecaSelecionadaCampoAtaque == "")) {
@@ -315,7 +332,6 @@ function selecionaPecaParaTurno(peca){
             desabilitaIniciarTurno();
         }
     }
-    
 }
 
 function pecaEstaNoCampoDeAtaque(peca) {
@@ -432,8 +448,10 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
                 } else if(casas['campo-' + campoDestino][casaDestino].tipo == "base"){
                     retornaMovimentoDaPeca(peca, 'Esta peça não pode se mover sobre as bases');
                 } else {
-                    if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != ""){
+                    if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo != "aviao"){
                         retornaMovimentoDaPeca(peca, 'Esta casa está ocupada');
+                    } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo == "aviao"){
+                        GravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2');    
                     } else {
                         GravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1');
                     }
@@ -692,9 +710,31 @@ function muted(status){
 }
 
 function restart(){
-    if(confirm('Deseja realmente reiniciar?')) { 
+    if(fimDeJogo == false) {
+        if(confirm('Deseja realmente reiniciar?')) { 
+            window.location.reload(true);
+        }
+    } else {
         window.location.reload(true);
     }
+}
+
+function gameOver(){  
+    fimDeJogo = true;
+    $("#mensagem-final span.mensagem").html('Parabéns ' + nomeJogadorCampeao + ', você ganhou o jogo!');
+    $("#mensagem-final").dialog({
+        closeOnEscape: false,
+        modal: true,
+        buttons: {
+          'Jogar novamente!': restart,
+          'Sair': function(){
+              window.location.href = "index.html";
+          }
+        },
+        open: function(event, ui) {
+            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+        }
+    });
 }
 
 function mensagemDeErro(mensagem){
@@ -742,9 +782,4 @@ function getUrlVars(){
         vars[hash[0]] = hash[1];
     }
     return vars;
-}
-
-function gameOver(){  
-    alert('GAME OVER');
-    restart(false);
 }

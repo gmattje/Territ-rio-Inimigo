@@ -3,7 +3,7 @@ html, body {
     overflow: hidden;
 }
 
-#mensagem-erro {
+#mensagem-final, #mensagem-erro {
     display: none;
 }
 
@@ -53,11 +53,11 @@ html, body {
 }
 
 .barraLateral .infos .time.timeA {
-    background-color: #cc0000;
+    background-color: #c54545;
 }
 
 .barraLateral .infos .time.timeB {
-    background-color: #000099;
+    background-color: #213b87;
 }
 
 .barraLateral .vidas .vida {
