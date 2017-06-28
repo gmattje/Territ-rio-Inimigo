@@ -3,8 +3,24 @@ html, body {
     overflow: hidden;
 }
 
-#mensagem-final, #mensagem-erro {
+.dialog_ui {
     display: none;
+}
+
+#sorte-inicial .dado-sorte-inicial {
+    float: left;
+    width: 50%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#sorte-inicial .dado-jogador img {
+    max-width: 100%;
+}
+
+#sorte-inicial .nome-jogador.iniciante {
+    font-weight: bold;
 }
 
 .barraLateral {
@@ -60,6 +76,10 @@ html, body {
     background-color: #213b87;
 }
 
+.barraLateral .infos .nomePeca {
+    text-align: center;
+}
+
 .barraLateral .vidas .vida {
     width: 16px;
     height: 15px;
@@ -103,9 +123,9 @@ html, body {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 140px;
+    width: 110px;
     text-align: center;
-    padding: 5px;
+    padding: 20px;
     display: none;
     color: #000;
     font-size: 8pt;

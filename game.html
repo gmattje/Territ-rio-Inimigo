@@ -9,9 +9,11 @@
         <link rel="stylesheet" href="css/style-game.css" type="text/css"/>        	
         <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
         <script type="text/javascript" src="js/jquery.queryloader2.js"></script>
         <script type="text/javascript" src="js/casas-e-pecas.js"></script>
         <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="js/game-online.js"></script>
         <script type="text/javascript" src="js/controls-key.js"></script>
         
         <script>
@@ -29,12 +31,25 @@
         
     </head>
     <body>
-        <div id="mensagem-final" title="Fim de Jogo!">
+        <div id="sorte-inicial" class="dialog_ui" title="Quem começa?">
+            <div class="dados">
+                <div class="dado-sorte-inicial jogador1">
+                    <p class="dado-jogador"></p>
+                    <p class="nome-jogador"></p>
+                </div>
+                <div class="dado-sorte-inicial jogador2">
+                    <p class="dado-jogador"></p>
+                    <p class="nome-jogador"></p>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+        <div id="mensagem-final" class="dialog_ui" title="Fim de Jogo!">
             <p>
                 <span class="mensagem"></span>
             </p>
         </div>
-        <div id="mensagem-erro" title="Atenção">
+        <div id="mensagem-erro" class="dialog_ui" title="Atenção">
             <p>
                 <span class="ui-icon ui-icon-alert" style="float:left; margin:0 15px 60px 0;"></span>
                 <span class="mensagem"></span>

@@ -12,45 +12,47 @@
         <script type="text/javascript" src="js/home.js"></script>
     </head>
     <body>
-        <div id="form-novo-jogo" title="Novo Jogo">
-            <p>Informe abaixo os nomes dos jogadores para cada exército</p>
+        <div id="form-novo-jogo" class="dialog_ui" title="Novo Jogo">
             <form>
               <fieldset>
-                <label for="player1">Nome jogador 1 (Exército Vermelho)</label>
-                <input type="text" name="player1" id="player1" value="" class="text ui-widget-content ui-corner-all">
-                <label for="player2">Nome jogador 2 (Exército Azul)</label>
-                <input type="text" name="player2" id="player2" value="" class="text ui-widget-content ui-corner-all">
+                <label for="sessao">Sessão on-line</label>
+                <select name="sessao" id="sessao" class="text ui-widget-content ui-corner-all">
+                    <option value="novo">Novo jogo</option>
+                </select>
+                <label for="player">Seu Nome</label>
+                <input type="text" name="player" id="player" value="" class="text ui-widget-content ui-corner-all">
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
                 <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
               </fieldset>
             </form>
         </div>
+        <div id="aguardando-jogador" class="dialog_ui" title="Novo Jogo"></div>
         <div class="content">
             <h1>TERRITÓRIO INIMIGO</h1>
             <p>Por: Guilherme Mattje</p>
             <img src="images/img-abertura.png"/>
-            <p>Território Inimigo é um jogo de tabuleiro baseado em turnos, para duas pessoas. Cada jogador jogará alternadamente em busca da conquista do território inimigo, devendo-se seguir as regras e características de cada personagem escolhido para o turno.</p>
+            <p>Território Inimigo é um jogo de tabuleiro baseado em turnos, para duas pessoas. Cada jogador jogará alternadamente em busca da conquista do território inimigo, devendo-se seguir as regras e características de cada peça escolhida para o turno.</p>
             <h2>OBJETIVO</h2>
-            <p>Ganha o jogo o exército que chegar primeiro ao último nível do campo adversário, com qualquer um de seus personagens, e lá permanecer por 1 rodada.</p>
+            <p>Ganha o jogo o exército que chegar primeiro ao último nível do campo adversário, com qualquer um de suas peças, e lá permanecer por 1 rodada.</p>
             <a class="btn-jogar">Jogar!</a>
             <h2>REGRAS</h2>
             <ul>
-                <li>Cada personagem e veículo tem quantidade de vidas, alcance de ataque, número de ataque e força de dano definidos em suas respectivas cartas;</li>
-                <li>Personagens e tanques sem vida saem do tabuleiro;</li>
-                <li>Personagens e tanques podem se mover conforme suas respectivas cartas, porém sempre 01 casa a cada turno;</li>
+                <li>Cada peça tem quantidade de vidas, alcance de ataque, número de ataques e força de dano definidos em suas respectivas cartas;</li>
+                <li>Peças sem vida saem do tabuleiro;</li>
+                <li>Peças podem se mover conforme suas respectivas cartas, porém sempre 01 casa a cada turno;</li>
                 <li>A movimentação acontecerá sempre no turno do exército se a casa pretendida estiver desocupada, mas será sempre o último ato do turno, ou seja, não podendo atacar depois da movimentação;</li>
-                <li>Personagens Snipers não se movimentam e devem ser dispostos cada um em cada uma das montanhas do último nível de cada exército;</li>
-                <li>O avião tem gasolina para percorrer apenas 06 casas, que podem ser andados de uma única vez ou não;</li>
-                <li>O avião, após atirar, é retirado do tabuleiro e uma das casas ao alcance de seu ataque, na última posição dele no jogo, pode-se restituir um personagem Revolver, desde que um personagem Revolver já tenha sido perdido pelo mesmo exército do avião;</li>
-                <li>O tanque, após atirar, permanece no caminho até ser destruído;</li>
+                <li>Peças do tipo Snipers não se movimentam e devem ser dispostos cada um em cada uma das montanhas do último nível de cada exército;</li>
+                <li>Peças do tipo Avião têm gasolina para percorrer apenas 06 casas, que podem ser andados de uma única vez ou não;</li>
+                <li>Peça do tipo Avião, após atirar, é retirado do tabuleiro e uma das casas ao alcance de seu ataque, na última posição dele no jogo, pode-se restituir uma peça do tipo Revolver, desde que uma peça do tipo Revolver já tenha sido perdido pelo mesmo exército do Avião;</li>
+                <li>Peça tanque, após atirar, permanece no caminho até ser destruído;</li>
                 <li>Aeroportos não podem ser invadidos.</li>
             </ul>
             <h2>ATAQUE E DEFESA</h2>
             <ul>
-                <li>Para atacar o jogador deve informar qual personagem ou veículo inimigo será atacado, desde que este esteja no campo de alcance de ataque do personagem ou veículo que irá atacar;</li>
+                <li>Para atacar o jogador deve informar qual peça inimiga será atacada, desde que esta esteja no campo de alcance de ataque da peça que irá atacar;</li>
                 <li>Após informar deve-se jogar os dados, sendo o vermelho de ataque e o azul para defesa. O dado que tirar o maior número vence, e no caso de empate, a defesa vence;</li>
                 <li>Se a defesa vencer nada acontece, a movimentação do atacante ainda poderá ocorrer e após isso o turno acaba;</li>
-                <li>Se o ataque vencer, deve-se descontar a vida do boneco atacado, se este perder todas as vidas deve ser retirado do tabuleiro;</li>
+                <li>Se o ataque vencer, deve-se descontar a vida da peça atacada, se este perder todas as vidas deve ser retirado do tabuleiro;</li>
             </ul>
             <a class="btn-jogar">Jogar!</a>
         </div>
