@@ -1,6 +1,8 @@
 var urlServerTerritorioInimigo = "http://www.minias.com.br/testes/ti/Territorio-Inimigo-Server";
 var sessao = "";
-var nomeJogador = "";
+var nomeJogador1on = "";
+var nomeJogador1off = "";
+var nomeJogador2off = "";
 var timerNovoJogo = "";
 var dialog1, dialog2, form;
 
@@ -39,9 +41,18 @@ $(function() {
         validaDados();
     });
 
-    $("a.btn-jogar").on( "click", function(){
+    $("a.btn-jogar").on("click", function(){
         dialog1.dialog("open");
         buscaSessoesOnline();
+    });
+    
+    $("select#sessao").on("change", function(){
+        $('#form-novo-jogo .nome-jogador').addClass('oculto');
+        if($(this).val() == "novo-off") {
+            $('#form-novo-jogo .nome-jogador.sessao-off').removeClass('oculto');
+        } else {
+            $('#form-novo-jogo .nome-jogador.sessao-on').removeClass('oculto');            
+        }
     });
 
 });
@@ -54,7 +65,7 @@ function buscaSessoesOnline(){
         success: function (data) {
             $.each(data, function(i) {
                 var arraySessao = data[i].split(" ");
-                var sessaoReduzida = data[i].substr(0, 8) + " " + arraySessao[1];
+                var sessaoReduzida = "on-line: " + data[i].substr(0, 8) + " " + arraySessao[1];
                 $('#sessao').append($('<option></option>').val(arraySessao[0]).html(sessaoReduzida));
             });
         }
@@ -63,21 +74,33 @@ function buscaSessoesOnline(){
 
 function validaDados(){
     sessao = $("form #sessao").val();
-    nomeJogador = $("form #player").val();
-    if(sessao == "" || nomeJogador == ""){
-        alert('Antes de começar, defina a sessão on-line e escreva seu nome');
+    nomeJogador1on = $("form #player1-on").val();
+    nomeJogador1off = $("form #player1-off").val();
+    nomeJogador2off = $("form #player2-off").val();
+    if(sessao == ""){
+        alert('Antes de começar, defina a sessão');
+        return false;
+    } else if(sessao == "novo-on" && nomeJogador1on == ""){
+        alert('Antes de começar, digite o seu nome');
+        return false;
+    } else if(sessao == "novo-off" && (nomeJogador1off == "" || nomeJogador2off == "")){
+        alert('Antes de começar, digite o nome dos dois jogadores');
+        return false;    
     } else {
         preparaSessao();
     }
 }
 
 function preparaSessao(){
-    //se for para criar novo jogo
-    if(sessao == "novo"){
+    //se for para criar novo jogo on-line
+    if(sessao == "novo-off"){
+        iniciaGame();
+    //se for para criar novo jogo on-line
+    } else if(sessao == "novo-on"){
         $.ajax({
             type: "GET",
             url: urlServerTerritorioInimigo + "/novoJogo.php?_=" + new Date().getTime(),
-            data: {player1: nomeJogador},
+            data: {player1: nomeJogador1on},
             success: function (data) {
                 sessao = data;
                 aguardandoOutroJogador();
@@ -87,7 +110,7 @@ function preparaSessao(){
         $.ajax({
             type: "GET",
             url: urlServerTerritorioInimigo + "/novoJogo.php?_=" + new Date().getTime(),
-            data: {sessao: sessao, player2: nomeJogador},
+            data: {sessao: sessao, player2: nomeJogador1on},
             success: function (data) {
                 iniciaGame();
             }
@@ -96,7 +119,7 @@ function preparaSessao(){
 }
 
 function aguardandoOutroJogador() {
-    var sessaoReduzida = sessao.substr(0, 8) + " (" + nomeJogador + ")";
+    var sessaoReduzida = sessao.substr(0, 8) + " (" + nomeJogador1on + ")";
     $("#form-novo-jogo").dialog('close');
     dialog2.dialog("open");
     $("#aguardando-jogador").html("Agora você precisa aguardar um outro jogador na sessão que você criou: <br/><strong>" + sessaoReduzida + "</strong>");
@@ -128,5 +151,9 @@ function cancelaAguardandoOutroJogador(){
 }
 
 function iniciaGame(){
-    window.location.href = "game.html?sessao=" + sessao + "&player=" + nomeJogador;
+    if(sessao == "novo-off"){
+        window.location.href = "game.html?pl1=" + nomeJogador1off +"&pl2=" + nomeJogador2off;
+    } else {
+        window.location.href = "game.html?sessao=" + sessao + "&player=" + nomeJogador1on;
+    }
 }

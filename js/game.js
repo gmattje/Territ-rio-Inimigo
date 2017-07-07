@@ -35,18 +35,35 @@ var turnoDefesa = "";
 var pecaParaReposicao = "";
 var pecaSelecionadaCampoAtaque = "";
 var pecaSelecionadaCampoDefesa = "";
+var numeroDadoAtaque = 0;
+var numeroDadoDefesa = 0;
+var numTentativaAtaque = 0;
 
 //se jogo está rolando
 var fimDeJogo = false;
 var vezDoPlayer = false;
+var ultimaPecaRetirada = "";
+var ultimaPecaMovimentada = "";
+var ultimoCampoDestinatario = "";
+var ultimaCasaDestinataria = "";
+var ocupacaoUltimaCasaDestino = "";
 
 //função de inicialização
 function init(){
     reorganizaTabuleiro();
     organizaPecas();
     ativaControlesMouse();
+    nomesDosJogadoresOffLine();
     rodaSorteInicial();
-    preparaNovoTurno();
+}
+
+function nomesDosJogadoresOffLine(){
+    if(getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) {
+        nomeJogadorVermelho = getUrlVars()["pl1"];
+        nomeJogadorAzul = getUrlVars()["pl2"];
+        $('.barraLateral.esquerda h2.timeA').html(nomeJogadorVermelho);
+        $('.barraLateral.direita h2.timeB').html(nomeJogadorAzul);
+    }
 }
 
 function rodaSorteInicial(){
@@ -138,7 +155,7 @@ function organizaPecas(){
         var casaOcupada = this.casaAtual;
         //se a peça já não tenha sido perdida pelo exercito
         if(campoOcupado != 0 && casaOcupada != 0) { 
-            var novaPeca = $('#pecas .' + tipoPeca + '.' + campoPeca).clone().appendTo('.campo.' + campoOcupado + ' .casa.' +casaOcupada).attr('id',index).attr('onclick','selecionaPecaParaTurno("' + index + '")');
+            var novaPeca = $('#pecas .' + tipoPeca + '.' + campoPeca).clone().appendTo('.campo.' + campoOcupado + ' .casa.' +casaOcupada).attr('id',index).attr('onclick','selecionaPecaParaTurno("' + index + '", false)');
             if(casas['campo-'+campoOcupado][casaOcupada].ocupacao1 == "") {
                 casas['campo-'+campoOcupado][casaOcupada].ocupacao1 = index;
             } else if(casas['campo-'+campoOcupado][casaOcupada].ocupacao2 == "") {
@@ -220,8 +237,7 @@ function gravaPosicoesPecas() {
                         nomeJogadorCampeao = nomeJogadorAzul;
                     }
                     gameOver();
-                }
-                console.log(numDoTurno, turnoEminenteFim);               
+                }               
             }
             
         }
@@ -253,7 +269,7 @@ function exibeResultadosGerais(){
     var qtdPecasExercitoBaixo = 0;
     $.each(pecas, function(index){
         //se a peça já não tenha sido perdida pelo exercito
-        if(this.campoAtual !== 0 && this.casaAtual !== 0) {
+        if(this.campoAtual != 0 && this.casaAtual != 0) {
             if(this.exercito == "cima") {
                 qtdPecasExercitoCima++;
             } else {
@@ -324,9 +340,8 @@ function exibeRaioDeAtaque(peca){
     if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros != "0"){
         zeraRaioDeAtaque();
         $('#raio-ataque').removeClass('hidden').css('width',pecas[peca].alcanceAtualW).css('height',pecas[peca].alcanceAtualH).css('left',pecas[peca].alcanceAtualX).css('top',pecas[peca].alcanceAtualY);
-    } else if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros == "0" && pecas[peca].tipo == "aviao"){
+    } else if(pecas[peca].exercito == turnoAtacante && pecas[peca].tiros == "0" && pecas[peca].tipo == "aviao" && bloqueioEscolhaParaquedista == true){
         zeraRaioDeAtaque();
-        bloqueioEscolhaParaquedista = true;
         $('#raio-ataque').removeClass('hidden').addClass('campoParaquedista').css('width',pecas[peca].alcanceAtualW).css('height',pecas[peca].alcanceAtualH).css('left',pecas[peca].alcanceAtualX).css('top',pecas[peca].alcanceAtualY);
     }
 }
@@ -335,9 +350,11 @@ function zeraRaioDeAtaque(){
     $('#raio-ataque').addClass('hidden').removeClass('campoParaquedista');
 }
 
-function selecionaPecaParaTurno(peca){
+function selecionaPecaParaTurno(peca, espelhoOutroJogador){
+    if (vezDoPlayer == false && espelhoOutroJogador == false) {
+        mensagemDeErro('Não é a sua vez de jogar');
     //só seleciona se turno ainda não tem resultado
-    if(turnoVencedor == "") {
+    } else if(turnoVencedor == "") {
         if((turnoAtacante == "cima" && pecas[peca].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") || (turnoAtacante == "baixo" && pecas[peca].exercito == "cima" && pecaSelecionadaCampoAtaque == "")) {
             mensagemDeErro('É preciso selecionar sua peça primeiro');
             return false;   
@@ -365,7 +382,8 @@ function selecionaPecaParaTurno(peca){
                 }
             }
         }
-        if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "") {
+        if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "" && vezDoPlayer == true) {
+            enviaDadosServidor("pecasSelecionadasDoTurno");
             habilitaIniciarTurno();
         } else {
             desabilitaIniciarTurno();
@@ -393,7 +411,7 @@ function ativaControlesMouse(){
     
     //clique para rodar ataque
     $('.barraLateral .btnAtaque').click(function(){
-        rodaAtaque(1);
+        rodaAtaque(false);
     });
     
     //seleciona casa para pouso do paraquedista
@@ -449,7 +467,9 @@ function ativaControlesMouse(){
 }
 
 function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
-    if (bloqueioEscolhaParaquedista == true) {
+    if (vezDoPlayer == false) {
+        retornaMovimentoDaPeca(peca, 'Não é a sua vez de jogar');
+    } else if (bloqueioEscolhaParaquedista == true) {
         retornaMovimentoDaPeca(peca, 'O jogo está suspenso para escolha do pouso do paraquedista');
     } else if (pecas[peca].exercito != turnoAtacante) {    
         retornaMovimentoDaPeca(peca, 'Você só pode mover uma peça em seu turno');
@@ -468,10 +488,10 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
                     retornaMovimentoDaPeca(peca, 'Esta casa está ocupada');
                 } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 == "") {
                     pecas[peca].gasolina = pecas[peca].gasolina - movimentos;
-                    gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2');
+                    gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2', false);
                 } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 == "") {
                     pecas[peca].gasolina = pecas[peca].gasolina - movimentos;
-                    gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1');
+                    gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1', false);
                 }
             } else {
                 retornaMovimentoDaPeca(peca, 'Este avião não tem gasolina o suficiente');
@@ -490,9 +510,9 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
                     if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo != "aviao"){
                         retornaMovimentoDaPeca(peca, 'Esta casa está ocupada');
                     } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo == "aviao"){
-                        gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2');    
+                        gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2', false);    
                     } else {
-                        gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1');
+                        gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1', false);
                     }
                 }
             } else {
@@ -524,33 +544,50 @@ function quantidadeDeCasasMovimentada(peca) {
     return total;
 }
 
-function gravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao){
+function gravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao, espelhoOutroJogador){
+    
+    if(pecas[peca].vida == 0) {
+        repoePecaNoTabuleiro(peca, casaDestino);
+        return false;
+    }
+    
+    ultimaPecaMovimentada = peca;
+    ultimoCampoDestinatario = campoDestino;
+    ultimaCasaDestinataria = casaDestino;
+    ocupacaoUltimaCasaDestino = ocupacao;
+    
+    $('.casa').removeClass('selecionada').removeClass('ataque').removeClass('defesa');
     
     //desocupa casa anterior
-    $('.casa').removeClass('selecionada').removeClass('ataque').removeClass('defesa');
-    if(casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 = peca) {
-        casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 = "";
-    } else if(casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 = peca) {
-        casas['campo-' + pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 = "";
+    if(pecas[ultimaPecaMovimentada].campoAtual != 0 && pecas[ultimaPecaMovimentada].casaAtual != 0){
+        if(casas['campo-' + pecas[ultimaPecaMovimentada].campoAtual][pecas[ultimaPecaMovimentada].casaAtual].ocupacao1 = peca) {
+            casas['campo-' + pecas[ultimaPecaMovimentada].campoAtual][pecas[ultimaPecaMovimentada].casaAtual].ocupacao1 = "";
+        } else if(casas['campo-' + pecas[ultimaPecaMovimentada].campoAtual][pecas[ultimaPecaMovimentada].casaAtual].ocupacao2 = peca) {
+            casas['campo-' + pecas[ultimaPecaMovimentada].campoAtual][pecas[ultimaPecaMovimentada].casaAtual].ocupacao2 = "";
+        }
+        $('.campo.' + pecas[ultimaPecaMovimentada].campoAtual + ' .casa.' + pecas[ultimaPecaMovimentada].casaAtual).removeClass('ocupacaoDupla');
     }
-    $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).removeClass('ocupacaoDupla');
     
     //ocupa nova casa
-    casas['campo-' + campoDestino][casaDestino][ocupacao] = peca;
-    pecas[peca].campoAtual = campoDestino;
-    pecas[peca].casaAtual = casaDestino;
+    casas['campo-' + ultimoCampoDestinatario][ultimaCasaDestinataria][ocupacaoUltimaCasaDestino] = ultimaPecaMovimentada;
+    pecas[ultimaPecaMovimentada].campoAtual = ultimoCampoDestinatario;
+    pecas[ultimaPecaMovimentada].casaAtual = ultimaCasaDestinataria;
     //se nova casa estiver com duas ocupacoes
-    if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
-        $('.campo.' + campoDestino + ' .casa.' + casaDestino).addClass('ocupacaoDupla');
+    if(casas['campo-' + ultimoCampoDestinatario][ultimaCasaDestinataria].ocupacao1 != "" && casas['campo-' + ultimoCampoDestinatario][ultimaCasaDestinataria].ocupacao2 != "") {
+        $('.campo.' + ultimoCampoDestinatario + ' .casa.' + ultimaCasaDestinataria).addClass('ocupacaoDupla');
     } else {
-        $('.campo.' + campoDestino + ' .casa.' + casaDestino).removeClass('ocupacaoDupla');
+        $('.campo.' + ultimoCampoDestinatario + ' .casa.' + ultimaCasaDestinataria).removeClass('ocupacaoDupla');
     }
     
-    //envia para servidor
-    enviaDadosServidor();
+    if(espelhoOutroJogador == false) {
+        //envia para servidor
+        enviaDadosServidor("movimentacaoDoTurno");
+        gravaPosicoesPecas();
+    } else {
+        organizaPecas();
+    }
     
     //nova posicao da peca e novo raio de ataque
-    gravaPosicoesPecas();
     zeraRaioDeAtaque();
     //como última ação do turno, gera outro turno
     preparaNovoTurno();
@@ -570,15 +607,22 @@ function desabilitaIniciarTurno(){
     $('.barraLateral.campo-' + turnoAtacante + ' .btnAtaque').removeClass('visible');
 }
 
-function rodaAtaque(numTentativa){
+function rodaAtaque(espelhoOutroJogador){
+    if(numTentativaAtaque == 0) {
+        numTentativaAtaque = 1;
+    }
     //retira tiro da peça que atacou
     if(pecas[pecaSelecionadaCampoAtaque].tiros > 0){
         pecas[pecaSelecionadaCampoAtaque].tiros = pecas[pecaSelecionadaCampoAtaque].tiros - 1;
     }
     //joga os dados
     var vencedor = "";
-    var numeroDadoAtaque = Math.floor(Math.random() * 6 + 1);
-    var numeroDadoDefesa = Math.floor(Math.random() * 6 + 1);
+    if(numeroDadoAtaque == 0 || espelhoOutroJogador == false) {
+        numeroDadoAtaque = Math.floor(Math.random() * 6 + 1);
+    }
+    if(numeroDadoDefesa == 0 || espelhoOutroJogador == false) {
+        numeroDadoDefesa = Math.floor(Math.random() * 6 + 1);
+    }
     $('.barraLateral .btnAtaque').removeClass('visible');
     $('.barraLateral .dados').addClass('visible');
     $('.barraLateral .dados').empty();
@@ -592,7 +636,10 @@ function rodaAtaque(numTentativa){
     setTimeout(function(){
         $('.barraLateral.campo-' + turnoDefesa + ' .dados').empty();
         $('#dados .dado.dado-defesa-' + numeroDadoDefesa).clone().appendTo('.barraLateral.campo-' + turnoDefesa + ' .dados');
-    }, 3000);   
+    }, 3000); 
+    if(espelhoOutroJogador == false){
+        enviaDadosServidor("dadosDoTurno");
+    }
     setTimeout(function(){
         //se ataque venceu
         if(numeroDadoAtaque > numeroDadoDefesa) {
@@ -600,14 +647,17 @@ function rodaAtaque(numTentativa){
             if(pecas[pecaSelecionadaCampoDefesa].vida != '-1') {
                 pecas[pecaSelecionadaCampoDefesa].vida = pecas[pecaSelecionadaCampoDefesa].vida-pecas[pecaSelecionadaCampoAtaque].dano;
                 if(pecas[pecaSelecionadaCampoDefesa].vida <= 0) {
-                    retiraPecaDoTabuleiro(pecaSelecionadaCampoDefesa);
+                    retiraPecaDoTabuleiro(pecaSelecionadaCampoDefesa, espelhoOutroJogador);
                     exibeResultadosGerais();
                 }
             }
         //se defesa venceu    
         } else {
-            if(pecas[pecaSelecionadaCampoAtaque].tentativas > 1 && pecas[pecaSelecionadaCampoAtaque].tentativas > numTentativa){
-                rodaAtaque(numTentativa + 1);
+            if(pecas[pecaSelecionadaCampoAtaque].tentativas > 1 && pecas[pecaSelecionadaCampoAtaque].tentativas > numTentativaAtaque){
+                if(espelhoOutroJogador == false) {
+                    numTentativaAtaque = numTentativaAtaque + 1;
+                    rodaAtaque(espelhoOutroJogador);
+                }
                 return false;
             } else {
                 vencedor = "defesa";
@@ -618,39 +668,6 @@ function rodaAtaque(numTentativa){
             resultadoDoTurno(vencedor);
         },100);
     }, 4000);
-}
-
-function retiraPecaDoTabuleiro(peca){
-    if(casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 == peca) {
-        casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao1 = "";
-    } else if(casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 == peca) {
-        casas['campo-'+pecas[peca].campoAtual][pecas[peca].casaAtual].ocupacao2 = "";
-    }
-    $('.casa.' + pecas[peca].casaAtual).removeClass('ocupacaoDupla');
-    $('.casa.' + pecas[peca].casaAtual + ' #' + peca + '.peca').remove();
-    pecas[peca].campoAtual = 0;
-    pecas[peca].casaAtual = 0;
-    organizaPecas();
-}
-
-function repoePecaNoTabuleiro(peca, casa){
-    var campo = "";
-    $.each(casas['campo-cima'], function(index){
-        if(casa == index){
-            campo = "cima";
-        }
-    });
-    $.each(casas['campo-baixo'], function(index){
-        if(casa == index){
-            campo = "baixo";
-        }
-    });
-    pecas[peca].campoAtual = campo;
-    pecas[peca].casaAtual = casa;
-    pecas[peca].vida = 1;
-    pecaParaReposicao = "";
-    organizaPecas();
-    preparaNovoTurno();
 }
 
 function resultadoDoTurno(resultado){
@@ -665,6 +682,57 @@ function resultadoDoTurno(resultado){
     }
 }
 
+function retiraPecaDoTabuleiro(peca, espelhoOutroJogador){
+    
+    ultimaPecaRetirada = peca;
+    
+    if(pecas[ultimaPecaRetirada].campoAtual != 0 && pecas[ultimaPecaRetirada].casaAtual != 0){
+        if(casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao1 == ultimaPecaRetirada) {
+            casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao1 = "";
+        } else if(casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao2 == ultimaPecaRetirada) {
+            casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao2 = "";
+        }
+        $('.casa.' + pecas[ultimaPecaRetirada].casaAtual).removeClass('ocupacaoDupla');
+        $('.casa.' + pecas[ultimaPecaRetirada].casaAtual + ' #' + ultimaPecaRetirada + '.peca').remove();
+        pecas[ultimaPecaRetirada].campoAtual = 0;
+        pecas[ultimaPecaRetirada].casaAtual = 0;
+    }
+    
+    //envia servidor
+    if(espelhoOutroJogador == false){
+        enviaDadosServidor("pecaRemovidaDoTurno");
+    }
+    
+    organizaPecas();
+}
+
+function repoePecaNoTabuleiro(peca, casa){
+    var campo = "";
+    var ocupacao = "";
+    $.each(casas['campo-cima'], function(index){
+        if(casa == index){
+            campo = "cima";
+        }
+    });
+    $.each(casas['campo-baixo'], function(index){
+        if(casa == index){
+            campo = "baixo";
+        }
+    });
+    if(casas['campo-' + campo][casa].ocupacao1 == "") {
+        ocupacao = "ocupacao1";
+    } else {
+        ocupacao = "ocupacao2";
+    }
+    
+    pecas[peca].campoAtual = campo;
+    pecas[peca].casaAtual = casa;
+    pecas[peca].vida = 1;
+    pecaParaReposicao = "";
+    
+    gravaMovimentacaoPeca(peca, campo, casa, ocupacao, false);
+}
+
 function liberaParaquedista(){
     //ve se exercito atacante tem pelo menos um revolver perdido
     var revolverPerdido = "";
@@ -675,14 +743,16 @@ function liberaParaquedista(){
     });
     if(revolverPerdido == ""){
         alert("O exército não teve peça do tipo revolver perdida, então não tem o que repor");
+        retiraPecaDoTabuleiro(pecaSelecionadaCampoAtaque, false);
         liberaMovimentacao();
     } else {
+        bloqueioEscolhaParaquedista = true;
         pecaParaReposicao = revolverPerdido;
         $('#palco .casa').addClass('selecionavel');
         exibeRaioDeAtaque(pecaSelecionadaCampoAtaque);
         var segundosParaquedista = 10;
         timerParaquedista = setInterval(function(){
-            $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').html('Você tem ' + segundosParaquedista + ' segundos para posicionar um paraquedista');
+            $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').html(segundosParaquedista + ' segundos para posicionar um paraquedista');
             segundosParaquedista--;
             if(segundosParaquedista < 0){
                 preparaNovoTurno();
@@ -712,7 +782,7 @@ function casaEstaNoCampoDePouso(casa) {
 function liberaMovimentacao(){
     var segundosMovimentacao = 10;
     timerMovimentacao = setInterval(function(){
-        $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').html('Você tem ' + segundosMovimentacao + ' segundos para movimentar uma de suas peças');
+        $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').html(segundosMovimentacao + ' segundos para movimentar uma de suas peças');
         segundosMovimentacao--;
         if(segundosMovimentacao < 0){
             preparaNovoTurno();
@@ -728,7 +798,7 @@ function preparaNovoTurno(){
     $('.barraLateral .timer').removeClass('visible');
     if(bloqueioEscolhaParaquedista){
         bloqueioEscolhaParaquedista = false;
-        retiraPecaDoTabuleiro(pecaSelecionadaCampoAtaque);
+        retiraPecaDoTabuleiro(pecaSelecionadaCampoAtaque, false);
     }
     pecaParaReposicao = "";
     pecaSelecionadaCampoAtaque = "";
@@ -737,6 +807,9 @@ function preparaNovoTurno(){
     zeraRaioDeAtaque();
     numDoTurno = numDoTurno+1;
     turnoVencedor = "";
+    numeroDadoAtaque = 0;
+    numeroDadoDefesa = 0;
+    numTentativaAtaque = 0;
     if(turnoAtacante == "cima") {
         turnoAtacante = "baixo";
         turnoDefesa = "cima";
@@ -773,7 +846,7 @@ function restart(){
 
 function gameOver(){  
     fimDeJogo = true;
-    $("#mensagem-final span.mensagem").html('Parabéns ' + nomeJogadorCampeao + ', você ganhou o jogo!');
+    $("#mensagem-final span.mensagem").html('Acabou, ' + nomeJogadorCampeao + ' ganhou o jogo!');
     $("#mensagem-final").dialog({
         closeOnEscape: false,
         modal: true,

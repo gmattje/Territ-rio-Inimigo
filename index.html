@@ -15,12 +15,21 @@
         <div id="form-novo-jogo" class="dialog_ui" title="Novo Jogo">
             <form>
               <fieldset>
-                <label for="sessao">Sessão on-line</label>
+                <label for="sessao">Sessão</label>
                 <select name="sessao" id="sessao" class="text ui-widget-content ui-corner-all">
-                    <option value="novo">Novo jogo</option>
+                    <option value="novo-off" selected="selected">Novo jogo neste computador</option>
+                    <option value="novo-on">Novo jogo on-line</option>
                 </select>
-                <label for="player">Seu Nome</label>
-                <input type="text" name="player" id="player" value="" class="text ui-widget-content ui-corner-all">
+                <div class="nome-jogador sessao-on oculto">
+                    <label for="player1">Seu Nome</label>
+                    <input type="text" name="player1-on" id="player1-on" value="" class="text ui-widget-content ui-corner-all">
+                </div>
+                <div class="nome-jogador sessao-off">
+                    <label for="player1">Nome Jogador 1</label>
+                    <input type="text" name="player1-off" id="player1-off" value="" class="text ui-widget-content ui-corner-all">
+                    <label for="player2">Nome Jogador 2</label>
+                    <input type="text" name="player2-off" id="player2-off" value="" class="text ui-widget-content ui-corner-all">
+                </div>
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
                 <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
               </fieldset>
