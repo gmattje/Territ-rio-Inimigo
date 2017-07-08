@@ -78,10 +78,10 @@ function rodaSorteInicial(){
         }
     });
     //joga os dados
-    if(numeroDadoInicialJogador1 == 0){
+    if((getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) || numeroDadoInicialJogador1 == 0){
         numeroDadoInicialJogador1 = Math.floor(Math.random() * 6 + 1);
     }
-    if(numeroDadoInicialJogador2 == 0){
+    if((getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) || numeroDadoInicialJogador2 == 0){
         numeroDadoInicialJogador2 = Math.floor(Math.random() * 6 + 1);
     }
     $('#sorte-inicial .dado-jogador').empty();
@@ -198,6 +198,12 @@ function gravaPosicoesPecas() {
                 } else {
                     this.alcanceAtualY = this.yAtual-(tamanhoCasasH*2);
                 }
+                //correções pela proximidade com a divisão
+                if(this.casaAtual == "b4" || this.casaAtual == "d4" || this.casaAtual == "f4" || this.casaAtual == "a5" || this.casaAtual == "c5" || this.casaAtual == "e5" || this.casaAtual == "g5"){
+                    this.alcanceAtualY = this.alcanceAtualY+tamanhoDivisaoH;
+                } else if(this.casaAtual == "a6" || this.casaAtual == "c6" || this.casaAtual == "e6" || this.casaAtual == "g6" || this.casaAtual == "b7" || this.casaAtual == "d7" || this.casaAtual == "f7"){
+                    this.alcanceAtualY = this.alcanceAtualY-tamanhoDivisaoH;
+                }
             } else if(this.tipo == "sniper") {
                 this.alcanceAtualW = tamanhoCasasW*7;
                 this.alcanceAtualH = tamanhoCasasH*5;
@@ -222,7 +228,22 @@ function gravaPosicoesPecas() {
                 this.alcanceAtualX = x1Alcance+marginLeftCampos;
                 this.alcanceAtualY = y1Alcance;
                 this.alcanceAtualW = (x2Alcance-x1Alcance)+tamanhoCasasW;
-                this.alcanceAtualH = (y2Alcance-y1Alcance)+tamanhoCasasH; 
+                this.alcanceAtualH = (y2Alcance-y1Alcance)+tamanhoCasasH;
+                //correções pela proximidade com a divisão
+                if(alcance == 2) {
+                    if(this.casaAtual == "a4" || this.casaAtual == "b4" || this.casaAtual == "c4" || this.casaAtual == "d4" || this.casaAtual == "e4" || this.casaAtual == "f4" || this.casaAtual == "g4" || this.casaAtual == "a7" || this.casaAtual == "b7" || this.casaAtual == "c7" || this.casaAtual == "d7" || this.casaAtual == "e7" || this.casaAtual == "f7" || this.casaAtual == "g7"){
+                        this.alcanceAtualH = this.alcanceAtualH+tamanhoDivisaoH;
+                        if(this.casaAtual == "a7" || this.casaAtual == "b7" || this.casaAtual == "c7" || this.casaAtual == "d7" || this.casaAtual == "e7" || this.casaAtual == "f7" || this.casaAtual == "g7"){
+                            this.alcanceAtualY = this.alcanceAtualY-tamanhoDivisaoH;
+                        }
+                    }
+                }
+                if(this.casaAtual == "a5" || this.casaAtual == "b5" || this.casaAtual == "c5" || this.casaAtual == "d5" || this.casaAtual == "e5" || this.casaAtual == "f5" || this.casaAtual == "g5" || this.casaAtual == "a6" || this.casaAtual == "b6" || this.casaAtual == "c6" || this.casaAtual == "d6" || this.casaAtual == "e6" || this.casaAtual == "f6" || this.casaAtual == "g6"){
+                    this.alcanceAtualH = this.alcanceAtualH+tamanhoDivisaoH; 
+                    if(this.casaAtual == "a6" || this.casaAtual == "b6" || this.casaAtual == "c6" || this.casaAtual == "d6" || this.casaAtual == "e6" || this.casaAtual == "f6" || this.casaAtual == "g6"){
+                        this.alcanceAtualY = this.alcanceAtualY-tamanhoDivisaoH;
+                    }
+                }
             }
             
             //se a peça esta no ultimo nivel do exercito inimigo
@@ -372,7 +393,7 @@ function selecionaPecaParaTurno(peca, espelhoOutroJogador){
                 }
             } else {
                 //valida se a peca está no campo de ataque
-                if(!pecaEstaNoCampoDeAtaque(peca)) {
+                if(espelhoOutroJogador == false && pecaEstaNoCampoDeAtaque(peca) == false) {
                     mensagemDeErro('Esta peça está fora do raio de ataque');
                     return false;
                 } else {    
@@ -437,6 +458,7 @@ function ativaControlesMouse(){
     
     //seleciona peca para movimentar-se
     $("#palco .campo .casa").sortable({
+        revert: '100',
         connectWith: ".casa",
         cursor: "move",
         over: function(event, ui) { 
@@ -445,6 +467,13 @@ function ativaControlesMouse(){
         },
         beforeStop: function(){
             $(".casa").removeClass("hover");
+        },
+        start: function(event, ui) {
+            ui.item[0].oldclick = ui.item[0].onclick;
+            ui.item[0].onclick = null;     
+        },
+        stop: function(event, ui) {
+            ui.item[0].onclick = ui.item[0].oldclick;
         }
     }).disableSelection();
     //acao após mover peça
@@ -815,6 +844,9 @@ function preparaNovoTurno(){
         turnoDefesa = "cima";
         if(nomeJogadorVermelho != getUrlVars()["player"]){
             vezDoPlayer = true;
+            if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined) {
+                mostraMensagemJogador('Sua vez de jogar!');
+            }
         } else {
             vezDoPlayer = false;
         }
@@ -823,11 +855,21 @@ function preparaNovoTurno(){
         turnoDefesa = "baixo";
         if(nomeJogadorAzul != getUrlVars()["player"]){
             vezDoPlayer = true;
+            if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined) {
+                mostraMensagemJogador('Sua vez de jogar!');
+            }
         } else {
             vezDoPlayer = false;
         }
     }
     exibeResultadosGerais();
+}
+
+function mostraMensagemJogador(mensagem){
+    $('#mensagens-jogador').html(mensagem).addClass('visible');
+    setTimeout(function(){
+        $('#mensagens-jogador').removeClass('visible');
+    }, 1500);
 }
 
 function muted(status){

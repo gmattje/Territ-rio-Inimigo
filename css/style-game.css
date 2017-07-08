@@ -311,6 +311,27 @@ html, body {
     cursor: pointer;
 }
 
+#mensagens-jogador {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    margin-left: -130px;
+    width: 260px;
+    padding: 20px 0;
+    text-align: center;
+    background-color: #FFF;
+    z-index: 3;
+    font-size: 20pt;
+    color: red;
+    border: 3px solid red;
+    box-shadow: 0 0 10px #000;
+    display: none;
+}
+
+#mensagens-jogador.visible {
+    display: block;
+}
+
 #panelPause {
     position: absolute;
     width: 100%;
