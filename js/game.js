@@ -303,14 +303,15 @@ function exibeResultadosGerais(){
 }
 
 function exibeDadosPeca(peca, campo){
+    $('.barraLateral.campo-' + campo + ' .infosPeca').addClass('visible');
     $('.barraLateral.campo-' + campo + ' .infos h3.nomePeca').html(pecas[peca].nome);
     $('.barraLateral.campo-' + campo + ' .infos div.imagem-demo').empty();
     $('#pecas .peca.' + pecas[peca].tipo + '.demo').clone().appendTo('.barraLateral.campo-' + campo + ' .infos div.imagem-demo');
-    $('.barraLateral.campo-' + campo + ' .infos div.movimentacao').html('Movimentação: ' + pecas[peca].movimentacao);
-    $('.barraLateral.campo-' + campo + ' .infos div.alcance').html('Alcance: ' + pecas[peca].alcance);
-    $('.barraLateral.campo-' + campo + ' .infos div.dano').html('Dano: ' + pecas[peca].dano + ' vida(s)');
+    $('.barraLateral.campo-' + campo + ' .infos div.movimentacao').html('<strong>Movimentação:</strong> ' + pecas[peca].movimentacao);
+    $('.barraLateral.campo-' + campo + ' .infos div.alcance').html('<strong>Alcance:</strong> ' + pecas[peca].alcance);
+    $('.barraLateral.campo-' + campo + ' .infos div.dano').html('<strong>Dano:</strong> ' + pecas[peca].dano + ' vida(s)');
     if(pecas[peca].adicional != undefined) {
-        $('.barraLateral.campo-' + campo + ' .infos div.adicional').html('Adicional: ' + pecas[peca].adicional);
+        $('.barraLateral.campo-' + campo + ' .infos div.adicional').html('<strong>Adicional:</strong> ' + pecas[peca].adicional);
     }
     var tentativas = '';
     if(pecas[peca].tiros == '-1'){
@@ -318,7 +319,7 @@ function exibeDadosPeca(peca, campo){
     } else {
         tentativas += pecas[peca].tiros + ' tiro(s), podendo tentar ' + pecas[peca].tentativas + ' vez(es) por turno'
     }
-    $('.barraLateral.campo-' + campo + ' .infos div.tiros').html('Tiros: ' + tentativas);
+    $('.barraLateral.campo-' + campo + ' .infos div.tiros').html('<strong>Tiros:</strong> ' + tentativas);
 
     //informacoes variaveis
     if(pecas[peca].gasolina <= 0){
@@ -340,6 +341,7 @@ function exibeDadosPeca(peca, campo){
 }
 
 function zeraBarrasLaterais(){
+    $('.barraLateral .infosPeca').removeClass('visible');
     $('.barraLateral .infos h3.nomePeca').empty();
     $('.barraLateral .infos div.vidas').empty();
     $('.barraLateral .infos div.gasolina').empty();
@@ -811,7 +813,7 @@ function casaEstaNoCampoDePouso(casa) {
 function liberaMovimentacao(){
     var segundosMovimentacao = 10;
     timerMovimentacao = setInterval(function(){
-        $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').html(segundosMovimentacao + ' segundos para movimentar uma de suas peças');
+        $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').attr('onclick', 'cancelaPossibilidadeDeMovimentacao();').html(segundosMovimentacao + ' segundos para movimentar uma de suas peças');
         segundosMovimentacao--;
         if(segundosMovimentacao < 0){
             preparaNovoTurno();
@@ -819,12 +821,20 @@ function liberaMovimentacao(){
     }, 1000);
 }
 
+function cancelaPossibilidadeDeMovimentacao(){
+    if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined) {
+        //envia para servidor
+        enviaDadosServidor("cancelaMovimentacaoDoTurno");
+    }
+    preparaNovoTurno();
+}
+
 function preparaNovoTurno(){
     clearInterval(timerMovimentacao);
     clearInterval(timerParaquedista);
     $('#palco .casa').removeClass('selecionavel');
     $('.barraLateral .dados').removeClass('visible');
-    $('.barraLateral .timer').removeClass('visible');
+    $('.barraLateral .timer').removeClass('visible').removeAttr('onclick');
     if(bloqueioEscolhaParaquedista){
         bloqueioEscolhaParaquedista = false;
         retiraPecaDoTabuleiro(pecaSelecionadaCampoAtaque, false);

@@ -76,6 +76,14 @@ html, body {
     background-color: #213b87;
 }
 
+.barraLateral .infos .infosPeca {
+    display: none;
+}
+
+.barraLateral .infos .infosPeca.visible {
+    display: block;
+}
+
 .barraLateral .infos .nomePeca {
     text-align: center;
 }
@@ -116,7 +124,7 @@ html, body {
 .barraLateral .infoBasica {
     margin-top: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px dotted #FFF;
+    border-bottom: 1px solid #808080;
 }
 
 .barraLateral .dados {
@@ -186,6 +194,7 @@ html, body {
     display: block;
     z-index: 1; 
     background-image: url(../images/areia-pattern.jpg);
+    overflow: hidden;
 }
 
 #raio-ataque {

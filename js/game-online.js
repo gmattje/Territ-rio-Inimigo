@@ -97,6 +97,14 @@ function enviaDadosServidor(tipo){
             }).error(function(){
                 enviaDadosServidor("movimentacaoDoTurno");
             });
+        } else if(tipo === "cancelaMovimentacaoDoTurno") {
+            $.ajax({
+                method: "POST",
+                url: urlServerTerritorioInimigo + "/movimentacaoDoTurno.php",
+                data: {sessao: idSessaoServidor, pecaMovimentada: 0, campoDestinatario: 0, casaDestinataria: 0, ocupacaoCasa: 0, turno: numDoTurno}
+            }).error(function(){
+                enviaDadosServidor("cancelaMovimentacaoDoTurno");
+            });    
         } else if(tipo === "visaoGeralCasasEPecas") {
             $.ajax({
                 method: "POST",
@@ -145,9 +153,6 @@ function recebeDadosServidor(tipo){
                                 numTentativaAtaque = arrayDadosTurno[1];
                                 numeroDadoAtaque = arrayDadosTurno[2];
                                 numeroDadoDefesa = arrayDadosTurno[3];
-                                if(numeroDadoAtaque > numeroDadoDefesa){
-                                    //clearInterval(timerDadosTurno);
-                                }
                                 rodaAtaque(true);
                                 setTimeout(function(){
                                     rodandoDadosEspelho = false;
@@ -185,10 +190,11 @@ function recebeDadosServidor(tipo){
                             var arrayMovimentacaoTurno = data.split(',');
                             if(ultimoIdServidorMovimentacaoTurno != arrayMovimentacaoTurno[0]){
                                 ultimoIdServidorMovimentacaoTurno = arrayMovimentacaoTurno[0];
-                                //clearInterval(timerPecasTurno);
-                                //clearInterval(timerDadosTurno);
-                                //clearInterval(timerMovimentacaoDoTurno);
-                                gravaMovimentacaoPeca(arrayMovimentacaoTurno[1], arrayMovimentacaoTurno[2], arrayMovimentacaoTurno[3], arrayMovimentacaoTurno[4], true);
+                                if(arrayMovimentacaoTurno[1] == 0 && arrayMovimentacaoTurno[2] == 0 && arrayMovimentacaoTurno[3] == 0 && arrayMovimentacaoTurno[4] == 0) {
+                                    cancelaPossibilidadeDeMovimentacao();
+                                } else {
+                                    gravaMovimentacaoPeca(arrayMovimentacaoTurno[1], arrayMovimentacaoTurno[2], arrayMovimentacaoTurno[3], arrayMovimentacaoTurno[4], true);
+                                }
                             }
                         }
                     }
