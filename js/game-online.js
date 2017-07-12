@@ -191,7 +191,7 @@ function recebeDadosServidor(tipo){
                             if(ultimoIdServidorMovimentacaoTurno != arrayMovimentacaoTurno[0]){
                                 ultimoIdServidorMovimentacaoTurno = arrayMovimentacaoTurno[0];
                                 if(arrayMovimentacaoTurno[1] == 0 && arrayMovimentacaoTurno[2] == 0 && arrayMovimentacaoTurno[3] == 0 && arrayMovimentacaoTurno[4] == 0) {
-                                    cancelaPossibilidadeDeMovimentacao();
+                                    cancelaPossibilidadeDeMovimentacao(true);
                                 } else {
                                     gravaMovimentacaoPeca(arrayMovimentacaoTurno[1], arrayMovimentacaoTurno[2], arrayMovimentacaoTurno[3], arrayMovimentacaoTurno[4], true);
                                 }

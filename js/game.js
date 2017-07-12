@@ -374,42 +374,44 @@ function zeraRaioDeAtaque(){
 }
 
 function selecionaPecaParaTurno(peca, espelhoOutroJogador){
-    if (vezDoPlayer == false && espelhoOutroJogador == false) {
-        mensagemDeErro('Não é a sua vez de jogar');
-    //só seleciona se turno ainda não tem resultado
-    } else if(turnoVencedor == "") {
-        if((turnoAtacante == "cima" && pecas[peca].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") || (turnoAtacante == "baixo" && pecas[peca].exercito == "cima" && pecaSelecionadaCampoAtaque == "")) {
-            mensagemDeErro('É preciso selecionar sua peça primeiro');
-            return false;   
-        } else {
-            if((pecaSelecionadaCampoAtaque == "") || (pecaSelecionadaCampoAtaque != "" && pecas[peca].exercito == turnoAtacante)) {
-                if(pecas[peca].tiros == "0") { 
-                    mensagemDeErro('Esta peça não pode mais atacar');
-                    return false;
-                } else {
-                    $('.campo .casa.selecionada.ataque').removeClass('selecionada').removeClass('ataque');
-                    $('.campo .casa.selecionada.defesa').removeClass('selecionada').removeClass('defesa');
-                    $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada ataque');
-                    pecaSelecionadaCampoAtaque = peca;
-                    pecaSelecionadaCampoDefesa = "";
-                }
+    if(turnoVencedor != "verificando") {
+        if (vezDoPlayer == false && espelhoOutroJogador == false) {
+            mensagemDeErro('Não é a sua vez de jogar');
+        //só seleciona se turno ainda não tem resultado
+        } else if(turnoVencedor == "") {
+            if((turnoAtacante == "cima" && pecas[peca].exercito == "baixo" && pecaSelecionadaCampoAtaque == "") || (turnoAtacante == "baixo" && pecas[peca].exercito == "cima" && pecaSelecionadaCampoAtaque == "")) {
+                mensagemDeErro('É preciso selecionar sua peça primeiro');
+                return false;   
             } else {
-                //valida se a peca está no campo de ataque
-                if(espelhoOutroJogador == false && pecaEstaNoCampoDeAtaque(peca) == false) {
-                    mensagemDeErro('Esta peça está fora do raio de ataque');
-                    return false;
-                } else {    
-                    $('.campo .casa.selecionada.defesa').removeClass('selecionada').removeClass('defesa');
-                    $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada defesa');
-                    pecaSelecionadaCampoDefesa = peca;
+                if((pecaSelecionadaCampoAtaque == "") || (pecaSelecionadaCampoAtaque != "" && pecas[peca].exercito == turnoAtacante)) {
+                    if(pecas[peca].tiros == "0") { 
+                        mensagemDeErro('Esta peça não pode mais atacar');
+                        return false;
+                    } else {
+                        $('.campo .casa.selecionada.ataque').removeClass('selecionada').removeClass('ataque');
+                        $('.campo .casa.selecionada.defesa').removeClass('selecionada').removeClass('defesa');
+                        $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada ataque');
+                        pecaSelecionadaCampoAtaque = peca;
+                        pecaSelecionadaCampoDefesa = "";
+                    }
+                } else {
+                    //valida se a peca está no campo de ataque
+                    if(espelhoOutroJogador == false && pecaEstaNoCampoDeAtaque(peca) == false) {
+                        mensagemDeErro('Esta peça está fora do raio de ataque');
+                        return false;
+                    } else {    
+                        $('.campo .casa.selecionada.defesa').removeClass('selecionada').removeClass('defesa');
+                        $('.campo.' + pecas[peca].campoAtual + ' .casa.' + pecas[peca].casaAtual).addClass('selecionada defesa');
+                        pecaSelecionadaCampoDefesa = peca;
+                    }
                 }
             }
-        }
-        if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "" && vezDoPlayer == true) {
-            enviaDadosServidor("pecasSelecionadasDoTurno");
-            habilitaIniciarTurno();
-        } else {
-            desabilitaIniciarTurno();
+            if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "" && vezDoPlayer == true) {
+                enviaDadosServidor("pecasSelecionadasDoTurno");
+                habilitaIniciarTurno();
+            } else {
+                desabilitaIniciarTurno();
+            }
         }
     }
 }
@@ -639,6 +641,7 @@ function desabilitaIniciarTurno(){
 }
 
 function rodaAtaque(espelhoOutroJogador){
+    turnoVencedor = "verificando";
     if(numTentativaAtaque == 0) {
         numTentativaAtaque = 1;
     }
@@ -813,7 +816,7 @@ function casaEstaNoCampoDePouso(casa) {
 function liberaMovimentacao(){
     var segundosMovimentacao = 10;
     timerMovimentacao = setInterval(function(){
-        $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').attr('onclick', 'cancelaPossibilidadeDeMovimentacao();').html(segundosMovimentacao + ' segundos para movimentar uma de suas peças');
+        $('.barraLateral.campo-' + turnoAtacante + ' .timer').addClass('visible').attr('onclick', 'cancelaPossibilidadeDeMovimentacao(false);').html(segundosMovimentacao + ' segundos para movimentar uma de suas peças');
         segundosMovimentacao--;
         if(segundosMovimentacao < 0){
             preparaNovoTurno();
@@ -821,12 +824,14 @@ function liberaMovimentacao(){
     }, 1000);
 }
 
-function cancelaPossibilidadeDeMovimentacao(){
-    if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined) {
+function cancelaPossibilidadeDeMovimentacao(espelhoOutroJogador){
+    if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined && vezDoPlayer == true) {
         //envia para servidor
         enviaDadosServidor("cancelaMovimentacaoDoTurno");
+        preparaNovoTurno();
+    } else if((getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) || espelhoOutroJogador == true) {
+        preparaNovoTurno();
     }
-    preparaNovoTurno();
 }
 
 function preparaNovoTurno(){
