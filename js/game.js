@@ -122,11 +122,11 @@ function reorganizaTabuleiro(){
     $('#palco').removeAttr('style');
     $('#palco .campo').removeAttr('style');
     //refaz calculos
-    $('#plano-inferior').css('width',getDocWidth()+'px');
-    $('#palco').css('width',getDocWidth()+'px');
+    $('#plano-inferior').css('width',(getDocWidth()-300)+'px');
+    $('#palco').css('width',(getDocWidth()-300)+'px');
     var tamanhoCampoW = $('#palco .campo').width();
     var tamanhoCampoH = ($('#palco').height()/2)-15 //desconta a metade dos tamanhos da divisao e do painel geral
-    marginLeftCampos = (getDocWidth()-tamanhoCampoW)/2;
+    marginLeftCampos = (getDocWidth()-300-tamanhoCampoW)/2;
     tamanhoDivisaoH = $('#palco .divisao').height();
     tamanhoCasasW = (tamanhoCampoW/7)-1;
     tamanhoCasasH = tamanhoCampoH/5;
@@ -933,24 +933,24 @@ function mensagemDeErro(mensagem){
 
 //width do body
 function getDocWidth(){
-    var width = (
-    'innerWidth' in window? window.innerWidth :
-    document.compatMode!=='BackCompat'? document.documentElement.clientWidth :
-    document.body.clientWidth
-    );
-    //menos tamanho das barras laterais
-    width = width-300;
-    return width;
+//    var width = (
+//    'innerWidth' in window? window.innerWidth :
+//    document.compatMode!=='BackCompat'? document.documentElement.clientWidth :
+//    document.body.clientWidth
+//    );
+//    return width;
+    return $('html').innerWidth();
 }
 
 //height do body
 function getDocHeight(){
-    var height = (
-    'innerHeight' in window? window.innerHeight :
-    document.compatMode!=='BackCompat'? document.documentElement.clientHeight :
-    document.body.clientHeight
-    );
-    return height;
+//    var height = (
+//    'innerHeight' in window? window.innerHeight :
+//    document.compatMode!=='BackCompat'? document.documentElement.clientHeight :
+//    document.body.clientHeight
+//    );
+//    return height;
+    return $('html').innerHeight();
 }
 
 //variaveis do navegador

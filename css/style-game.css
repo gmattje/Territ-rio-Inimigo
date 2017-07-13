@@ -1,5 +1,5 @@
 html, body { 
-    width: 100%;
+    max-width: 100%;
     overflow: hidden;
 }
 
@@ -318,6 +318,10 @@ html, body {
 .peca img {
     max-height: 100%;
     cursor: pointer;
+}
+
+#palco .peca img {
+    height: 100%;
 }
 
 #mensagens-jogador {
