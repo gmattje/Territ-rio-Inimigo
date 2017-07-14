@@ -1,10 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Quantico:400,700');
+
 body {
     background-image: url(../images/bck-aco.jpg);
     text-align: center;
+    font-family: 'Quantico', Tahoma, Arial !important;
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
 }
 
 .dialog_ui {
     display: none;
+}
+
+.ui-widget {
+    font-family: 'Quantico', Tahoma, Arial !important;
 }
 
 .content {

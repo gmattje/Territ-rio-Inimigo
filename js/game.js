@@ -125,7 +125,7 @@ function reorganizaTabuleiro(){
     $('#plano-inferior').css('width',(getDocWidth()-300)+'px');
     $('#palco').css('width',(getDocWidth()-300)+'px');
     var tamanhoCampoW = $('#palco .campo').width();
-    var tamanhoCampoH = ($('#palco').height()/2)-15 //desconta a metade dos tamanhos da divisao e do painel geral
+    var tamanhoCampoH = ($('#palco').height()/2)-($('#titulo-game').height()/2)-15 //desconta a metade dos tamanhos da divisao e do painel geral
     marginLeftCampos = (getDocWidth()-300-tamanhoCampoW)/2;
     tamanhoDivisaoH = $('#palco .divisao').height();
     tamanhoCasasW = (tamanhoCampoW/7)-1;

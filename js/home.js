@@ -143,6 +143,8 @@ function aguardandoOutroJogador() {
 
 function cancelaAguardandoOutroJogador(){
     clearInterval(timerNovoJogo);
+    $('#form-novo-jogo .nome-jogador.sessao-off').removeClass('oculto');
+    $('#form-novo-jogo .nome-jogador.sessao-on').addClass('oculto');
     $.ajax({
         type: "GET",
         url: urlServerTerritorioInimigo + "/excluiJogo.php?_=" + new Date().getTime(),

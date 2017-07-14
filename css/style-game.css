@@ -1,10 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Quantico:400,700');
+
 html, body { 
     max-width: 100%;
     overflow: hidden;
+    font-family: Tahoma, Arial !important;
+    font-weight: 400;
 }
 
 .dialog_ui {
     display: none;
+}
+
+.ui-widget {
+    font-family: 'Quantico', Tahoma, Arial !important;
 }
 
 #sorte-inicial .dado-sorte-inicial {
@@ -21,6 +29,18 @@ html, body {
 
 #sorte-inicial .nome-jogador.iniciante {
     font-weight: bold;
+}
+
+#titulo-game {
+    font-family: 'Quantico', Tahoma, Arial !important;
+    background-color: #000;
+    color: #FFF;
+    font-size: 12px;
+    text-align: center;
+}
+
+#titulo-game h1 {
+    margin: 0;
 }
 
 .barraLateral {
@@ -55,7 +75,7 @@ html, body {
     width: 100%;
     height: 100px;
     display: block; 
-    font-size: 8pt;
+    font-size: 9pt;
 }
 
 .barraLateral .infos .time {
