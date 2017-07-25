@@ -904,6 +904,7 @@ function restart(){
 function gameOver(){  
     fimDeJogo = true;
     $("#mensagem-final span.mensagem").html('Acabou, ' + nomeJogadorCampeao + ' ganhou o jogo!');
+    
     $("#mensagem-final").dialog({
         closeOnEscape: false,
         modal: true,
@@ -915,6 +916,10 @@ function gameOver(){
         },
         open: function(event, ui) {
             $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+            //se for jogo online oculta opção de jogar novamente
+            if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined) {
+                $(".ui-dialog-buttonset button:first-of-type").hide();
+            }
         }
     });
 }

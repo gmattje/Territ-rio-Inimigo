@@ -66,7 +66,9 @@ function buscaSessoesOnline(){
             $.each(data, function(i) {
                 var arraySessao = data[i].split(" ");
                 var sessaoReduzida = "on-line: " + data[i].substr(0, 8) + " " + arraySessao[1];
-                $('#sessao').append($('<option></option>').val(arraySessao[0]).html(sessaoReduzida));
+                if($('#sessao option[value="' + arraySessao[0] + '"]').length === 0) {
+                    $('#sessao').append($('<option></option>').val(arraySessao[0]).html(sessaoReduzida));
+                }
             });
         }
     });
@@ -80,9 +82,12 @@ function validaDados(){
     if(sessao == ""){
         alert('Antes de começar, defina a sessão');
         return false;
-    } else if(sessao == "novo-on" && nomeJogador1on == ""){
+    } else if(sessao == "novo-on" && nomeJogador1on == "") {
         alert('Antes de começar, digite o seu nome');
         return false;
+    } else if(sessao != "novo-on" && sessao != "novo-off" && nomeJogador1on == "") { 
+        alert('Antes de começar, digite o seu nome');
+        return false;    
     } else if(sessao == "novo-off" && (nomeJogador1off == "" || nomeJogador2off == "")){
         alert('Antes de começar, digite o nome dos dois jogadores');
         return false;    
