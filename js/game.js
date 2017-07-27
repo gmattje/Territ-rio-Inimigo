@@ -14,6 +14,8 @@ var nomeJogadorAzul = "AZUL";
 var nomeJogadorCampeao = "";
 var numeroDadoInicialJogador1 = 0;
 var numeroDadoInicialJogador2 = 0;
+var desafioSecretoJogador1 = 0;
+var desafioSecretoJogador2 = 0;
 
 //tamanhos tabuleiro
 var marginLeftCampos = 0;
@@ -25,7 +27,8 @@ var tamanhoCasasH = 0;
 var timerMovimentacao = "";
 var timerParaquedista = "";
 var numDoTurno = 0;
-var turnoEminenteFim = 0;
+var turnoEminenteFimObj1 = 0;
+var turnoEminenteFimObj2 = 0;
 var turnoVencedor = "";
 var bloqueioEscolhaParaquedista = false;
 var turnoAtacante = "";
@@ -84,6 +87,13 @@ function rodaSorteInicial(){
     if((getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) || numeroDadoInicialJogador2 == 0){
         numeroDadoInicialJogador2 = Math.floor(Math.random() * 6 + 1);
     }
+    //escolhe desafio secreto
+    if((getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) || desafioSecretoJogador1 == 0){
+        desafioSecretoJogador1 = Math.floor(Math.random() * 10 + 1);
+    }
+    if((getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) || desafioSecretoJogador2 == 0){
+        desafioSecretoJogador2 = Math.floor(Math.random() * 10 + 1);
+    }
     $('#sorte-inicial .dado-jogador').empty();
     $('#dados .dado.dado-ataque-gif').clone().appendTo('#sorte-inicial .jogador1 .dado-jogador');
     $('#dados .dado.dado-ataque-gif').clone().appendTo('#sorte-inicial .jogador2 .dado-jogador');
@@ -109,6 +119,7 @@ function rodaSorteInicial(){
         //se teve vencedor    
         } else {
             preparaNovoTurno();
+            mostraObjetivosSecretos();
             $("#sorte-inicial").dialog('close');
         }
     }, 6000);
@@ -121,15 +132,18 @@ function reorganizaTabuleiro(){
     $('#plano-inferior').removeAttr('style');
     $('#palco').removeAttr('style');
     $('#palco .campo').removeAttr('style');
+    $('#palco .campo .coordenada').removeAttr('style');
     //refaz calculos
     $('#plano-inferior').css('width',(getDocWidth()-300)+'px');
     $('#palco').css('width',(getDocWidth()-300)+'px');
     var tamanhoCampoW = $('#palco .campo').width();
-    var tamanhoCampoH = ($('#palco').height()/2)-($('#titulo-game').height()/2)-15 //desconta a metade dos tamanhos da divisao e do painel geral
+    var tamanhoCampoH = ($('#palco').height()/2)-($('#titulo-game').height()/2)-15-20 //desconta a metade dos tamanhos da divisao, titulo, painel geral e coordenadas
     marginLeftCampos = (getDocWidth()-300-tamanhoCampoW)/2;
     tamanhoDivisaoH = $('#palco .divisao').height();
-    tamanhoCasasW = (tamanhoCampoW/7)-1;
+    tamanhoCasasW = (tamanhoCampoW/7)-(40/7)-1;
     tamanhoCasasH = tamanhoCampoH/5;
+    $('#palco .campo .coordenada.letra').css('width',tamanhoCasasW+'px');
+    $('#palco .campo .coordenada.numeral').css('height',tamanhoCasasH+'px').css('line-height',tamanhoCasasH+'px');
     $('#palco .campo .casa').css('width',tamanhoCasasW+'px').css('height',tamanhoCasasH+'px');
     $('#palco .campo').css('margin-left',marginLeftCampos+'px');
 }
@@ -246,23 +260,64 @@ function gravaPosicoesPecas() {
                 }
             }
             
+        }
+    });
+    verificaFimDePartida();
+}
+
+function verificaFimDePartida(){
+    
+    var desafiosSecretos = 0;
+    
+    $.each(pecas, function(index){
+        //se a peça já não tenha sido perdida pelo exercito
+        if(this.campoAtual != 0 && this.casaAtual != 0) {
             //se a peça esta no ultimo nivel do exercito inimigo
             if((this.exercito == "baixo" && (this.casaAtual == "c1" || this.casaAtual == "e1")) || (this.exercito == "cima" && (this.casaAtual == "c10" || this.casaAtual == "e10"))){
-                if(turnoEminenteFim == 0 || turnoEminenteFim < numDoTurno) {
-                    turnoEminenteFim = numDoTurno+2;
-                } else if(turnoEminenteFim > 0 && numDoTurno == turnoEminenteFim) {
+                if(turnoEminenteFimObj1 == 0 || turnoEminenteFimObj1 < numDoTurno) {
+                    turnoEminenteFimObj1 = numDoTurno+2;
+                } else if(turnoEminenteFimObj1 > 0 && numDoTurno == turnoEminenteFimObj1) {
                     fimDeJogo = true;
                     if(this.exercito == "cima") {
                         nomeJogadorCampeao = nomeJogadorVermelho;
                     } else {
                         nomeJogadorCampeao = nomeJogadorAzul;
                     }
-                    gameOver();
+                    gameOver('Vitória por invasão da base inimiga');
                 }               
             }
-            
+            //se suas peças estão cumprindo o desafio secreto
+            if(this.exercito == "cima"){
+                if(desafioSecretoJogador1 > 0 && objetivos['campo-cima'][desafioSecretoJogador1][this.casaAtual] == this.tipo){
+                    desafiosSecretos++;
+                    if((turnoEminenteFimObj2 == 0 || turnoEminenteFimObj2 < numDoTurno) && desafiosSecretos === 2){
+                        turnoEminenteFimObj2 = numDoTurno+2;
+                    } else if(turnoEminenteFimObj2 > 0 && numDoTurno == turnoEminenteFimObj2 && desafiosSecretos === 2){   
+                        nomeJogadorCampeao = nomeJogadorVermelho;
+                        gameOver('Vitória por comprimento do desafio secreto');
+                    }
+                }
+            } else {
+                if(desafioSecretoJogador2 > 0 && objetivos['campo-baixo'][desafioSecretoJogador2][this.casaAtual] == this.tipo){
+                    desafiosSecretos++;
+                    if((turnoEminenteFimObj2 == 0 || turnoEminenteFimObj2 < numDoTurno) && desafiosSecretos === 2){
+                        turnoEminenteFimObj2 = numDoTurno+2;
+                    } else if(turnoEminenteFimObj2 > 0 && numDoTurno == turnoEminenteFimObj2 && desafiosSecretos === 2){
+                        nomeJogadorCampeao = nomeJogadorAzul;
+                        gameOver('Vitória por comprimento do desafio secreto');
+                    }
+                }
+            }
         }
-    });
+    });   
+    
+    
+    
+}
+
+function mostraObjetivosSecretos(){
+    $('.barraLateral.campo-cima .desafioSecreto').html(objetivos['campo-cima'][desafioSecretoJogador1].texto);
+    $('.barraLateral.campo-baixo .desafioSecreto').html(objetivos['campo-baixo'][desafioSecretoJogador2].texto);
 }
 
 function ativaRecuperacaoDeDados() {
@@ -877,6 +932,12 @@ function preparaNovoTurno(){
             vezDoPlayer = false;
         }
     }
+    $('.barraLateral .infos .time').removeClass('naVez');
+    if(turnoAtacante == "cima"){
+        $('.barraLateral .infos .time.timeA').addClass('naVez');
+    } else {
+        $('.barraLateral .infos .time.timeB').addClass('naVez');
+    }
     exibeResultadosGerais();
 }
 
@@ -901,9 +962,10 @@ function restart(){
     }
 }
 
-function gameOver(){  
+function gameOver(motivo){  
     fimDeJogo = true;
-    $("#mensagem-final span.mensagem").html('Acabou, ' + nomeJogadorCampeao + ' ganhou o jogo!');
+    $(".barraLateral .desafioSecreto").removeClass('oculto');
+    $("#mensagem-final span.mensagem").html('Acabou, ' + nomeJogadorCampeao + ' ganhou o jogo!<br>' + motivo);
     
     $("#mensagem-final").dialog({
         closeOnEscape: false,

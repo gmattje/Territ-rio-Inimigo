@@ -6,13 +6,14 @@
         <link rel="stylesheet" href="js/jquery-ui-1.12.1.custom/jquery-ui.min.css">
         <link rel="stylesheet" href="js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css">
         <link rel="stylesheet" href="css/normalize.css" type="text/css"/>
-        <link rel="stylesheet" href="css/style-game.css?v=20170713" type="text/css"/>        	
+        <link rel="stylesheet" href="css/style-game.css?v=20170726" type="text/css"/>        	
         <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
         <script type="text/javascript" src="js/jquery.queryloader2.js"></script>
+        <script type="text/javascript" src="js/objetivos-secretos.js?v=20170725"></script>
         <script type="text/javascript" src="js/casas-e-pecas.js?v=20170713"></script>
-        <script type="text/javascript" src="js/game.js?v=20170725"></script>
+        <script type="text/javascript" src="js/game.js?v=20170726"></script>
         <script type="text/javascript" src="js/game-online.js?v=20170713"></script>
         <script type="text/javascript" src="js/controls-key.js?v=20170713"></script>
         
@@ -58,6 +59,7 @@
         <div class="barraLateral esquerda campo-cima">
             <div class="infos">
                 <h2 class="time timeA">VERMELHO</h2>
+                <div class="desafioSecreto timeA oculto" onclick="$(this).toggleClass('oculto');"></div>
                 <div class="infosPeca">
                     <h3 class="nomePeca"></h3>
                     <div class="vidas"></div>
@@ -77,6 +79,7 @@
         <div class="barraLateral direita campo-baixo">
             <div class="infos">
                 <h2 class="time timeB">AZUL</h2>
+                <div class="desafioSecreto timeB oculto" onclick="$(this).toggleClass('oculto');"></div>
                 <div class="infosPeca">
                     <h3 class="nomePeca"></h3>
                     <div class="vidas"></div>
@@ -106,6 +109,16 @@
                 <div class="exercitos"></div>
             </div>
             <div class="campo cima">
+                <div class="coordenada canto"></div>
+                <div class="coordenada letra">A</div>
+                <div class="coordenada letra">B</div>
+                <div class="coordenada letra">C</div>
+                <div class="coordenada letra">D</div>
+                <div class="coordenada letra">E</div>
+                <div class="coordenada letra">F</div>
+                <div class="coordenada letra">G</div>
+                <div class="coordenada canto"></div>
+                <div class="coordenada numeral">1</div>
                 <div class="casa a1 aeroporto"></div>
                 <div class="casa b1 montanha"></div>
                 <div class="casa c1"></div>
@@ -113,6 +126,8 @@
                 <div class="casa e1"></div>
                 <div class="casa f1 montanha"></div>
                 <div class="casa g1 aeroporto"></div>
+                <div class="coordenada numeral">1</div>
+                <div class="coordenada numeral">2</div>
                 <div class="casa a2 montanha"></div>
                 <div class="casa b2"></div>
                 <div class="casa c2 montanha"></div>
@@ -120,6 +135,8 @@
                 <div class="casa e2 montanha"></div>
                 <div class="casa f2"></div>
                 <div class="casa g2 montanha"></div>
+                <div class="coordenada numeral">2</div>
+                <div class="coordenada numeral">3</div>
                 <div class="casa a3"></div>
                 <div class="casa b3 montanha"></div>
                 <div class="casa c3"></div>
@@ -127,6 +144,8 @@
                 <div class="casa e3"></div>
                 <div class="casa f3 montanha"></div>
                 <div class="casa g3"></div>
+                <div class="coordenada numeral">3</div>
+                <div class="coordenada numeral">4</div>
                 <div class="casa a4 montanha"></div>
                 <div class="casa b4"></div>
                 <div class="casa c4 montanha"></div>
@@ -134,6 +153,8 @@
                 <div class="casa e4 montanha"></div>
                 <div class="casa f4"></div>
                 <div class="casa g4 montanha"></div>
+                <div class="coordenada numeral">4</div>
+                <div class="coordenada numeral">5</div>
                 <div class="casa a5"></div>
                 <div class="casa b5 montanha"></div>
                 <div class="casa c5"></div>
@@ -141,9 +162,11 @@
                 <div class="casa e5"></div>
                 <div class="casa f5 montanha"></div>
                 <div class="casa g5"></div>
+                <div class="coordenada numeral">5</div>
             </div>
             <div class="divisao"></div>
             <div class="campo baixo">
+                <div class="coordenada numeral">6</div>
                 <div class="casa a6"></div>
                 <div class="casa b6 montanha"></div>
                 <div class="casa c6"></div>
@@ -151,6 +174,8 @@
                 <div class="casa e6"></div>
                 <div class="casa f6 montanha"></div>
                 <div class="casa g6"></div>
+                <div class="coordenada numeral">6</div>
+                <div class="coordenada numeral">7</div>
                 <div class="casa a7 montanha"></div>
                 <div class="casa b7"></div>
                 <div class="casa c7 montanha"></div>
@@ -158,6 +183,8 @@
                 <div class="casa e7 montanha"></div>
                 <div class="casa f7"></div>
                 <div class="casa g7 montanha"></div>
+                <div class="coordenada numeral">7</div>
+                <div class="coordenada numeral">8</div>
                 <div class="casa a8"></div>
                 <div class="casa b8 montanha"></div>
                 <div class="casa c8"></div>
@@ -165,6 +192,8 @@
                 <div class="casa e8"></div>
                 <div class="casa f8 montanha"></div>
                 <div class="casa g8"></div>
+                <div class="coordenada numeral">8</div>
+                <div class="coordenada numeral">9</div>
                 <div class="casa a9 montanha"></div>
                 <div class="casa b9"></div>
                 <div class="casa c9 montanha"></div>
@@ -172,6 +201,8 @@
                 <div class="casa e9 montanha"></div>
                 <div class="casa f9"></div>
                 <div class="casa g9 montanha"></div>
+                <div class="coordenada numeral">9</div>
+                <div class="coordenada numeral">10</div>
                 <div class="casa a10 aeroporto"></div>
                 <div class="casa b10 montanha"></div>
                 <div class="casa c10"></div>
@@ -179,6 +210,16 @@
                 <div class="casa e10"></div>
                 <div class="casa f10 montanha"></div>
                 <div class="casa g10 aeroporto"></div>
+                <div class="coordenada numeral">10</div>
+                <div class="coordenada canto"></div>
+                <div class="coordenada letra">A</div>
+                <div class="coordenada letra">B</div>
+                <div class="coordenada letra">C</div>
+                <div class="coordenada letra">D</div>
+                <div class="coordenada letra">E</div>
+                <div class="coordenada letra">F</div>
+                <div class="coordenada letra">G</div>
+                <div class="coordenada canto"></div>
             </div>
         </div>
         <div id="dados">
