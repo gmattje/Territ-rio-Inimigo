@@ -16,7 +16,7 @@ var rodandoDadosEspelho = false;
 $(function(){
     idSessaoServidor = getUrlVars()["sessao"];
     nomesDosJogadoresOnLine();
-    dadosIniciantes();
+    sortesDoInicio();
 });
 
 function nomesDosJogadoresOnLine(){
@@ -44,16 +44,18 @@ function nomesDosJogadoresOnLine(){
     }
 }
 
-function dadosIniciantes(){
+function sortesDoInicio(){
     if(idSessaoServidor != undefined) {
         $.ajax({
             type: "GET",
-            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/dadosIniciais.txt?_=" + new Date().getTime(),
+            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/sorteInicial.txt?_=" + new Date().getTime(),
             success: function (data) {
                 if(data != "") {
                     arrayDados = data.split(',');
                     numeroDadoInicialJogador1 = arrayDados[0];
                     numeroDadoInicialJogador2 = arrayDados[1];
+                    desafioSecretoJogador1 = arrayDados[2];
+                    desafioSecretoJogador2 = arrayDados[3];
                     sincronizaServidor();
                 }
             }

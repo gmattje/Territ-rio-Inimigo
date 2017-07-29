@@ -27,8 +27,10 @@ var tamanhoCasasH = 0;
 var timerMovimentacao = "";
 var timerParaquedista = "";
 var numDoTurno = 0;
-var turnoEminenteFimObj1 = 0;
-var turnoEminenteFimObj2 = 0;
+var turnoEminenteFimObj1Jogador1 = 0;
+var turnoEminenteFimObj1Jogador2 = 0;
+var turnoEminenteFimObj2Jogador1 = 0;
+var turnoEminenteFimObj2Jogador2 = 0;
 var turnoVencedor = "";
 var bloqueioEscolhaParaquedista = false;
 var turnoAtacante = "";
@@ -61,11 +63,19 @@ function init(){
 }
 
 function nomesDosJogadoresOffLine(){
+    //se for jogo off-line
     if(getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) {
         nomeJogadorVermelho = getUrlVars()["pl1"];
         nomeJogadorAzul = getUrlVars()["pl2"];
         $('.barraLateral.esquerda h2.timeA').html(nomeJogadorVermelho);
         $('.barraLateral.direita h2.timeB').html(nomeJogadorAzul);
+    //se for jogo on-line bloqueia desafio secreto do adversário
+    } else {
+        if(nomeJogadorVermelho == getUrlVars()["player"]){
+            $('.barraLateral .desafioSecreto.timeB').attr('onclick', 'mensagemDeErro("Você não pode ver o desafio secreto do seu adversário até o final da partida.")');
+        } else if(nomeJogadorAzul == getUrlVars()["player"]){
+            $('.barraLateral .desafioSecreto.timeA').attr('onclick', 'mensagemDeErro("Você não pode ver o desafio secreto do seu adversário até o final da partida.")');
+        }
     }
 }
 
@@ -267,42 +277,49 @@ function gravaPosicoesPecas() {
 
 function verificaFimDePartida(){
     
-    var desafiosSecretos = 0;
+    var desafiosSecretosJogador1 = 0;
+    var desafiosSecretosJogador2 = 0;
     
     $.each(pecas, function(index){
         //se a peça já não tenha sido perdida pelo exercito
         if(this.campoAtual != 0 && this.casaAtual != 0) {
             //se a peça esta no ultimo nivel do exercito inimigo
-            if((this.exercito == "baixo" && (this.casaAtual == "c1" || this.casaAtual == "e1")) || (this.exercito == "cima" && (this.casaAtual == "c10" || this.casaAtual == "e10"))){
-                if(turnoEminenteFimObj1 == 0 || turnoEminenteFimObj1 < numDoTurno) {
-                    turnoEminenteFimObj1 = numDoTurno+2;
-                } else if(turnoEminenteFimObj1 > 0 && numDoTurno == turnoEminenteFimObj1) {
+            if(this.exercito == "cima" && (this.casaAtual == "c10" || this.casaAtual == "e10")){
+                if(turnoEminenteFimObj1Jogador1 == 0 || turnoEminenteFimObj1Jogador1 < numDoTurno) {
+                    turnoEminenteFimObj1Jogador1 = numDoTurno+2;
+                } else if(turnoEminenteFimObj1Jogador1 > 0 && numDoTurno == turnoEminenteFimObj1Jogador1) {
                     fimDeJogo = true;
-                    if(this.exercito == "cima") {
-                        nomeJogadorCampeao = nomeJogadorVermelho;
-                    } else {
-                        nomeJogadorCampeao = nomeJogadorAzul;
-                    }
+                    nomeJogadorCampeao = nomeJogadorVermelho;
+                    gameOver('Vitória por invasão da base inimiga');
+                }               
+            } else if(this.exercito == "baixo" && (this.casaAtual == "c1" || this.casaAtual == "e1")){
+                if(turnoEminenteFimObj1Jogador2 == 0 || turnoEminenteFimObj1Jogador2 < numDoTurno) {
+                    turnoEminenteFimObj1Jogador2 = numDoTurno+2;
+                } else if(turnoEminenteFimObj1Jogador2 > 0 && numDoTurno == turnoEminenteFimObj1Jogador2) {
+                    fimDeJogo = true;
+                    nomeJogadorCampeao = nomeJogadorAzul;
                     gameOver('Vitória por invasão da base inimiga');
                 }               
             }
             //se suas peças estão cumprindo o desafio secreto
             if(this.exercito == "cima"){
                 if(desafioSecretoJogador1 > 0 && objetivos['campo-cima'][desafioSecretoJogador1][this.casaAtual] == this.tipo){
-                    desafiosSecretos++;
-                    if((turnoEminenteFimObj2 == 0 || turnoEminenteFimObj2 < numDoTurno) && desafiosSecretos === 2){
-                        turnoEminenteFimObj2 = numDoTurno+2;
-                    } else if(turnoEminenteFimObj2 > 0 && numDoTurno == turnoEminenteFimObj2 && desafiosSecretos === 2){   
+                    desafiosSecretosJogador1++;
+                    if((turnoEminenteFimObj2Jogador1 == 0 || turnoEminenteFimObj2Jogador1 < numDoTurno) && desafiosSecretosJogador1 === 2){
+                        turnoEminenteFimObj2Jogador1 = numDoTurno+2;
+                    } else if(turnoEminenteFimObj2Jogador1 > 0 && numDoTurno == turnoEminenteFimObj2Jogador1 && desafiosSecretosJogador1 === 2){   
+                        fimDeJogo = true;
                         nomeJogadorCampeao = nomeJogadorVermelho;
                         gameOver('Vitória por comprimento do desafio secreto');
                     }
                 }
             } else {
                 if(desafioSecretoJogador2 > 0 && objetivos['campo-baixo'][desafioSecretoJogador2][this.casaAtual] == this.tipo){
-                    desafiosSecretos++;
-                    if((turnoEminenteFimObj2 == 0 || turnoEminenteFimObj2 < numDoTurno) && desafiosSecretos === 2){
-                        turnoEminenteFimObj2 = numDoTurno+2;
-                    } else if(turnoEminenteFimObj2 > 0 && numDoTurno == turnoEminenteFimObj2 && desafiosSecretos === 2){
+                    desafiosSecretosJogador2++;
+                    if((turnoEminenteFimObj2Jogador2 == 0 || turnoEminenteFimObj2Jogador2 < numDoTurno) && desafiosSecretosJogador2 === 2){
+                        turnoEminenteFimObj2Jogador2 = numDoTurno+2;
+                    } else if(turnoEminenteFimObj2Jogador2 > 0 && numDoTurno == turnoEminenteFimObj2Jogador2 && desafiosSecretosJogador2 === 2){
+                        fimDeJogo = true;
                         nomeJogadorCampeao = nomeJogadorAzul;
                         gameOver('Vitória por comprimento do desafio secreto');
                     }
