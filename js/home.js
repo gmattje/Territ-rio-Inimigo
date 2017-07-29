@@ -1,4 +1,4 @@
-var urlServerTerritorioInimigo = "http://www.minias.com.br/testes/ti/Territorio-Inimigo-Server";
+var urlServerTerritorioInimigo = "http://www.minias.com.br/testes/ti/_server";
 var sessao = "";
 var nomeJogador1on = "";
 var nomeJogador1off = "";
