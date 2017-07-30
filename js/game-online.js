@@ -60,7 +60,7 @@ function sortesDoInicio(){
                 }
             }
         }).error(function(){
-            dadosIniciantes();
+            sortesDoInicio();
         });
     }
 }
@@ -95,7 +95,7 @@ function enviaDadosServidor(tipo){
             $.ajax({
                 method: "POST",
                 url: urlServerTerritorioInimigo + "/movimentacaoDoTurno.php",
-                data: {sessao: idSessaoServidor, pecaMovimentada: ultimaPecaMovimentada, campoDestinatario: ultimoCampoDestinatario, casaDestinataria: ultimaCasaDestinataria, ocupacaoCasa: ocupacaoUltimaCasaDestino, turno: numDoTurno}
+                data: {sessao: idSessaoServidor, pecaMovimentada: ultimaPecaMovimentada, campoDestinatario: ultimoCampoDestinatario, casaDestinataria: ultimaCasaDestinataria, ocupacaoCasa: ocupacaoUltimaCasaDestino, gasolinaTurno: gasolinaConsumidaTurno, turno: numDoTurno}
             }).error(function(){
                 enviaDadosServidor("movimentacaoDoTurno");
             });
@@ -195,6 +195,7 @@ function recebeDadosServidor(tipo){
                                 if(arrayMovimentacaoTurno[1] == 0 && arrayMovimentacaoTurno[2] == 0 && arrayMovimentacaoTurno[3] == 0 && arrayMovimentacaoTurno[4] == 0) {
                                     cancelaPossibilidadeDeMovimentacao(true);
                                 } else {
+                                    gasolinaConsumidaTurno = arrayMovimentacaoTurno[5];
                                     gravaMovimentacaoPeca(arrayMovimentacaoTurno[1], arrayMovimentacaoTurno[2], arrayMovimentacaoTurno[3], arrayMovimentacaoTurno[4], true);
                                 }
                             }

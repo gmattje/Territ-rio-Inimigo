@@ -41,7 +41,7 @@ function sorteInicial(){
     $objetivoSecretoJogador1 = rand(1, 10);
     $objetivoSecretoJogador2 = rand(1, 10);
     if($dadoJogador1 == $dadoJogador2){
-        return defineIniciante();
+        return sorteInicial();
     } else {
         return array($dadoJogador1, $dadoJogador2, $objetivoSecretoJogador1, $objetivoSecretoJogador2);
     }

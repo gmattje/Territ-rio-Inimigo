@@ -52,6 +52,7 @@ var ultimaPecaMovimentada = "";
 var ultimoCampoDestinatario = "";
 var ultimaCasaDestinataria = "";
 var ocupacaoUltimaCasaDestino = "";
+var gasolinaConsumidaTurno = 0;
 
 //função de inicialização
 function init(){
@@ -272,7 +273,6 @@ function gravaPosicoesPecas() {
             
         }
     });
-    verificaFimDePartida();
 }
 
 function verificaFimDePartida(){
@@ -286,7 +286,7 @@ function verificaFimDePartida(){
             //se a peça esta no ultimo nivel do exercito inimigo
             if(this.exercito == "cima" && (this.casaAtual == "c10" || this.casaAtual == "e10")){
                 if(turnoEminenteFimObj1Jogador1 == 0 || turnoEminenteFimObj1Jogador1 < numDoTurno) {
-                    turnoEminenteFimObj1Jogador1 = numDoTurno+2;
+                    turnoEminenteFimObj1Jogador1 = numDoTurno+1;
                 } else if(turnoEminenteFimObj1Jogador1 > 0 && numDoTurno == turnoEminenteFimObj1Jogador1) {
                     fimDeJogo = true;
                     nomeJogadorCampeao = nomeJogadorVermelho;
@@ -294,7 +294,7 @@ function verificaFimDePartida(){
                 }               
             } else if(this.exercito == "baixo" && (this.casaAtual == "c1" || this.casaAtual == "e1")){
                 if(turnoEminenteFimObj1Jogador2 == 0 || turnoEminenteFimObj1Jogador2 < numDoTurno) {
-                    turnoEminenteFimObj1Jogador2 = numDoTurno+2;
+                    turnoEminenteFimObj1Jogador2 = numDoTurno+1;
                 } else if(turnoEminenteFimObj1Jogador2 > 0 && numDoTurno == turnoEminenteFimObj1Jogador2) {
                     fimDeJogo = true;
                     nomeJogadorCampeao = nomeJogadorAzul;
@@ -306,22 +306,22 @@ function verificaFimDePartida(){
                 if(desafioSecretoJogador1 > 0 && objetivos['campo-cima'][desafioSecretoJogador1][this.casaAtual] == this.tipo){
                     desafiosSecretosJogador1++;
                     if((turnoEminenteFimObj2Jogador1 == 0 || turnoEminenteFimObj2Jogador1 < numDoTurno) && desafiosSecretosJogador1 === 2){
-                        turnoEminenteFimObj2Jogador1 = numDoTurno+2;
+                        turnoEminenteFimObj2Jogador1 = numDoTurno+1;
                     } else if(turnoEminenteFimObj2Jogador1 > 0 && numDoTurno == turnoEminenteFimObj2Jogador1 && desafiosSecretosJogador1 === 2){   
                         fimDeJogo = true;
                         nomeJogadorCampeao = nomeJogadorVermelho;
-                        gameOver('Vitória por comprimento do desafio secreto');
+                        gameOver('Vitória por cumprimento do desafio secreto');
                     }
                 }
             } else {
                 if(desafioSecretoJogador2 > 0 && objetivos['campo-baixo'][desafioSecretoJogador2][this.casaAtual] == this.tipo){
                     desafiosSecretosJogador2++;
                     if((turnoEminenteFimObj2Jogador2 == 0 || turnoEminenteFimObj2Jogador2 < numDoTurno) && desafiosSecretosJogador2 === 2){
-                        turnoEminenteFimObj2Jogador2 = numDoTurno+2;
+                        turnoEminenteFimObj2Jogador2 = numDoTurno+1;
                     } else if(turnoEminenteFimObj2Jogador2 > 0 && numDoTurno == turnoEminenteFimObj2Jogador2 && desafiosSecretosJogador2 === 2){
                         fimDeJogo = true;
                         nomeJogadorCampeao = nomeJogadorAzul;
-                        gameOver('Vitória por comprimento do desafio secreto');
+                        gameOver('Vitória por cumprimento do desafio secreto');
                     }
                 }
             }
@@ -660,6 +660,13 @@ function gravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao, espelh
     ultimoCampoDestinatario = campoDestino;
     ultimaCasaDestinataria = casaDestino;
     ocupacaoUltimaCasaDestino = ocupacao;
+    if(pecas[peca].tipo == "aviao") {
+        if(espelhoOutroJogador == false) {
+            gasolinaConsumidaTurno = quantidadeDeCasasMovimentada(peca);
+        } else {
+            pecas[peca].gasolina = pecas[peca].gasolina - gasolinaConsumidaTurno;
+        }
+    }
     
     $('.casa').removeClass('selecionada').removeClass('ataque').removeClass('defesa');
     
@@ -956,6 +963,7 @@ function preparaNovoTurno(){
         $('.barraLateral .infos .time.timeB').addClass('naVez');
     }
     exibeResultadosGerais();
+    verificaFimDePartida();
 }
 
 function mostraMensagemJogador(mensagem){
