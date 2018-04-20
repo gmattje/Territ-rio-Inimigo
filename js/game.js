@@ -742,14 +742,20 @@ function rodaAtaque(espelhoOutroJogador){
     $('#dados .dado.dado-ataque-gif').clone().appendTo('.barraLateral.campo-' + turnoAtacante + ' .dados');
     $('#dados .dado.dado-defesa-gif').clone().appendTo('.barraLateral.campo-' + turnoDefesa + ' .dados');
     //resultados dos dados
+    var tempoExibicaoResultadoAtaque = 2000;
+    var tempoExibicaoResultadoDefesa = 3000;
+    if(espelhoOutroJogador){
+        tempoExibicaoResultadoAtaque = 1000;
+        tempoExibicaoResultadoDefesa = 2000;
+    }
     setTimeout(function(){
         $('.barraLateral.campo-' + turnoAtacante + ' .dados').empty();
         $('#dados .dado.dado-ataque-' + numeroDadoAtaque).clone().appendTo('.barraLateral.campo-' + turnoAtacante + ' .dados');
-    }, 2000);
+    }, tempoExibicaoResultadoAtaque);
     setTimeout(function(){
         $('.barraLateral.campo-' + turnoDefesa + ' .dados').empty();
         $('#dados .dado.dado-defesa-' + numeroDadoDefesa).clone().appendTo('.barraLateral.campo-' + turnoDefesa + ' .dados');
-    }, 3000); 
+    }, tempoExibicaoResultadoDefesa); 
     if(espelhoOutroJogador == false){
         enviaDadosServidor("dadosDoTurno");
     }
