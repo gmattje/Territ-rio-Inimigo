@@ -745,8 +745,8 @@ function rodaAtaque(espelhoOutroJogador){
     var tempoExibicaoResultadoAtaque = 2000;
     var tempoExibicaoResultadoDefesa = 3000;
     if(espelhoOutroJogador){
-        tempoExibicaoResultadoAtaque = 1000;
-        tempoExibicaoResultadoDefesa = 2000;
+        tempoExibicaoResultadoAtaque = 500;
+        tempoExibicaoResultadoDefesa = 1500;
     }
     setTimeout(function(){
         $('.barraLateral.campo-' + turnoAtacante + ' .dados').empty();
