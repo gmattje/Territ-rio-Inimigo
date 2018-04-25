@@ -412,11 +412,12 @@ html, body {
     background-image: url(../images/arame-pattern.png);
 }
 
-#dados, #pecas {
+#dados, #pecas, #efeitos-especiais {
     display: none;
 }
 
 .peca {
+    position: relative;
     margin: 0 auto;
     width: 100%;
     height: 100%;
@@ -437,6 +438,20 @@ html, body {
 .peca img {
     max-height: 100%;
     cursor: pointer;
+}
+
+.peca.atacada-granada-aviao:before {
+    content: '';
+    width: 71px;
+    height: 100px;
+    display: block;
+    background-image: url(../images/explosao-granada-aviao.gif);
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 0;
+    left: 34%;
+    z-index: 9;
 }
 
 #palco .peca img {

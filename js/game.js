@@ -35,6 +35,7 @@ var turnoVencedor = "";
 var bloqueioEscolhaParaquedista = false;
 var turnoAtacante = "";
 var turnoDefesa = "";
+var rodandoAnimacaoAtaque = false;
 
 //pecas selecionadas
 var pecaParaReposicao = "";
@@ -763,6 +764,8 @@ function rodaAtaque(espelhoOutroJogador){
         //se ataque venceu
         if(numeroDadoAtaque > numeroDadoDefesa) {
             vencedor = "ataque";
+            //roda animação
+            animacaoAtaqueBemSucedido();
             if(pecas[pecaSelecionadaCampoDefesa].vida != '-1') {
                 pecas[pecaSelecionadaCampoDefesa].vida = pecas[pecaSelecionadaCampoDefesa].vida-pecas[pecaSelecionadaCampoAtaque].dano;
                 if(pecas[pecaSelecionadaCampoDefesa].vida <= 0) {
@@ -789,6 +792,18 @@ function rodaAtaque(espelhoOutroJogador){
     }, 4000);
 }
 
+function animacaoAtaqueBemSucedido(){
+    rodandoAnimacaoAtaque = true;
+    tipoAtacante = pecas[pecaSelecionadaCampoAtaque].tipo;
+    if(tipoAtacante == "granada" || tipoAtacante == "aviao"){
+        $('#'+pecaSelecionadaCampoDefesa).addClass('atacada-granada-aviao');
+        setTimeout(function(){
+            $('#'+pecaSelecionadaCampoDefesa).removeClass('atacada-granada-aviao');
+            rodandoAnimacaoAtaque = false;
+        }, 1000);
+    }
+}
+
 function resultadoDoTurno(resultado){
     //alert(resultado + " venceu");
     $('.barraLateral .dados').removeClass('visible');
@@ -803,26 +818,34 @@ function resultadoDoTurno(resultado){
 
 function retiraPecaDoTabuleiro(peca, espelhoOutroJogador){
     
-    ultimaPecaRetirada = peca;
+    if(rodandoAnimacaoAtaque == false){
     
-    if(pecas[ultimaPecaRetirada].campoAtual != 0 && pecas[ultimaPecaRetirada].casaAtual != 0){
-        if(casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao1 == ultimaPecaRetirada) {
-            casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao1 = "";
-        } else if(casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao2 == ultimaPecaRetirada) {
-            casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao2 = "";
+        ultimaPecaRetirada = peca;
+
+        if(pecas[ultimaPecaRetirada].campoAtual != 0 && pecas[ultimaPecaRetirada].casaAtual != 0){
+            if(casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao1 == ultimaPecaRetirada) {
+                casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao1 = "";
+            } else if(casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao2 == ultimaPecaRetirada) {
+                casas['campo-'+pecas[ultimaPecaRetirada].campoAtual][pecas[ultimaPecaRetirada].casaAtual].ocupacao2 = "";
+            }
+            $('.casa.' + pecas[ultimaPecaRetirada].casaAtual).removeClass('ocupacaoDupla');
+            $('.casa.' + pecas[ultimaPecaRetirada].casaAtual + ' #' + ultimaPecaRetirada + '.peca').remove();
+            pecas[ultimaPecaRetirada].campoAtual = 0;
+            pecas[ultimaPecaRetirada].casaAtual = 0;
         }
-        $('.casa.' + pecas[ultimaPecaRetirada].casaAtual).removeClass('ocupacaoDupla');
-        $('.casa.' + pecas[ultimaPecaRetirada].casaAtual + ' #' + ultimaPecaRetirada + '.peca').remove();
-        pecas[ultimaPecaRetirada].campoAtual = 0;
-        pecas[ultimaPecaRetirada].casaAtual = 0;
-    }
+
+        //envia servidor
+        if(espelhoOutroJogador == false){
+            enviaDadosServidor("pecaRemovidaDoTurno");
+        }
+
+        organizaPecas();
     
-    //envia servidor
-    if(espelhoOutroJogador == false){
-        enviaDadosServidor("pecaRemovidaDoTurno");
+    } else {
+        setTimeout(function(){
+            retiraPecaDoTabuleiro(peca, espelhoOutroJogador);
+        }, 1000);
     }
-    
-    organizaPecas();
 }
 
 function repoePecaNoTabuleiro(peca, casa){
