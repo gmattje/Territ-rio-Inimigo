@@ -793,12 +793,20 @@ function rodaAtaque(espelhoOutroJogador){
 }
 
 function animacaoAtaqueBemSucedido(){
-    rodandoAnimacaoAtaque = true;
-    tipoAtacante = pecas[pecaSelecionadaCampoAtaque].tipo;
-    if(tipoAtacante == "granada" || tipoAtacante == "aviao"){
-        $('#'+pecaSelecionadaCampoDefesa).addClass('atacada-granada-aviao');
+    var tipoAtacante = pecas[pecaSelecionadaCampoAtaque].tipo;
+    if(tipoAtacante == "granada" || tipoAtacante == "tanque"){
+        rodandoAnimacaoAtaque = true;
+        $('#'+pecaSelecionadaCampoDefesa).addClass('atacada-granada-tanque');
         setTimeout(function(){
-            $('#'+pecaSelecionadaCampoDefesa).removeClass('atacada-granada-aviao');
+            $('#'+pecaSelecionadaCampoDefesa).removeClass('atacada-granada-tanque');
+            rodandoAnimacaoAtaque = false;
+        }, 1000);
+    }
+    if(tipoAtacante == "aviao"){
+        rodandoAnimacaoAtaque = true;
+        $('#'+pecaSelecionadaCampoDefesa).addClass('atacada-aviao');
+        setTimeout(function(){
+            $('#'+pecaSelecionadaCampoDefesa).removeClass('atacada-aviao');
             rodandoAnimacaoAtaque = false;
         }, 1000);
     }

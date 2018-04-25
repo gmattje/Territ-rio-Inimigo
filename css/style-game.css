@@ -440,12 +440,26 @@ html, body {
     cursor: pointer;
 }
 
-.peca.atacada-granada-aviao:before {
+.peca.atacada-granada-tanque:before {
     content: '';
     width: 71px;
     height: 100px;
     display: block;
-    background-image: url(../images/explosao-granada-aviao.gif);
+    background-image: url(../images/explosao-granada-tanque.gif);
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 0;
+    left: 34%;
+    z-index: 9;
+}
+
+.peca.atacada-aviao:before {
+    content: '';
+    width: 78px;
+    height: 121px;
+    display: block;
+    background-image: url(../images/explosao-aviao.gif);
     background-position: 50% 50%;
     background-size: 100% 100%;
     position: absolute;
