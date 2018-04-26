@@ -372,7 +372,6 @@ html, body {
     float: left;
     box-sizing: border-box;
     background-size: 100% 100%;
-    overflow: hidden;
 }
 
 #palco .campo .casa.selecionavel {
@@ -449,22 +448,22 @@ html, body {
     background-position: 50% 50%;
     background-size: 100% 100%;
     position: absolute;
-    top: 0;
-    left: 34%;
+    top: -17px;
+    left: 32%;
     z-index: 9;
 }
 
 .peca.atacada-aviao:before {
     content: '';
-    width: 78px;
-    height: 121px;
+    width: 60px;
+    height: 73px;
     display: block;
     background-image: url(../images/explosao-aviao.gif);
     background-position: 50% 50%;
     background-size: 100% 100%;
     position: absolute;
-    top: 0;
-    left: 34%;
+    bottom: 0;
+    left: 32%;
     z-index: 9;
 }
 
