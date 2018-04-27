@@ -368,7 +368,9 @@ html, body {
     border: 1px dotted #a59173;
     width: 14%;
     height: 60px;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
     float: left;
     box-sizing: border-box;
     background-size: 100% 100%;
