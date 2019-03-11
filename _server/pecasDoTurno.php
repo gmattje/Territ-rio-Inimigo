@@ -8,6 +8,6 @@ $pecaDefesa = $_REQUEST['pecaDefesa'];
 $idUnico = md5(time());
     
 //criar arquivo
-$fp = fopen(__DIR__ ."/jogos/".$sessao."/pecasTurno_".$turno.".txt", "w");
+$fp = fopen("jogos/".$sessao."/pecasTurno_".$turno.".txt", "w");
 fwrite($fp, $idUnico.",".$pecaAtaque.",".$pecaDefesa);
 fclose($fp);

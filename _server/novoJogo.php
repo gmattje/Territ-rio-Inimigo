@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 //se veio nome do jogador 1
 if(isset($_REQUEST['player1'])) {
@@ -9,10 +9,10 @@ if(isset($_REQUEST['player1'])) {
     $idNovaSessao = md5(time());
 
     //criando diretorio da sessao
-    mkdir(__DIR__ ."/jogos/".$idNovaSessao, 0777);
+    mkdir("jogos/".$idNovaSessao, 0777, true);
 
     //criar arquivo jogador 1
-    $fp = fopen(__DIR__ ."/jogos/".$idNovaSessao."/jogador1.txt", "w");
+    $fp = fopen("jogos/".$idNovaSessao."/jogador1.txt", "w");
     fwrite($fp, $nomeJogador1);
     fclose($fp);
 
@@ -23,13 +23,13 @@ if(isset($_REQUEST['player1'])) {
     $nomeJogador2 = $_REQUEST['player2'];
     
     //criar arquivo jogador 2
-    $fp = fopen(__DIR__ ."/jogos/".$idNovaSessao."/jogador2.txt", "w");
+    $fp = fopen("jogos/".$idNovaSessao."/jogador2.txt", "w");
     fwrite($fp, $nomeJogador2);
     fclose($fp);
     
     //joga dados para definir o iniciante
     $sorteInicial = implode(",", sorteInicial());
-    $fp = fopen(__DIR__ ."/jogos/".$idNovaSessao."/sorteInicial.txt", "w");
+    $fp = fopen("jogos/".$idNovaSessao."/sorteInicial.txt", "w");
     fwrite($fp, $sorteInicial);
     fclose($fp);
     

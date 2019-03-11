@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 
 $hojeMenosDois = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")-2, date("Y")));
 
-$dir = __DIR__ .'/jogos';
+$dir = 'jogos';
 $diretorios = array_diff(scandir($dir), array('.','..'));
 
 foreach ($diretorios as $key => $nomeDiretorio) {
@@ -14,11 +14,11 @@ foreach ($diretorios as $key => $nomeDiretorio) {
     //se não lista jogadores do jogo        
     } else {
         //se tiver 2 jogadores também não mostra
-        if(file_exists(__DIR__ ."/jogos/".$nomeDiretorio."/jogador1.txt") && file_exists(__DIR__ ."/jogos/".$nomeDiretorio."/jogador2.txt")){
+        if(file_exists("jogos/".$nomeDiretorio."/jogador1.txt") && file_exists("jogos/".$nomeDiretorio."/jogador2.txt")){
             unset($diretorios[$key]);
         //se existe apenas 1 jogador aguardando            
         } else {
-            $fp = fopen(__DIR__ ."/jogos/".$nomeDiretorio."/jogador1.txt", "r");
+            $fp = fopen("jogos/".$nomeDiretorio."/jogador1.txt", "r");
             $jogador = fgets($fp, 4096);
             fclose ($fp);
             $diretorios[$key] = $diretorios[$key]." (".$jogador.")";
