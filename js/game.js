@@ -152,7 +152,7 @@ function reorganizaTabuleiro(){
     var tamanhoCampoH = ($('#palco').height()/2)-($('#titulo-game').height()/2)-15-20 //desconta a metade dos tamanhos da divisao, titulo, painel geral e coordenadas
     marginLeftCampos = (getDocWidth()-300-tamanhoCampoW)/2;
     tamanhoDivisaoH = $('#palco .divisao').height();
-    tamanhoCasasW = (tamanhoCampoW/7)-(40/7)-1;
+    tamanhoCasasW = (tamanhoCampoW/7)-(40/7)-2;
     tamanhoCasasH = tamanhoCampoH/5;
     $('#palco .campo .coordenada.letra').css('width',tamanhoCasasW+'px');
     $('#palco .campo .coordenada.numeral').css('height',tamanhoCasasH+'px').css('line-height',tamanhoCasasH+'px');
@@ -997,6 +997,9 @@ function preparaNovoTurno(){
     if(turnoAtacante == "cima"){
         $('.barraLateral .infos .time.timeA').addClass('naVez');
     } else {
+        if(getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
+            jogarIA();
+        }
         $('.barraLateral .infos .time.timeB').addClass('naVez');
     }
     exibeResultadosGerais();

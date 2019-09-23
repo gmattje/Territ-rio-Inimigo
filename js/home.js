@@ -82,10 +82,10 @@ function validaDados(){
     if(sessao == ""){
         alert('Antes de começar, defina a sessão');
         return false;
-    } else if(sessao == "novo-on" && nomeJogador1on == "") {
+    } else if((sessao == "novo-on" || sessao == "novo-ia") && nomeJogador1on == "") {
         alert('Antes de começar, digite o seu nome');
         return false;
-    } else if(sessao != "novo-on" && sessao != "novo-off" && nomeJogador1on == "") { 
+    } else if(sessao != "novo-on" && sessao != "novo-off" && sessao != "novo-ia" && nomeJogador1on == "") { 
         alert('Antes de começar, digite o seu nome');
         return false;    
     } else if(sessao == "novo-off" && (nomeJogador1off == "" || nomeJogador2off == "")){
@@ -97,8 +97,8 @@ function validaDados(){
 }
 
 function preparaSessao(){
-    //se for para criar novo jogo on-line
-    if(sessao == "novo-off"){
+    //se for para criar novo jogo off-line
+    if(sessao == "novo-off" || sessao == "novo-ia"){
         iniciaGame();
     //se for para criar novo jogo on-line
     } else if(sessao == "novo-on"){
@@ -160,6 +160,8 @@ function cancelaAguardandoOutroJogador(){
 function iniciaGame(){
     if(sessao == "novo-off"){
         window.location.href = "game.html?pl1=" + nomeJogador1off +"&pl2=" + nomeJogador2off;
+    } else if(sessao == "novo-ia"){
+        window.location.href = "game.html?pl1=" + nomeJogador1on +"&pl2=Computador"; 
     } else {
         window.location.href = "game.html?sessao=" + sessao + "&player=" + nomeJogador1on;
     }
