@@ -1,12 +1,20 @@
 var IAEmVantagem = false;
 var pecasQuePodemAtacar = [];
+var pecasQuePodemMovimentar = [];
 var decisaoDaIA = "";
 
-function jogarIA(){
+function jogarIA(acao){
+    pecasQuePodemAtacar = [];
+    pecasQuePodemMovimentar = [];
     verificaVantagem();
     console.log("IA em vantagem: " + IAEmVantagem);
-    verificarPossibilidadesDeAtaque(null);
-    console.log("IA pode atacar com: " + pecasQuePodemAtacar);
+    if(acao == "action1"){
+        verificarPossibilidadesDeAtaque(null);
+        console.log("IA pode atacar com: " + pecasQuePodemAtacar);
+    } else if(acao == "action2"){
+        verificarPossibilidadesDeMovimentacao();
+        console.log("IA pode movimentar com: " + pecasQuePodemMovimentar);
+    }
     arvoreDeDecisao();
     console.log("IA decidiu: " + decisaoDaIA);
     executaAcao();
@@ -58,6 +66,11 @@ function verificaVantagem(){
 
 }
 
+/* verifica quais peças podem movimentar-se */
+function verificarPossibilidadesDeMovimentacao(){
+    pecasQuePodemMovimentar = [];
+}
+
 /* verifica quais peças podem atacar */
 function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
     pecasQuePodemAtacar = [];
@@ -97,6 +110,7 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
 
 /* executa ação decidida pela IA */
 function executaAcao(){
+    //se decisao da IA é atacar...
     if(decisaoDaIA == "atacar"){
         var casaMaisAvancada = 0;
         var pecasQuePodemAtacarFiltradas = [];
@@ -163,6 +177,14 @@ function executaAcao(){
         });
         console.log("selecionado para ser atacada: " + pecaASerAtacada);
         rodaAtaque(false);
+        
+    //...mas se decisão for se movimentar    
+    } else if(decisaoDaIA == "movimentar") {
+     
+    // ou se para finalizar    
+    } else if(decisaoDaIA == "finalizar") {
+        cancelaPossibilidadeDeMovimentacao(false);
+        console.log("IA finalizou turno");
     }
 }
 
@@ -172,7 +194,9 @@ function arvoreDeDecisao(){
     //se tiver como atacar
     if(pecasQuePodemAtacar.length > 0){
         decisaoDaIA = "atacar";
-    } else {
+    } else if(pecasQuePodemMovimentar.length > 0) {
         decisaoDaIA = "movimentar";
-    }    
+    } else {
+        decisaoDaIA = "finalizar";
+    }   
 }

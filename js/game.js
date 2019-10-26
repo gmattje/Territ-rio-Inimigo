@@ -255,8 +255,11 @@ function gravaPosicoesPecas() {
                 this.alcanceAtualY = y1Alcance;
                 this.alcanceAtualW = (x2Alcance-x1Alcance)+tamanhoCasasW;
                 this.alcanceAtualH = (y2Alcance-y1Alcance)+tamanhoCasasH;
+                //correções alcance 1 em decorrência das bordas das DIVs
+                if(alcance == 1) {
+                    this.alcanceAtualX = this.alcanceAtualX-2;
                 //correções pela proximidade com a divisão
-                if(alcance == 2) {
+                } else if(alcance == 2) {
                     if(this.casaAtual == "a4" || this.casaAtual == "b4" || this.casaAtual == "c4" || this.casaAtual == "d4" || this.casaAtual == "e4" || this.casaAtual == "f4" || this.casaAtual == "g4" || this.casaAtual == "a7" || this.casaAtual == "b7" || this.casaAtual == "c7" || this.casaAtual == "d7" || this.casaAtual == "e7" || this.casaAtual == "f7" || this.casaAtual == "g7"){
                         this.alcanceAtualH = this.alcanceAtualH+tamanhoDivisaoH;
                         if(this.casaAtual == "a7" || this.casaAtual == "b7" || this.casaAtual == "c7" || this.casaAtual == "d7" || this.casaAtual == "e7" || this.casaAtual == "f7" || this.casaAtual == "g7"){
@@ -788,6 +791,9 @@ function rodaAtaque(espelhoOutroJogador){
         $('.casa').removeClass('selecionada').removeClass('ataque').removeClass('defesa');
         setTimeout(function(){
             resultadoDoTurno(vencedor);
+            if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
+                jogarIA('action2');
+            }
         },100);
     }, 4000);
 }
@@ -998,7 +1004,7 @@ function preparaNovoTurno(){
         $('.barraLateral .infos .time.timeA').addClass('naVez');
     } else {
         if(getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
-            jogarIA();
+            jogarIA('action1');
         }
         $('.barraLateral .infos .time.timeB').addClass('naVez');
     }
