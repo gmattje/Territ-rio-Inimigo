@@ -68,7 +68,21 @@ function verificaVantagem(){
 
 /* verifica quais peças podem movimentar-se */
 function verificarPossibilidadesDeMovimentacao(){
-    pecasQuePodemMovimentar = [];
+//    pecasQuePodemMovimentar = [];
+//    $.each(pecas, function(index){
+//        //cada peça em jogo do exército
+//        if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.tiros != "0") {
+//            selecionaPecaParaTurno(index, false);
+//            //verifica cada peça inimiga para saber se está no campo de ataque
+//            $.each(pecas, function(index2){
+//                if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
+//                    if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
+//                        pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
+//                    }
+//                }
+//            });
+//        }
+//    });
 }
 
 /* verifica quais peças podem atacar */

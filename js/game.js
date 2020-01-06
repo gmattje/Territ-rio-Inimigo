@@ -570,12 +570,86 @@ function ativaControlesMouse(){
             }
         });
         //com todos os dados valida movimentacao
-        validaMovimentacaoPeca(idPecaMovimentada, campo, casa);
+        var validaMovimento = validaMovimentacaoPeca(idPecaMovimentada, campo, casa);
+        if(validaMovimento != true){
+            retornaMovimentoDaPeca(idPecaMovimentada, validaMovimento);
+        } else {
+            var movimentos = quantidadeDeCasasMovimentada(idPecaMovimentada);
+            if(pecas[idPecaMovimentada].tipo == "aviao") {
+                if(pecas[idPecaMovimentada].gasolina >= movimentos) {
+                    if(casas['campo-' + campo][casa].ocupacao1 != "" && casas['campo-' + campo][casa].ocupacao2 == "") {
+                        pecas[idPecaMovimentada].gasolina = pecas[idPecaMovimentada].gasolina - movimentos;
+                        gravaMovimentacaoPeca(idPecaMovimentada, campo, casa, 'ocupacao2', false);
+                    } else if(casas['campo-' + campo][casa].ocupacao1 == "") {
+                        pecas[idPecaMovimentada].gasolina = pecas[idPecaMovimentada].gasolina - movimentos;
+                        gravaMovimentacaoPeca(idPecaMovimentada, campo, casa, 'ocupacao1', false);
+                    }
+                }
+            }
+            //validacoes de outras pecas
+            if(pecas[idPecaMovimentada].tipo != "sniper" && pecas[idPecaMovimentada].tipo != "aviao") {
+                if(movimentos == 1) {
+                    if(casas['campo-' + campo][casa].tipo != "montanha" && casas['campo-' + campo][casa].tipo != "base"){
+                        if(casas['campo-' + campo][casa].ocupacao1 != "" && pecas[casas['campo-' + campo][casa].ocupacao1].tipo == "aviao"){
+                            gravaMovimentacaoPeca(idPecaMovimentada, campo, casa, 'ocupacao2', false);    
+                        } else {
+                            gravaMovimentacaoPeca(idPecaMovimentada, campo, casa, 'ocupacao1', false);
+                        }
+                    }
+                }
+            }
+        }
     });
     
 }
 
 function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
+    validado = true;
+    if (bloqueioEscolhaParaquedista == true) {
+        validado = 'O jogo está suspenso para escolha do pouso do paraquedista';
+    } else if (pecas[peca].exercito != turnoAtacante) {    
+        validado = 'Você só pode mover uma peça em seu turno';
+    } else {
+        //validacoes do sniper
+        if(pecas[peca].tipo == "sniper") {
+            validado = 'Os atiradores de elite não podem se mover';
+        }
+        //validacoes do aviao
+        if(pecas[peca].tipo == "aviao") {
+            //valida quantidade de casas movimentadas
+            var movimentos = quantidadeDeCasasMovimentada(peca);
+            if(pecas[peca].gasolina >= movimentos) {
+                //verifica casa livre
+                if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
+                    validado = 'Esta casa está ocupada';
+                } 
+            } else {
+                validado = 'Este avião não tem gasolina o suficiente';
+            }
+        }
+        //validacoes de outras pecas
+        if(pecas[peca].tipo != "sniper" && pecas[peca].tipo != "aviao") {
+            //valida quantidade de casas movimentadas
+            var movimentos = quantidadeDeCasasMovimentada(peca);
+            if(movimentos == 1) {
+                if(casas['campo-' + campoDestino][casaDestino].tipo == "montanha"){
+                    validado = 'Esta peça não pode se mover sobre montanhas';
+                } else if(casas['campo-' + campoDestino][casaDestino].tipo == "base"){
+                    validado = 'Esta peça não pode se mover sobre as bases';
+                } else {
+                    if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo != "aviao"){
+                        validado = 'Esta casa está ocupada';
+                    }
+                }
+            } else {
+                validado = 'Este peça pode mover-se uma casa por vez';
+            }
+        }
+        return validado;
+    }
+}
+
+function validaMovimentacaoPecaOLD(peca, campoDestino, casaDestino){
     if (vezDoPlayer == false) {
         retornaMovimentoDaPeca(peca, 'Não é a sua vez de jogar');
     } else if (bloqueioEscolhaParaquedista == true) {
@@ -789,12 +863,7 @@ function rodaAtaque(espelhoOutroJogador){
             }
         }
         $('.casa').removeClass('selecionada').removeClass('ataque').removeClass('defesa');
-        setTimeout(function(){
-            resultadoDoTurno(vencedor);
-            if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
-                jogarIA('action2');
-            }
-        },100);
+        resultadoDoTurno(vencedor);
     }, 4000);
 }
 
@@ -827,6 +896,9 @@ function resultadoDoTurno(resultado){
         liberaParaquedista();
     } else {
         liberaMovimentacao();
+        if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
+            jogarIA('action2');
+        }
     }
 }
 
