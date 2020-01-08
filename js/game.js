@@ -642,7 +642,7 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
                     }
                 }
             } else {
-                validado = 'Este peça pode mover-se uma casa por vez';
+                validado = 'Esta peça pode mover-se uma casa por vez';
             }
         }
         return validado;

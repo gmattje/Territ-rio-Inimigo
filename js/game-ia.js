@@ -68,21 +68,24 @@ function verificaVantagem(){
 
 /* verifica quais peças podem movimentar-se */
 function verificarPossibilidadesDeMovimentacao(){
-//    pecasQuePodemMovimentar = [];
-//    $.each(pecas, function(index){
-//        //cada peça em jogo do exército
-//        if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.tiros != "0") {
-//            selecionaPecaParaTurno(index, false);
-//            //verifica cada peça inimiga para saber se está no campo de ataque
-//            $.each(pecas, function(index2){
-//                if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
-//                    if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
-//                        pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
-//                    }
-//                }
-//            });
-//        }
-//    });
+    pecasQuePodemMovimentar = [];
+    $.each(pecas, function(index){
+        //cada peça em jogo do exército
+        if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.vida != '-1') {
+            //verifica cada casa para saber se peça pode se movimentar
+            $.each(casas['campo-cima'], function(index2){
+                if(validaMovimentacaoPeca(index, 'cima', index2) === true){
+                    pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
+                }
+            });
+            $.each(casas['campo-baixo'], function(index2){
+                //console.log(validaMovimentacaoPeca(index, 'baixo', index2));
+                if(validaMovimentacaoPeca(index, 'baixo', index2) === true){
+                    pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
+                }
+            });
+        }
+    });
 }
 
 /* verifica quais peças podem atacar */
