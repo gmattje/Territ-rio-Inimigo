@@ -25,7 +25,7 @@ function numeroCasaOcupada(quadrante){
     var casaAtual = quadrante.split('');
     var casaOcupada = casaAtual[1];
     if(casaAtual[2] != undefined){
-        casaOcupada =+ casaAtual[2];
+        casaOcupada += casaAtual[2];
     }
     return casaOcupada;
 }
@@ -79,7 +79,6 @@ function verificarPossibilidadesDeMovimentacao(){
                 }
             });
             $.each(casas['campo-baixo'], function(index2){
-                //console.log(validaMovimentacaoPeca(index, 'baixo', index2));
                 if(validaMovimentacaoPeca(index, 'baixo', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                     pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
                 }
@@ -127,18 +126,21 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
 
 /* executa ação decidida pela IA */
 function executaAcao(){
+    var casaMaisAvancada = 0;
+    var pecasQuePodemAtacarFiltradas = [];
+    var pecasQuePodemMovimentarFiltradas = [];
+    var pecasAdversariasMaisAvancadas = [];
     //se decisao da IA é atacar...
     if(decisaoDaIA == "atacar"){
-        var casaMaisAvancada = 0;
-        var pecasQuePodemAtacarFiltradas = [];
-        var pecasAdversariasMaisAvancadas = [];
+        pecasQuePodemAtacarFiltradas = [];
+        pecasAdversariasMaisAvancadas = [];
         //se IA estiver com vantagem
         if(IAEmVantagem){
             //escolhe a melhor peça que irá atacar, no caso deverá ser a que estiver mais próxima do objetivo
             casaMaisAvancada = 10;
             $.each(pecasQuePodemAtacar, function(index, value){
                 var casaOcupada = numeroCasaOcupada(pecas[value].casaAtual);
-                if(casaOcupada < casaMaisAvancada){
+                if(parseInt(casaOcupada) < parseInt(casaMaisAvancada)){
                     casaMaisAvancada = casaOcupada;
                 }
             });
@@ -146,7 +148,7 @@ function executaAcao(){
             //elimina peça que não esteja na linha mais avançada
             $.each(pecasQuePodemAtacar, function(index, value){
                 var casaOcupada = numeroCasaOcupada(pecas[value].casaAtual);
-                if(casaOcupada == casaMaisAvancada){
+                if(parseInt(casaOcupada) == parseInt(casaMaisAvancada)){
                     pecasQuePodemAtacarFiltradas[pecasQuePodemAtacarFiltradas.length] = value;
                 }
             });
@@ -197,7 +199,42 @@ function executaAcao(){
         
     //...mas se decisão for se movimentar    
     } else if(decisaoDaIA == "movimentar") {
-     
+        pecasQuePodemMovimentarFiltradas = [];
+        pecasAdversariasMaisAvancadas = [];
+        //escolhe a melhor peça que irá movimentar, no caso deverá ser a que estiver mais próxima do objetivo
+        casaMaisAvancada = 10;
+        $.each(pecasQuePodemMovimentar, function(index, value){
+            var casaOcupada = numeroCasaOcupada(pecas[value].casaAtual);
+            if(parseInt(casaOcupada) < parseInt(casaMaisAvancada)){
+                casaMaisAvancada = casaOcupada;
+            }
+        });
+        console.log("casa mais avançada ocupada pela IA: " + casaMaisAvancada);
+        //elimina peça que não esteja na linha mais avançada
+        $.each(pecasQuePodemMovimentar, function(index, value){
+            var casaOcupada = numeroCasaOcupada(pecas[value].casaAtual);
+            if(parseInt(casaOcupada) == parseInt(casaMaisAvancada)){
+                pecasQuePodemMovimentarFiltradas[pecasQuePodemMovimentarFiltradas.length] = value;
+            }
+        });
+        console.log("melhores peças para movimentar: " + pecasQuePodemMovimentarFiltradas);
+        //seleciona uma peça aleatória para mover-se
+        var aleatoria = Math.floor(Math.random() * pecasQuePodemMovimentarFiltradas.length);
+        var pecaMovente = pecasQuePodemMovimentarFiltradas[aleatoria];
+        console.log("selecionado para mover-se: " + pecaMovente);
+        //verifica qual casa será ocupada
+        var casaASerOcupada = "";
+        $.each(casas['campo-cima'], function(index2){
+            if(validaMovimentacaoPeca(pecaMovente, 'cima', index2) === true && casaASerOcupada == ""){
+                casaASerOcupada = index2;
+            }
+        });
+        $.each(casas['campo-baixo'], function(index2){
+            if(validaMovimentacaoPeca(pecaMovente, 'baixo', index2) === true && casaASerOcupada == ""){
+                casaASerOcupada = index2;
+            }
+        });
+        console.log("casa a ser ocupada: " + casaASerOcupada);
     // ou se para finalizar    
     } else if(decisaoDaIA == "finalizar") {
         cancelaPossibilidadeDeMovimentacao(false);
