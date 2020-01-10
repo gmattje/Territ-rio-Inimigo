@@ -71,16 +71,16 @@ function verificarPossibilidadesDeMovimentacao(){
     pecasQuePodemMovimentar = [];
     $.each(pecas, function(index){
         //cada peça em jogo do exército
-        if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.vida != '-1') {
+        if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo") {
             //verifica cada casa para saber se peça pode se movimentar
             $.each(casas['campo-cima'], function(index2){
-                if(validaMovimentacaoPeca(index, 'cima', index2) === true){
+                if(validaMovimentacaoPeca(index, 'cima', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                     pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
                 }
             });
             $.each(casas['campo-baixo'], function(index2){
                 //console.log(validaMovimentacaoPeca(index, 'baixo', index2));
-                if(validaMovimentacaoPeca(index, 'baixo', index2) === true){
+                if(validaMovimentacaoPeca(index, 'baixo', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                     pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
                 }
             });

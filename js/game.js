@@ -574,7 +574,7 @@ function ativaControlesMouse(){
         if(validaMovimento != true){
             retornaMovimentoDaPeca(idPecaMovimentada, validaMovimento);
         } else {
-            var movimentos = quantidadeDeCasasMovimentada(idPecaMovimentada);
+            var movimentos = quantidadeDeCasasMovimentada(idPecaMovimentada, casa);
             if(pecas[idPecaMovimentada].tipo == "aviao") {
                 if(pecas[idPecaMovimentada].gasolina >= movimentos) {
                     if(casas['campo-' + campo][casa].ocupacao1 != "" && casas['campo-' + campo][casa].ocupacao2 == "") {
@@ -617,7 +617,7 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
         //validacoes do aviao
         if(pecas[peca].tipo == "aviao") {
             //valida quantidade de casas movimentadas
-            var movimentos = quantidadeDeCasasMovimentada(peca);
+            var movimentos = quantidadeDeCasasMovimentada(peca, casaDestino);
             if(pecas[peca].gasolina >= movimentos) {
                 //verifica casa livre
                 if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
@@ -630,7 +630,7 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
         //validacoes de outras pecas
         if(pecas[peca].tipo != "sniper" && pecas[peca].tipo != "aviao") {
             //valida quantidade de casas movimentadas
-            var movimentos = quantidadeDeCasasMovimentada(peca);
+            var movimentos = quantidadeDeCasasMovimentada(peca, casaDestino);
             if(movimentos == 1) {
                 if(casas['campo-' + campoDestino][casaDestino].tipo == "montanha"){
                     validado = 'Esta peça não pode se mover sobre montanhas';
@@ -649,67 +649,11 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
     }
 }
 
-function validaMovimentacaoPecaOLD(peca, campoDestino, casaDestino){
-    if (vezDoPlayer == false) {
-        retornaMovimentoDaPeca(peca, 'Não é a sua vez de jogar');
-    } else if (bloqueioEscolhaParaquedista == true) {
-        retornaMovimentoDaPeca(peca, 'O jogo está suspenso para escolha do pouso do paraquedista');
-    } else if (pecas[peca].exercito != turnoAtacante) {    
-        retornaMovimentoDaPeca(peca, 'Você só pode mover uma peça em seu turno');
-    } else {
-        //validacoes do sniper
-        if(pecas[peca].tipo == "sniper") {
-            retornaMovimentoDaPeca(peca, 'Os atiradores de elite não podem se mover');
-        }
-        //validacoes do aviao
-        if(pecas[peca].tipo == "aviao") {
-            //valida quantidade de casas movimentadas
-            var movimentos = quantidadeDeCasasMovimentada(peca);
-            if(pecas[peca].gasolina >= movimentos) {
-                //verifica casa livre
-                if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
-                    retornaMovimentoDaPeca(peca, 'Esta casa está ocupada');
-                } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 == "") {
-                    pecas[peca].gasolina = pecas[peca].gasolina - movimentos;
-                    gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2', false);
-                } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 == "") {
-                    pecas[peca].gasolina = pecas[peca].gasolina - movimentos;
-                    gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1', false);
-                }
-            } else {
-                retornaMovimentoDaPeca(peca, 'Este avião não tem gasolina o suficiente');
-            }
-        }
-        //validacoes de outras pecas
-        if(pecas[peca].tipo != "sniper" && pecas[peca].tipo != "aviao") {
-            //valida quantidade de casas movimentadas
-            var movimentos = quantidadeDeCasasMovimentada(peca);
-            if(movimentos == 1) {
-                if(casas['campo-' + campoDestino][casaDestino].tipo == "montanha"){
-                    retornaMovimentoDaPeca(peca, 'Esta peça não pode se mover sobre montanhas');
-                } else if(casas['campo-' + campoDestino][casaDestino].tipo == "base"){
-                    retornaMovimentoDaPeca(peca, 'Esta peça não pode se mover sobre as bases');
-                } else {
-                    if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo != "aviao"){
-                        retornaMovimentoDaPeca(peca, 'Esta casa está ocupada');
-                    } else if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo == "aviao"){
-                        gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao2', false);    
-                    } else {
-                        gravaMovimentacaoPeca(peca, campoDestino, casaDestino, 'ocupacao1', false);
-                    }
-                }
-            } else {
-                retornaMovimentoDaPeca(peca, 'Este peça pode mover-se uma casa por vez');
-            }
-        }
-    }
-}
-
-function quantidadeDeCasasMovimentada(peca) {
+function quantidadeDeCasasMovimentada(peca, casaFinal) {
     var widthCasa = Math.round(tamanhoCasasW);
     var heightCasa = Math.round(tamanhoCasasH);
-    var xFinal = Math.round($('#' + peca + '.peca').position().left);
-    var yFinal = Math.round($('#' + peca + '.peca').offset().top);
+    var xFinal = Math.round($('.casa.' + casaFinal).position().left);
+    var yFinal = Math.round($('.casa.' + casaFinal).offset().top);
     var xAtual = Math.round(pecas[peca].xAtual);
     var yAtual = Math.round(pecas[peca].yAtual);
     
@@ -740,7 +684,7 @@ function gravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao, espelh
     ocupacaoUltimaCasaDestino = ocupacao;
     if(pecas[peca].tipo == "aviao") {
         if(espelhoOutroJogador == false) {
-            gasolinaConsumidaTurno = quantidadeDeCasasMovimentada(peca);
+            gasolinaConsumidaTurno = quantidadeDeCasasMovimentada(peca, casaDestino);
         } else {
             pecas[peca].gasolina = pecas[peca].gasolina - gasolinaConsumidaTurno;
         }
