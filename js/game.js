@@ -498,7 +498,7 @@ function pecaEstaNoCampoDeAtaque(peca) {
     var peca_x2 = Math.round(pecas[peca].xAtual+tamanhoCasasW);
     var peca_y1 = Math.round(pecas[peca].yAtual);
     var peca_y2 = Math.round(pecas[peca].yAtual+tamanhoCasasH);
-    if(raio_x1 <= (peca_x1 + marginLeftCampos) && raio_y1 <= (peca_y1 + tamanhoDivisaoH) && raio_y2 > peca_y1 && raio_x2 > (peca_x1 + marginLeftCampos) && (raio_y2 + tamanhoDivisaoH) >= peca_y2) {
+    if(pecas[peca].tipo != "aviao" && raio_x1 <= (peca_x1 + marginLeftCampos) && raio_y1 <= (peca_y1 + tamanhoDivisaoH) && raio_y2 > peca_y1 && raio_x2 > (peca_x1 + marginLeftCampos) && (raio_y2 + tamanhoDivisaoH) >= peca_y2) {
         return true;
     } else {
         return false;
@@ -840,6 +840,8 @@ function resultadoDoTurno(resultado){
     } else {
         liberaMovimentacao();
         if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
+            gravaPosicoesPecas();
+            organizaPecas();
             jogarIA('action2');
         }
     }

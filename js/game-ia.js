@@ -1,4 +1,5 @@
 var IAEmVantagem = false;
+var casaMaisAvancada = 0;
 var pecasQuePodemAtacar = [];
 var pecasQuePodemMovimentar = [];
 var decisaoDaIA = "";
@@ -36,7 +37,7 @@ function verificaVantagem(){
     
     IAEmVantagem = true;
     
-    //primeiro testa de tem peça do inimigo em seu território
+    //primeiro testa se tem peça do inimigo em seu território
     $.each(pecas, function(index){
         if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
             var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
@@ -62,6 +63,23 @@ function verificaVantagem(){
         });
         if(qtdPecasExercitoCima > qtdPecasExercitoBaixo){
             IAEmVantagem = false;
+        }
+    }
+    
+    //se está na casas da 3ª ou 2ª linha considera vantagem
+    if(!IAEmVantagem){
+        casaMaisAvancada = 10;
+        $.each(pecas, function(index){
+            //cada peça em jogo do exército
+            if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.tiros != "0") {
+                var casaOcupada = numeroCasaOcupada(this.casaAtual);
+                if(parseInt(casaOcupada) < parseInt(casaMaisAvancada)){
+                    casaMaisAvancada = casaOcupada;
+                }
+            }
+        });
+        if(parseInt(casaMaisAvancada) <= 3){
+            IAEmVantagem = true;
         }
     }
 
@@ -127,7 +145,6 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
 
 /* executa ação decidida pela IA */
 function executaAcao(){
-    var casaMaisAvancada = 0;
     var pecasQuePodemAtacarFiltradas = [];
     var pecasQuePodemMovimentarFiltradas = [];
     var pecasAdversariasMaisAvancadas = [];
@@ -145,7 +162,7 @@ function executaAcao(){
                     casaMaisAvancada = casaOcupada;
                 }
             });
-            console.log("casa mais avançada ocupada pela IA: " + casaMaisAvancada);
+            console.log("casa mais avançada que pode atacar ocupada pela IA: " + casaMaisAvancada);
             //elimina peça que não esteja na linha mais avançada
             $.each(pecasQuePodemAtacar, function(index, value){
                 var casaOcupada = numeroCasaOcupada(pecas[value].casaAtual);
@@ -159,7 +176,7 @@ function executaAcao(){
             $.each(pecas, function(index){
                 if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
                     var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-                    if(casaOcupada > casaMaisAvancada){
+                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada)){
                         casaMaisAvancada = casaOcupada;
                     }
                 }
@@ -169,7 +186,7 @@ function executaAcao(){
             $.each(pecas, function(index){
                 if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
                     var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-                    if(casaOcupada == casaMaisAvancada){
+                    if(parseInt(casaOcupada) == parseInt(casaMaisAvancada)){
                         pecasAdversariasMaisAvancadas[pecasAdversariasMaisAvancadas.length] = index;
                     }
                 }
@@ -178,6 +195,17 @@ function executaAcao(){
             //escolhe peças da IA que podem atacar essas peças adversárias
             verificarPossibilidadesDeAtaque(pecasAdversariasMaisAvancadas);
             pecasQuePodemAtacarFiltradas = pecasQuePodemAtacar;
+        }
+        //se tiver mais de 3, remove snipers
+        if(pecasQuePodemAtacarFiltradas.length > 3){
+            var indexSniper1 = pecasQuePodemAtacarFiltradas.indexOf('sniper1CampoBaixo');
+            if(indexSniper1 > -1){
+                pecasQuePodemAtacarFiltradas.splice(indexSniper1, 1);
+            }
+            var indexSniper2 = pecasQuePodemAtacarFiltradas.indexOf('sniper2CampoBaixo');
+            if(indexSniper2 > -1){
+                pecasQuePodemAtacarFiltradas.splice(indexSniper2, 1);
+            }
         }
         console.log("melhores peças para atacar: " + pecasQuePodemAtacarFiltradas);
         //seleciona uma peça aleatória para atacar
@@ -210,7 +238,7 @@ function executaAcao(){
                 casaMaisAvancada = casaOcupada;
             }
         });
-        console.log("casa mais avançada ocupada pela IA: " + casaMaisAvancada);
+        console.log("casa mais avançada que pode mover-se ocupada pela IA: " + casaMaisAvancada);
         //elimina peça que não esteja na linha mais avançada
         $.each(pecasQuePodemMovimentar, function(index, value){
             var casaOcupada = numeroCasaOcupada(pecas[value].casaAtual);
@@ -224,20 +252,33 @@ function executaAcao(){
         var pecaMovente = pecasQuePodemMovimentarFiltradas[aleatoria];
         console.log("selecionado para mover-se: " + pecaMovente);
         //verifica qual casa será ocupada
+        //se estiver em vatagem prefere avançar a recuar
         var campoASerOcupado = "";
+        var casaASerOcupadaProvisoria = "";
         var casaASerOcupada = "";
         $.each(casas['campo-cima'], function(index2){
             if(validaMovimentacaoPeca(pecaMovente, 'cima', index2) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'cima';
-                casaASerOcupada = index2;
+                casaASerOcupadaProvisoria = index2;
+                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(index2))){
+                    console.log('aqui1', casaMaisAvancada, index2);
+                    casaASerOcupada = index2;
+                }
             }
         });
         $.each(casas['campo-baixo'], function(index2){
             if(validaMovimentacaoPeca(pecaMovente, 'baixo', index2) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'baixo';
-                casaASerOcupada = index2;
+                casaASerOcupadaProvisoria = index2;
+                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(index2))){
+                    console.log('aqui2', casaMaisAvancada, index2);
+                    casaASerOcupada = index2;
+                }
             }
         });
+        if(casaASerOcupada == ""){
+            casaASerOcupada = casaASerOcupadaProvisoria;
+        }
         console.log("casa a ser ocupada: " + casaASerOcupada);
         gravaMovimentacaoPeca(pecaMovente, campoASerOcupado, casaASerOcupada, 'ocupacao1', false);
         organizaPecas();
