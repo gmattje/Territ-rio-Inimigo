@@ -342,7 +342,6 @@ function mostraObjetivosSecretos(){
 }
 
 function ativaRecuperacaoDeDados() {
-
     $('#palco .casa .peca').mouseover(function(){
         if(bloqueioEscolhaParaquedista == false) {
             var peca = $(this).attr('id');
@@ -351,14 +350,12 @@ function ativaRecuperacaoDeDados() {
             exibeRaioDeAtaque(peca);
         }
     });
-
     $('#palco .casa .peca').mouseleave(function(){
         if(bloqueioEscolhaParaquedista == false) {
             zeraBarrasLaterais();
             zeraRaioDeAtaque();
         }
     });
-
 }
 
 function exibeResultadosGerais(){
@@ -636,6 +633,8 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
                     validado = 'Esta peça não pode se mover sobre montanhas';
                 } else if(casas['campo-' + campoDestino][casaDestino].tipo == "base"){
                     validado = 'Esta peça não pode se mover sobre as bases';
+                } else if(casas['campo-' + campoDestino][casaDestino].tipo == "aeroporto"){
+                    validado = 'Esta peça não pode se mover sobre os aeroportos';    
                 } else {
                     if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && pecas[casas['campo-' + campoDestino][casaDestino].ocupacao1].tipo != "aviao"){
                         validado = 'Esta casa está ocupada';

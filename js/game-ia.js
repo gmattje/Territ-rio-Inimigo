@@ -10,6 +10,7 @@ function jogarIA(acao){
     console.log("IA em vantagem: " + IAEmVantagem);
     if(acao == "action1"){
         verificarPossibilidadesDeAtaque(null);
+        verificarPossibilidadesDeMovimentacao();
         console.log("IA pode atacar com: " + pecasQuePodemAtacar);
     } else if(acao == "action2"){
         verificarPossibilidadesDeMovimentacao();
@@ -223,18 +224,23 @@ function executaAcao(){
         var pecaMovente = pecasQuePodemMovimentarFiltradas[aleatoria];
         console.log("selecionado para mover-se: " + pecaMovente);
         //verifica qual casa será ocupada
+        var campoASerOcupado = "";
         var casaASerOcupada = "";
         $.each(casas['campo-cima'], function(index2){
             if(validaMovimentacaoPeca(pecaMovente, 'cima', index2) === true && casaASerOcupada == ""){
+                campoASerOcupado = 'cima';
                 casaASerOcupada = index2;
             }
         });
         $.each(casas['campo-baixo'], function(index2){
             if(validaMovimentacaoPeca(pecaMovente, 'baixo', index2) === true && casaASerOcupada == ""){
+                campoASerOcupado = 'baixo';
                 casaASerOcupada = index2;
             }
         });
         console.log("casa a ser ocupada: " + casaASerOcupada);
+        gravaMovimentacaoPeca(pecaMovente, campoASerOcupado, casaASerOcupada, 'ocupacao1', false);
+        organizaPecas();
     // ou se para finalizar    
     } else if(decisaoDaIA == "finalizar") {
         cancelaPossibilidadeDeMovimentacao(false);
