@@ -217,7 +217,13 @@ function executaAcao(){
         var pecaASerAtacada = "";
         $.each(pecas, function(index2){
             if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
-                if(pecaEstaNoCampoDeAtaque(index2) == true){
+                console.log(index2, pecasAdversariasMaisAvancadas);
+                if(pecasAdversariasMaisAvancadas.indexOf(index2) == -1 && pecaEstaNoCampoDeAtaque(index2) == true){
+                    console.log('aqui1');
+                    pecaASerAtacada = index2;
+                    selecionaPecaParaTurno(index2, false);
+                } else if (pecaEstaNoCampoDeAtaque(index2) == true){
+                    console.log('aqui2');
                     pecaASerAtacada = index2;
                     selecionaPecaParaTurno(index2, false);
                 }
@@ -261,7 +267,6 @@ function executaAcao(){
                 campoASerOcupado = 'cima';
                 casaASerOcupadaProvisoria = index2;
                 if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(index2))){
-                    console.log('aqui1', casaMaisAvancada, index2);
                     casaASerOcupada = index2;
                 }
             }
@@ -271,7 +276,6 @@ function executaAcao(){
                 campoASerOcupado = 'baixo';
                 casaASerOcupadaProvisoria = index2;
                 if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(index2))){
-                    console.log('aqui2', casaMaisAvancada, index2);
                     casaASerOcupada = index2;
                 }
             }
