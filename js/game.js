@@ -158,6 +158,16 @@ function reorganizaTabuleiro(){
     $('#palco .campo .coordenada.numeral').css('height',tamanhoCasasH+'px').css('line-height',tamanhoCasasH+'px');
     $('#palco .campo .casa').css('width',tamanhoCasasW+'px').css('height',tamanhoCasasH+'px');
     $('#palco .campo').css('margin-left',marginLeftCampos+'px');
+	$.each(casas['campo-cima'], function(index){
+		if(this.tipo != "normal"){
+			$('#palco .campo .casa.'+index).addClass(this.tipo);
+		}
+    });
+    $.each(casas['campo-baixo'], function(index){
+        if(this.tipo != "normal"){
+			$('#palco .campo .casa.'+index).addClass(this.tipo);
+		}
+    });
 }
 
 //coloca as pecas em seus lugares
@@ -260,6 +270,7 @@ function gravaPosicoesPecas() {
                     this.alcanceAtualX = this.alcanceAtualX-2;
                 //correções pela proximidade com a divisão
                 } else if(alcance == 2) {
+                    this.alcanceAtualX --;
                     if(this.casaAtual == "a4" || this.casaAtual == "b4" || this.casaAtual == "c4" || this.casaAtual == "d4" || this.casaAtual == "e4" || this.casaAtual == "f4" || this.casaAtual == "g4" || this.casaAtual == "a7" || this.casaAtual == "b7" || this.casaAtual == "c7" || this.casaAtual == "d7" || this.casaAtual == "e7" || this.casaAtual == "f7" || this.casaAtual == "g7"){
                         this.alcanceAtualH = this.alcanceAtualH+tamanhoDivisaoH;
                         if(this.casaAtual == "a7" || this.casaAtual == "b7" || this.casaAtual == "c7" || this.casaAtual == "d7" || this.casaAtual == "e7" || this.casaAtual == "f7" || this.casaAtual == "g7"){

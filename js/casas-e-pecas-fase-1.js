@@ -7,22 +7,22 @@ var casas = {
             ocupacao2: ''
         },
         'b1': {
-            tipo: 'aeroporto',
+            tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
         'c1': {
-            tipo: 'base',
-            ocupacao1: '',
-            ocupacao2: ''
-        },
-        'd1': {
             tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
+        'd1': {
+            tipo: 'base',
+            ocupacao1: '',
+            ocupacao2: ''
+        },
         'e1': {
-            tipo: 'montanha',
+            tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
@@ -32,17 +32,17 @@ var casas = {
             ocupacao2: ''
         },
         'g1': {
-            tipo: 'montanha',
+            tipo: 'aeroporto',
             ocupacao1: '',
             ocupacao2: ''
         },
         'a2': {
-            tipo: 'aeroporto',
+            tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
         'b2': {
-            tipo: 'aeroporto',
+            tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
@@ -781,7 +781,7 @@ var pecas = {
         tipo: 'sniper',
         exercito: 'cima',
         campoAtual: 'cima',
-        casaAtual: 'g1',
+        casaAtual: 'b1',
         vida: 2,
         dano: 2,
         tiros: 2,
@@ -857,7 +857,7 @@ var pecas = {
         tipo: 'tanque',
         exercito: 'cima',
         campoAtual: 'cima',
-        casaAtual: 'd1',
+        casaAtual: 'c1',
         vida: 3,
         dano: 2,
         tiros: 1,
@@ -877,7 +877,7 @@ var pecas = {
         tipo: 'tanque',
         exercito: 'cima',
         campoAtual: 'cima',
-        casaAtual: 'd2',
+        casaAtual: 'e1',
         vida: 3,
         dano: 2,
         tiros: 1,
@@ -958,7 +958,7 @@ var pecas = {
         tipo: 'aviao',
         exercito: 'cima',
         campoAtual: 'cima',
-        casaAtual: 'b1',
+        casaAtual: 'g1',
         vida: -1,
         dano: 3,
         tiros: 1,
