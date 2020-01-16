@@ -91,17 +91,19 @@ function verificarPossibilidadesDeMovimentacao(){
     $.each(pecas, function(index){
         //cada peça em jogo do exército
         if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo") {
-            //verifica cada casa para saber se peça pode se movimentar
-            $.each(casas['campo-cima'], function(index2){
-                if(validaMovimentacaoPeca(index, 'cima', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
-                    pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
-                }
-            });
-            $.each(casas['campo-baixo'], function(index2){
-                if(validaMovimentacaoPeca(index, 'baixo', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
-                    pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
-                }
-            });
+            if(this.tipo != "aviao" || (this.tipo == "aviao" && this.gasolina > 0)){
+                //verifica cada casa para saber se peça pode se movimentar
+                $.each(casas['campo-cima'], function(index2){
+                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
+                        pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
+                    }
+                });
+                $.each(casas['campo-baixo'], function(index2){
+                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'baixo', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
+                        pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
+                    }
+                });
+            }
         }
     });
 }
@@ -196,8 +198,8 @@ function executaAcao(){
             verificarPossibilidadesDeAtaque(pecasAdversariasMaisAvancadas);
             pecasQuePodemAtacarFiltradas = pecasQuePodemAtacar;
         }
-        //se tiver mais de 3, remove snipers
-        if(pecasQuePodemAtacarFiltradas.length > 3){
+        //se tiver mais de 2, remove snipers
+        if(pecasQuePodemAtacarFiltradas.length > 2){
             var indexSniper1 = pecasQuePodemAtacarFiltradas.indexOf('sniper1CampoBaixo');
             if(indexSniper1 > -1){
                 pecasQuePodemAtacarFiltradas.splice(indexSniper1, 1);
@@ -217,13 +219,10 @@ function executaAcao(){
         var pecaASerAtacada = "";
         $.each(pecas, function(index2){
             if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
-                console.log(index2, pecasAdversariasMaisAvancadas);
                 if(pecasAdversariasMaisAvancadas.indexOf(index2) == -1 && pecaEstaNoCampoDeAtaque(index2) == true){
-                    console.log('aqui1');
                     pecaASerAtacada = index2;
                     selecionaPecaParaTurno(index2, false);
                 } else if (pecaEstaNoCampoDeAtaque(index2) == true){
-                    console.log('aqui2');
                     pecaASerAtacada = index2;
                     selecionaPecaParaTurno(index2, false);
                 }
@@ -282,6 +281,54 @@ function executaAcao(){
         });
         if(casaASerOcupada == ""){
             casaASerOcupada = casaASerOcupadaProvisoria;
+        }
+        //se estiver em vantagem e for para andar para trás, prefere movimentar aviões
+        if(IAEmVantagem && parseInt(casaMaisAvancada) < parseInt(numeroCasaOcupada(casaASerOcupada))){
+            //elimina peça que não seja avião
+            var valuesEliminar = [];
+            //se tiver avião possível de se movimentear e o exército já ter perdido pelo menos um revolver
+            var revolverPerdido = "";
+            $.each(pecas, function(index){
+                if(this.exercito == "baixo" && this.tipo == "revolver" && this.campoAtual == 0 && this.casaAtual == 0) {
+                    revolverPerdido = index;
+                }
+            });
+            if(revolverPerdido != "" && (pecasQuePodemMovimentar.indexOf('aviao1CampoBaixo') > -1 || pecasQuePodemMovimentar.indexOf('aviao2CampoBaixo') > -1)){
+                $.each(pecasQuePodemMovimentar, function(index, value){
+                    if(value != "aviao1CampoBaixo" && value != "aviao2CampoBaixo"){
+                        valuesEliminar[valuesEliminar.length] = value;
+                    }
+                });
+                $.each(valuesEliminar, function(index, value){
+                var indexPeca = pecasQuePodemMovimentar.indexOf(value);
+                    if(indexPeca > -1){
+                        pecasQuePodemMovimentar.splice(indexPeca, 1);
+                    }
+                });
+                pecasQuePodemMovimentarFiltradas = pecasQuePodemMovimentar;
+                console.log("encontrado melhores peças para movimentar: " + pecasQuePodemMovimentarFiltradas);
+                //seleciona uma peça aleatória para mover-se
+                aleatoria = Math.floor(Math.random() * pecasQuePodemMovimentarFiltradas.length);
+                pecaMovente = pecasQuePodemMovimentarFiltradas[aleatoria];
+                console.log("selecionado para mover-se: " + pecaMovente);
+                //verifica qual casa será ocupada
+                //se estiver em vatagem prefere avançar a recuar
+                campoASerOcupado = "";
+                casaASerOcupadaProvisoria = "";
+                casaASerOcupada = "";
+                $.each(casas['campo-cima'], function(index2){
+                    if(pecas[pecaMovente].casaAtual != index2 && validaMovimentacaoPeca(pecaMovente, 'cima', index2) === true && casaASerOcupada == ""){
+                        campoASerOcupado = 'cima';
+                        casaASerOcupada = index2;
+                    }
+                });
+                $.each(casas['campo-baixo'], function(index2){
+                    if(pecas[pecaMovente].casaAtual != index2 && validaMovimentacaoPeca(pecaMovente, 'baixo', index2) === true && casaASerOcupada == ""){
+                        campoASerOcupado = 'baixo';
+                        casaASerOcupada = index2;
+                    }
+                });
+            }
         }
         console.log("casa a ser ocupada: " + casaASerOcupada);
         gravaMovimentacaoPeca(pecaMovente, campoASerOcupado, casaASerOcupada, 'ocupacao1', false);

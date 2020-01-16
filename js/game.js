@@ -695,6 +695,7 @@ function gravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao, espelh
     if(pecas[peca].tipo == "aviao") {
         if(espelhoOutroJogador == false) {
             gasolinaConsumidaTurno = quantidadeDeCasasMovimentada(peca, casaDestino);
+            pecas[peca].gasolina = pecas[peca].gasolina - gasolinaConsumidaTurno;
         } else {
             pecas[peca].gasolina = pecas[peca].gasolina - gasolinaConsumidaTurno;
         }
@@ -851,7 +852,7 @@ function resultadoDoTurno(resultado){
     } else {
         liberaMovimentacao();
         if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
-            gravaPosicoesPecas();
+            //gravaPosicoesPecas();
             organizaPecas();
             jogarIA('action2');
         }
