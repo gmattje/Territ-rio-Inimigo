@@ -261,21 +261,23 @@ function executaAcao(){
         var campoASerOcupado = "";
         var casaASerOcupadaProvisoria = "";
         var casaASerOcupada = "";
-        $.each(casas['campo-cima'], function(index2){
-            if(validaMovimentacaoPeca(pecaMovente, 'cima', index2) === true && casaASerOcupada == ""){
+        var indexCasasAleatoriasCima = casasAleatorias('cima');
+        var indexCasasAleatoriasBaixo = casasAleatorias('baixo');
+        $.each(indexCasasAleatoriasCima, function(index2, value2){
+            if(validaMovimentacaoPeca(pecaMovente, 'cima', value2) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'cima';
-                casaASerOcupadaProvisoria = index2;
-                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(index2))){
-                    casaASerOcupada = index2;
+                casaASerOcupadaProvisoria = value2;
+                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
+                    casaASerOcupada = value2;
                 }
             }
         });
-        $.each(casas['campo-baixo'], function(index2){
-            if(validaMovimentacaoPeca(pecaMovente, 'baixo', index2) === true && casaASerOcupada == ""){
+        $.each(indexCasasAleatoriasBaixo, function(index2, value2){
+            if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'baixo';
-                casaASerOcupadaProvisoria = index2;
-                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(index2))){
-                    casaASerOcupada = index2;
+                casaASerOcupadaProvisoria = value2;
+                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
+                    casaASerOcupada = value2;
                 }
             }
         });
@@ -316,16 +318,24 @@ function executaAcao(){
                 campoASerOcupado = "";
                 casaASerOcupadaProvisoria = "";
                 casaASerOcupada = "";
-                $.each(casas['campo-cima'], function(index2){
-                    if(pecas[pecaMovente].casaAtual != index2 && validaMovimentacaoPeca(pecaMovente, 'cima', index2) === true && casaASerOcupada == ""){
+                indexCasasAleatoriasCima = casasAleatorias('cima');
+                indexCasasAleatoriasBaixo = casasAleatorias('baixo');
+                $.each(indexCasasAleatoriasCima, function(index2, value2){
+                    if(validaMovimentacaoPeca(pecaMovente, 'cima', value2) === true && casaASerOcupada == ""){
                         campoASerOcupado = 'cima';
-                        casaASerOcupada = index2;
+                        casaASerOcupadaProvisoria = value2;
+                        if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
+                            casaASerOcupada = value2;
+                        }
                     }
                 });
-                $.each(casas['campo-baixo'], function(index2){
-                    if(pecas[pecaMovente].casaAtual != index2 && validaMovimentacaoPeca(pecaMovente, 'baixo', index2) === true && casaASerOcupada == ""){
+                $.each(indexCasasAleatoriasBaixo, function(index2, value2){
+                    if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2) === true && casaASerOcupada == ""){
                         campoASerOcupado = 'baixo';
-                        casaASerOcupada = index2;
+                        casaASerOcupadaProvisoria = value2;
+                        if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
+                            casaASerOcupada = value2;
+                        }
                     }
                 });
             }

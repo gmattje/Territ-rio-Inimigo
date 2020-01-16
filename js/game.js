@@ -852,9 +852,10 @@ function resultadoDoTurno(resultado){
     } else {
         liberaMovimentacao();
         if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
-            //gravaPosicoesPecas();
             organizaPecas();
-            jogarIA('action2');
+            setTimeout(function(){
+                jogarIA('action2');
+            }, 1000);
         }
     }
 }
@@ -1131,4 +1132,16 @@ function getUrlVars(){
         vars[hash[0]] = hash[1];
     }
     return vars;
+}
+
+function casasAleatorias(campo) {
+    var indexCasasCima = ['a1','a2','a3','a4','a5','b1','b2','b3','b4','b5','c1','c2','c3','c4','c5','d1','d2','d3','d4','d5','e1','e2','e3','e4','e5','f1','f2','f3','f4','f5','g1','g2','g3','g4','g5'];
+    var indexCasasBaixo = ['a6','a7','a8','a9','a10','b6','b7','b8','b9','b10','c6','c7','c8','c9','c10','d6','d7','d8','d9','d10','e6','e7','e8','e9','e10','f6','f7','f8','f9','f10','g6','g7','g8','g9','g10'];
+    if(campo == "cima"){
+        for (var j, x, i = indexCasasCima.length; i; j = parseInt(Math.random() * i), x = indexCasasCima[--i], indexCasasCima[i] = indexCasasCima[j], indexCasasCima[j] = x);
+        return indexCasasCima;
+    } else if(campo == "baixo"){
+        for (var j, x, i = indexCasasBaixo.length; i; j = parseInt(Math.random() * i), x = indexCasasBaixo[--i], indexCasasBaixo[i] = indexCasasBaixo[j], indexCasasBaixo[j] = x);
+        return indexCasasBaixo;
+    }
 }
