@@ -186,7 +186,7 @@ function executaAcao(){
             $.each(pecas, function(index){
                 if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima" && this.tipo != "aviao") {
                     var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada) && pecasQuePodemSerAtacadas.indexOf(index) == -1){
+                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada) && pecasQuePodemSerAtacadas.indexOf(index) > 0){
                         casaMaisAvancada = casaOcupada;
                     }
                 }
