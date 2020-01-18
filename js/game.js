@@ -36,6 +36,7 @@ var bloqueioEscolhaParaquedista = false;
 var turnoAtacante = "";
 var turnoDefesa = "";
 var rodandoAnimacaoAtaque = false;
+var pecasQuePodemMovimentarNoTurno = [];
 
 //pecas selecionadas
 var pecaParaReposicao = "";
@@ -290,10 +291,46 @@ function gravaPosicoesPecas() {
     });
 }
 
+function verificarPossibilidadesDeMovimentacaoGeral(exercito){
+    pecasQuePodemMovimentarNoTurno = [];
+    $.each(pecas, function(index){
+        //cada peça em jogo do exército
+        if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == exercito) {
+            if(this.tipo != "aviao" || (this.tipo == "aviao" && this.gasolina > 0)){
+                //verifica cada casa para saber se peça pode se movimentar
+                $.each(casas['campo-cima'], function(index2){
+                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2, true) === true && pecasQuePodemMovimentarNoTurno.indexOf(index) == -1){
+                        pecasQuePodemMovimentarNoTurno[pecasQuePodemMovimentarNoTurno.length] = index;
+                    }
+                });
+                $.each(casas['campo-baixo'], function(index2){
+                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'baixo', index2, true) === true && pecasQuePodemMovimentarNoTurno.indexOf(index) == -1){
+                        pecasQuePodemMovimentarNoTurno[pecasQuePodemMovimentarNoTurno.length] = index;
+                    }
+                });
+            }
+        }
+    });
+}
+
 function verificaFimDePartida(){
     
     var desafiosSecretosJogador1 = 0;
     var desafiosSecretosJogador2 = 0;
+    
+    //se algum exército ficou sem movimentação, o outro é campeão
+    verificarPossibilidadesDeMovimentacaoGeral('cima');
+    if(pecasQuePodemMovimentarNoTurno.length == 0){
+        fimDeJogo = true;
+        nomeJogadorCampeao = nomeJogadorAzul;
+        gameOver('Exército inimigo ficou sem possibilidades de movimentação');
+    }
+    verificarPossibilidadesDeMovimentacaoGeral('baixo');
+    if(pecasQuePodemMovimentarNoTurno.length == 0){
+        fimDeJogo = true;
+        nomeJogadorCampeao = nomeJogadorVermelho;
+        gameOver('Exército inimigo ficou sem possibilidades de movimentação');
+    }
     
     $.each(pecas, function(index){
         //se a peça já não tenha sido perdida pelo exercito
@@ -578,7 +615,7 @@ function ativaControlesMouse(){
             }
         });
         //com todos os dados valida movimentacao
-        var validaMovimento = validaMovimentacaoPeca(idPecaMovimentada, campo, casa);
+        var validaMovimento = validaMovimentacaoPeca(idPecaMovimentada, campo, casa, false);
         if(validaMovimento != true){
             retornaMovimentoDaPeca(idPecaMovimentada, validaMovimento);
         } else {
@@ -611,11 +648,11 @@ function ativaControlesMouse(){
     
 }
 
-function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
+function validaMovimentacaoPeca(peca, campoDestino, casaDestino, ignoraTurno){
     validado = true;
     if (bloqueioEscolhaParaquedista == true) {
         validado = 'O jogo está suspenso para escolha do pouso do paraquedista';
-    } else if (pecas[peca].exercito != turnoAtacante) {    
+    } else if (pecas[peca].exercito != turnoAtacante && ignoraTurno != true) {    
         validado = 'Você só pode mover uma peça em seu turno';
     } else {
         //validacoes do sniper
@@ -660,6 +697,14 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino){
 }
 
 function quantidadeDeCasasMovimentada(peca, casaFinal) {
+    if(peca == "" || peca == null || peca == undefined){
+        console.log('Para receber a quantidade de casas movimentadas é necessário informar uma peça');
+        return false;
+    }
+    if(casaFinal == "" || casaFinal == null || casaFinal == undefined){
+        console.log('Para receber a quantidade de casas movimentadas é necessário informar a casa final');
+        return false;
+    }
     var widthCasa = Math.round(tamanhoCasasW);
     var heightCasa = Math.round(tamanhoCasasH);
     var xFinal = Math.round($('.casa.' + casaFinal).position().left);
@@ -1138,6 +1183,10 @@ function getUrlVars(){
 }
 
 function casasAleatorias(campo) {
+    if(campo == "" || campo == null || campo == undefined){
+        console.log('Para retornar um array aleatório de casas, é necessário informar o campo');
+        return false;
+    }
     var indexCasasCima = ['a1','a2','a3','a4','a5','b1','b2','b3','b4','b5','c1','c2','c3','c4','c5','d1','d2','d3','d4','d5','e1','e2','e3','e4','e5','f1','f2','f3','f4','f5','g1','g2','g3','g4','g5'];
     var indexCasasBaixo = ['a6','a7','a8','a9','a10','b6','b7','b8','b9','b10','c6','c7','c8','c9','c10','d6','d7','d8','d9','d10','e6','e7','e8','e9','e10','f6','f7','f8','f9','f10','g6','g7','g8','g9','g10'];
     if(campo == "cima"){

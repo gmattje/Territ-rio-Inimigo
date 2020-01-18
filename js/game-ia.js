@@ -94,12 +94,12 @@ function verificarPossibilidadesDeMovimentacao(){
             if(this.tipo != "aviao" || (this.tipo == "aviao" && this.gasolina > 0)){
                 //verifica cada casa para saber se peça pode se movimentar
                 $.each(casas['campo-cima'], function(index2){
-                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
+                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                         pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
                     }
                 });
                 $.each(casas['campo-baixo'], function(index2){
-                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'baixo', index2) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
+                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'baixo', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                         pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
                     }
                 });
@@ -155,7 +155,7 @@ function executaAcao(){
         pecasQuePodemAtacarFiltradas = [];
         pecasAdversariasMaisAvancadas = [];
         //se IA estiver com vantagem
-        if(IAEmVantagem || pecasQuePodemAtacar.lenght == 1){
+        if(IAEmVantagem || pecasQuePodemAtacar.length == 1){
             //escolhe a melhor peça que irá atacar, no caso deverá ser a que estiver mais próxima do objetivo
             casaMaisAvancada = 10;
             $.each(pecasQuePodemAtacar, function(index, value){
@@ -264,7 +264,7 @@ function executaAcao(){
         var indexCasasAleatoriasCima = casasAleatorias('cima');
         var indexCasasAleatoriasBaixo = casasAleatorias('baixo');
         $.each(indexCasasAleatoriasCima, function(index2, value2){
-            if(validaMovimentacaoPeca(pecaMovente, 'cima', value2) === true && casaASerOcupada == ""){
+            if(validaMovimentacaoPeca(pecaMovente, 'cima', value2, false) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'cima';
                 casaASerOcupadaProvisoria = value2;
                 if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
@@ -273,7 +273,7 @@ function executaAcao(){
             }
         });
         $.each(indexCasasAleatoriasBaixo, function(index2, value2){
-            if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2) === true && casaASerOcupada == ""){
+            if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2, false) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'baixo';
                 casaASerOcupadaProvisoria = value2;
                 if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
@@ -321,7 +321,7 @@ function executaAcao(){
                 indexCasasAleatoriasCima = casasAleatorias('cima');
                 indexCasasAleatoriasBaixo = casasAleatorias('baixo');
                 $.each(indexCasasAleatoriasCima, function(index2, value2){
-                    if(validaMovimentacaoPeca(pecaMovente, 'cima', value2) === true && casaASerOcupada == ""){
+                    if(validaMovimentacaoPeca(pecaMovente, 'cima', value2, false) === true && casaASerOcupada == ""){
                         campoASerOcupado = 'cima';
                         casaASerOcupadaProvisoria = value2;
                         if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
@@ -330,7 +330,7 @@ function executaAcao(){
                     }
                 });
                 $.each(indexCasasAleatoriasBaixo, function(index2, value2){
-                    if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2) === true && casaASerOcupada == ""){
+                    if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2, false) === true && casaASerOcupada == ""){
                         campoASerOcupado = 'baixo';
                         casaASerOcupadaProvisoria = value2;
                         if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
