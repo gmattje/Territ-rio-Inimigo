@@ -1,6 +1,7 @@
 var IAEmVantagem = false;
 var casaMaisAvancada = 0;
 var pecasQuePodemAtacar = [];
+var pecasQuePodemSerAtacadas = [];
 var pecasQuePodemMovimentar = [];
 var decisaoDaIA = "";
 
@@ -111,6 +112,7 @@ function verificarPossibilidadesDeMovimentacao(){
 /* verifica quais peças podem atacar */
 function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
     pecasQuePodemAtacar = [];
+    pecasQuePodemSerAtacadas = [];
     //se é para verificar todos as possibilidades de ataque
     if(pecasEspecificasParaReceberAtaque == null || pecasEspecificasParaReceberAtaque.length == 0) {
         $.each(pecas, function(index){
@@ -122,6 +124,9 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
                     if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
                         if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
                             pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
+                            if(pecasQuePodemSerAtacadas.indexOf(index2) == -1){
+                                pecasQuePodemSerAtacadas[pecasQuePodemSerAtacadas.length] = index2;
+                            }
                         }
                     }
                 });
@@ -137,6 +142,9 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
                     if(pecasEspecificasParaReceberAtaque.indexOf(index2) != -1 && this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
                         if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
                             pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
+                            if(pecasQuePodemSerAtacadas.indexOf(index2) == -1){
+                                pecasQuePodemSerAtacadas[pecasQuePodemSerAtacadas.length] = index2;
+                            }
                         }
                     }
                 });
@@ -178,7 +186,7 @@ function executaAcao(){
             $.each(pecas, function(index){
                 if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima" && this.tipo != "aviao") {
                     var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada)){
+                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada) && pecasQuePodemSerAtacadas.indexOf(index) == -1){
                         casaMaisAvancada = casaOcupada;
                     }
                 }
