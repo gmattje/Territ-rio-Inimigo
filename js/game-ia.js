@@ -155,7 +155,7 @@ function executaAcao(){
         pecasQuePodemAtacarFiltradas = [];
         pecasAdversariasMaisAvancadas = [];
         //se IA estiver com vantagem
-        if(IAEmVantagem){
+        if(IAEmVantagem || pecasQuePodemAtacar.lenght == 1){
             //escolhe a melhor peça que irá atacar, no caso deverá ser a que estiver mais próxima do objetivo
             casaMaisAvancada = 10;
             $.each(pecasQuePodemAtacar, function(index, value){
@@ -176,7 +176,7 @@ function executaAcao(){
         } else {
             casaMaisAvancada = 1;
             $.each(pecas, function(index){
-                if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
+                if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima" && this.tipo != "aviao") {
                     var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
                     if(parseInt(casaOcupada) > parseInt(casaMaisAvancada)){
                         casaMaisAvancada = casaOcupada;

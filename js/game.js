@@ -853,6 +853,7 @@ function resultadoDoTurno(resultado){
         liberaMovimentacao();
         if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
             organizaPecas();
+            verificaFimDePartida();
             setTimeout(function(){
                 jogarIA('action2');
             }, 1000);
@@ -1034,7 +1035,9 @@ function preparaNovoTurno(){
         $('.barraLateral .infos .time.timeA').addClass('naVez');
     } else {
         if(getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
-            jogarIA('action1');
+            setTimeout(function(){
+                jogarIA('action1');
+            }, 1000);
         }
         $('.barraLateral .infos .time.timeB').addClass('naVez');
     }
