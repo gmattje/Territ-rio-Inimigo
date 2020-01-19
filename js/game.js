@@ -653,7 +653,10 @@ function ativaControlesMouse(){
 
 function validaMovimentacaoPeca(peca, campoDestino, casaDestino, ignoraTurno){
     validado = true;
-    if (bloqueioEscolhaParaquedista == true) {
+    var casasPossives = casasAleatorias(campoDestino);
+    if(casasPossives.indexOf(casaDestino) == -1){
+        validado = 'A casa '+ casaDestino +' não pertence ao campo '+ campoDestino;
+    } else if (bloqueioEscolhaParaquedista == true) {
         validado = 'O jogo está suspenso para escolha do pouso do paraquedista';
     } else if (pecas[peca].exercito != turnoAtacante && ignoraTurno != true) {    
         validado = 'Você só pode mover uma peça em seu turno';

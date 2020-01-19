@@ -113,8 +113,26 @@ function verificarPossibilidadesDeMovimentacao(){
 function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
     pecasQuePodemAtacar = [];
     pecasQuePodemSerAtacadas = [];
-    //se é para verificar todos as possibilidades de ataque
-    if(pecasEspecificasParaReceberAtaque == null || pecasEspecificasParaReceberAtaque.length == 0) {
+    //se para verificar peças que podem atacar adversários específicos
+    if(pecasEspecificasParaReceberAtaque != null && pecasEspecificasParaReceberAtaque.length > 0) {
+        $.each(pecas, function(index){
+            if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.tiros != "0") {
+                selecionaPecaParaTurno(index, false);
+                //verifica cada peça inimiga para saber se está no campo de ataque
+                $.each(pecasEspecificasParaReceberAtaque, function(index2, value2){
+                    if(pecaEstaNoCampoDeAtaque(value2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
+                        pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
+                        if(pecasQuePodemSerAtacadas.indexOf(value2) == -1){
+                            pecasQuePodemSerAtacadas[pecasQuePodemSerAtacadas.length] = value2;
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    //se é para verificar todos as possibilidades de ataque   
+    if(pecasQuePodemAtacar.length == 0) {
         $.each(pecas, function(index){
             //cada peça em jogo do exército
             if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.tiros != "0") {
@@ -122,24 +140,6 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
                 //verifica cada peça inimiga para saber se está no campo de ataque
                 $.each(pecas, function(index2){
                     if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
-                        if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
-                            pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
-                            if(pecasQuePodemSerAtacadas.indexOf(index2) == -1){
-                                pecasQuePodemSerAtacadas[pecasQuePodemSerAtacadas.length] = index2;
-                            }
-                        }
-                    }
-                });
-            }
-        });
-    //se para verificar as peças que podem atacar adversários específicos    
-    } else {
-        $.each(pecas, function(index){
-            if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.tiros != "0") {
-                selecionaPecaParaTurno(index, false);
-                //verifica cada peça inimiga para saber se está no campo de ataque
-                $.each(pecas, function(index2){
-                    if(pecasEspecificasParaReceberAtaque.indexOf(index2) != -1 && this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
                         if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
                             pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
                             if(pecasQuePodemSerAtacadas.indexOf(index2) == -1){
@@ -206,8 +206,12 @@ function executaAcao(){
             verificarPossibilidadesDeAtaque(pecasAdversariasMaisAvancadas);
             pecasQuePodemAtacarFiltradas = pecasQuePodemAtacar;
         }
+        //se não consegue atacar nenhuma mais avançada
+        if(pecasQuePodemAtacarFiltradas.length == 0){
+            decisaoDaIA = "movimentar";
+            executaAcao();
         //se tiver mais de 2, remove snipers
-        if(pecasQuePodemAtacarFiltradas.length > 2){
+        } else if(pecasQuePodemAtacarFiltradas.length > 2){
             var indexSniper1 = pecasQuePodemAtacarFiltradas.indexOf('sniper1CampoBaixo');
             if(indexSniper1 > -1){
                 pecasQuePodemAtacarFiltradas.splice(indexSniper1, 1);
