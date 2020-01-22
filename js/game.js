@@ -570,7 +570,7 @@ function ativaControlesMouse(){
             var classes = $(this).attr('class').split(' ');
             var campo = classesCampo[1];
             var casa = classes[1];
-            if(!casaEstaNoCampoDePouso(casa)){
+            if(!casaEstaNoCampoDePouso(pecaSelecionadaCampoAtaque, casa)){
                 mensagemDeErro('Esta casa não está no campo de pouso do paraquedista');
             } else {
                 if(casas['campo-'+campo][casa].ocupacao1 != "" || casas['campo-'+campo][casa].ocupacao2 != ""){
@@ -996,14 +996,19 @@ function liberaParaquedista(){
                 preparaNovoTurno();
             }
         }, 1000);
+        if(turnoAtacante == "baixo" && getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
+            setTimeout(function(){
+                jogarIA('action3');
+            }, 1000);
+        }
     }
 }
 
-function casaEstaNoCampoDePouso(casa) {
-    var raio_x1 = pecas[pecaSelecionadaCampoAtaque].alcanceAtualX; 
-    var raio_x2 = raio_x1+pecas[pecaSelecionadaCampoAtaque].alcanceAtualW;
-    var raio_y1 = pecas[pecaSelecionadaCampoAtaque].alcanceAtualY; 
-    var raio_y2 = raio_y1+pecas[pecaSelecionadaCampoAtaque].alcanceAtualH;
+function casaEstaNoCampoDePouso(pecaAviao, casa) {
+    var raio_x1 = pecas[pecaAviao].alcanceAtualX; 
+    var raio_x2 = raio_x1+pecas[pecaAviao].alcanceAtualW;
+    var raio_y1 = pecas[pecaAviao].alcanceAtualY; 
+    var raio_y2 = raio_y1+pecas[pecaAviao].alcanceAtualH;
     var xCasa = $('.casa.' + casa).position().left;
     var yCasa = $('.casa.' + casa).offset().top;
     var casa_x1 = Math.round(xCasa+marginLeftCampos);

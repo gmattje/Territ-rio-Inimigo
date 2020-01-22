@@ -3,6 +3,7 @@ var casaMaisAvancada = 0;
 var pecasQuePodemAtacar = [];
 var pecasQuePodemSerAtacadas = [];
 var pecasQuePodemMovimentar = [];
+var casasQuePodemReceberParaquedista = [];
 var decisaoDaIA = "";
 
 function jogarIA(acao){
@@ -17,6 +18,9 @@ function jogarIA(acao){
     } else if(acao == "action2"){
         verificarPossibilidadesDeMovimentacao();
         console.log("IA pode movimentar com: " + pecasQuePodemMovimentar);
+    } else if(acao == "action3"){
+        verificarPossibilidadesDeParaquedista();
+        console.log("IA pode posicionar paraquedista em: " + casasQuePodemReceberParaquedista);
     }
     arvoreDeDecisao();
     console.log("IA decidiu: " + decisaoDaIA);
@@ -84,6 +88,22 @@ function verificaVantagem(){
         }
     }
 
+}
+
+/* verifica quais casas podem receber paraquedista */
+function verificarPossibilidadesDeParaquedista(){
+    casasQuePodemReceberParaquedista = [];
+    //verifica cada casa
+    $.each(casas['campo-cima'], function(index){
+        if(this.tipo == 'normal' && this.ocupacao1 == '' && casaEstaNoCampoDePouso(pecaSelecionadaCampoAtaque, index) === true && casasQuePodemReceberParaquedista.indexOf(index) == -1){
+            casasQuePodemReceberParaquedista[casasQuePodemReceberParaquedista.length] = index;
+        }
+    });
+    $.each(casas['campo-baixo'], function(index){
+        if(this.tipo == 'normal' && this.ocupacao1 == '' && casaEstaNoCampoDePouso(pecaSelecionadaCampoAtaque, index) === true && casasQuePodemReceberParaquedista.indexOf(index) == -1){
+            casasQuePodemReceberParaquedista[casasQuePodemReceberParaquedista.length] = index;
+        }
+    });
 }
 
 /* verifica quais peças podem movimentar-se */
@@ -355,6 +375,25 @@ function executaAcao(){
         console.log("casa a ser ocupada: " + casaASerOcupada);
         gravaMovimentacaoPeca(pecaMovente, campoASerOcupado, casaASerOcupada, 'ocupacao1', false);
         organizaPecas();
+    //...mas se decisão for posicionar um paraquedista    
+    } else if(decisaoDaIA == "paraquedista") {
+        var revolverPerdido = "";
+        $.each(pecas, function(index){
+            if(this.exercito == "baixo" && this.tipo == "revolver" && this.campoAtual == 0 && this.casaAtual == 0) {
+                revolverPerdido = index;
+            }
+        });
+        aleatoria = Math.floor(Math.random() * casasQuePodemReceberParaquedista.length);
+        casaASerOcupada = casasQuePodemReceberParaquedista[aleatoria];
+        console.log("casa a ser ocupada: " + casaASerOcupada);
+        var indexCasasAleatoriasCima = casasAleatorias('cima');
+        var indexCasasAleatoriasBaixo = casasAleatorias('baixo');
+        if(indexCasasAleatoriasCima.indexOf(casaASerOcupada) !== -1) {
+            gravaMovimentacaoPeca(revolverPerdido, 'cima', casaASerOcupada, 'ocupacao1', false);
+        } else if(indexCasasAleatoriasBaixo.indexOf(casaASerOcupada) !== -1) {
+            gravaMovimentacaoPeca(revolverPerdido, 'baixo', casaASerOcupada, 'ocupacao1', false);
+        }
+        organizaPecas();
     // ou se para finalizar    
     } else if(decisaoDaIA == "finalizar") {
         cancelaPossibilidadeDeMovimentacao(false);
@@ -370,6 +409,8 @@ function arvoreDeDecisao(){
         decisaoDaIA = "atacar";
     } else if(pecasQuePodemMovimentar.length > 0) {
         decisaoDaIA = "movimentar";
+    } else if(casasQuePodemReceberParaquedista.length > 0) {
+        decisaoDaIA = "paraquedista";    
     } else {
         decisaoDaIA = "finalizar";
     }   
