@@ -1,4 +1,4 @@
-var urlServerTerritorioInimigo = "http://www.corretorhelio.com/testes/ti/_server";
+var urlServerTerritorioInimigo = "http://www.corretorhelio.com/testes/territorioInimigo/_server";
 var tempoSincronizacao = 3000; //a cada 3 segundos
 var idSessaoServidor = "";
 var ultimoIdServidorPecasTurno = "";
