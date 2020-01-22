@@ -318,8 +318,6 @@ function executaAcao(){
         }
         //se estiver em vantagem e for para andar para trás, prefere movimentar aviões
         if(IAEmVantagem && parseInt(casaMaisAvancada) < parseInt(numeroCasaOcupada(casaASerOcupada))){
-            //elimina peça que não seja avião
-            var valuesEliminar = [];
             //se tiver avião possível de se movimentear e o exército já ter perdido pelo menos um revolver
             var revolverPerdido = "";
             $.each(pecas, function(index){
@@ -327,7 +325,9 @@ function executaAcao(){
                     revolverPerdido = index;
                 }
             });
-            if(revolverPerdido != "" && (pecasQuePodemMovimentar.indexOf('aviao1CampoBaixo') > -1 || pecasQuePodemMovimentar.indexOf('aviao2CampoBaixo') > -1)){
+            if(revolverPerdido != "" && (pecasQuePodemMovimentar.indexOf('aviao1CampoBaixo') !== -1 || pecasQuePodemMovimentar.indexOf('aviao2CampoBaixo') !== -1)){
+                //elimina peça que não seja avião
+                var valuesEliminar = [];
                 $.each(pecasQuePodemMovimentar, function(index, value){
                     if(value != "aviao1CampoBaixo" && value != "aviao2CampoBaixo"){
                         valuesEliminar[valuesEliminar.length] = value;
