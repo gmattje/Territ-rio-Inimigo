@@ -42,11 +42,11 @@ function verificaVantagem(){
     
     IAEmVantagem = true;
     
-    //primeiro testa se tem peça do inimigo em seu território
+    //primeiro testa se tem peça do inimigo em seu território, a partir da segunda linha (7)
     $.each(pecas, function(index){
         if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
             var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-            if(casaOcupada >= 6 && casaOcupada <= 10){
+            if(casaOcupada >= 7 && casaOcupada <= 10){
                 IAEmVantagem = false;
             }
         }
@@ -66,7 +66,7 @@ function verificaVantagem(){
                 }
             }
         });
-        if(qtdPecasExercitoCima > qtdPecasExercitoBaixo){
+        if(qtdPecasExercitoCima > (qtdPecasExercitoBaixo+3)){
             IAEmVantagem = false;
         }
     }
