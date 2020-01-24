@@ -106,13 +106,13 @@ function verificarPossibilidadesDeParaquedista(){
     });
 }
 
-/* verifica quais peças podem movimentar-se, mas nunca escolhe movimentar peça que esteja na última linha de ataque */
+/* verifica quais peças podem movimentar-se */
 function verificarPossibilidadesDeMovimentacao(){
     pecasQuePodemMovimentar = [];
     $.each(pecas, function(index){
         //cada peça em jogo do exército
         if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo") {
-            if(numeroCasaOcupada(this.casaAtual) >= 3 && (this.tipo != "aviao" || (this.tipo == "aviao" && this.gasolina > 0))){
+            if(this.tipo != "aviao" || (this.tipo == "aviao" && this.gasolina > 0)){
                 //verifica cada casa para saber se peça pode se movimentar
                 $.each(casas['campo-cima'], function(index2){
                     if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
@@ -370,6 +370,9 @@ function executaAcao(){
                         }
                     }
                 });
+                if(casaASerOcupada == ""){
+                    casaASerOcupada = casaASerOcupadaProvisoria;
+                }
             }
         }
         console.log("casa a ser ocupada: " + casaASerOcupada);
