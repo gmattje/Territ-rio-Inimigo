@@ -14,6 +14,7 @@ var nomeJogadorAzul = "AZUL";
 var nomeJogadorCampeao = "";
 var numeroDadoInicialJogador1 = 0;
 var numeroDadoInicialJogador2 = 0;
+var desafioSecretoLigado = true;
 var desafioSecretoJogador1 = 0;
 var desafioSecretoJogador2 = 0;
 
@@ -63,6 +64,14 @@ function init(){
     ativaControlesMouse();
     nomesDosJogadoresOffLine();
     rodaSorteInicial();
+    if(getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] == "Computador") {
+        desativaDesafioSecreto();
+    }
+}
+
+function desativaDesafioSecreto(){
+    desafioSecretoLigado = false;
+    $('.desafioSecreto').remove();
 }
 
 function nomesDosJogadoresOffLine(){
@@ -356,27 +365,29 @@ function verificaFimDePartida(){
                     gameOver('Vitória por invasão da base inimiga');
                 }               
             }
-            //se suas peças estão cumprindo o desafio secreto
-            if(this.exercito == "cima"){
-                if(desafioSecretoJogador1 > 0 && objetivos['campo-cima'][desafioSecretoJogador1][this.casaAtual] == this.tipo){
-                    desafiosSecretosJogador1++;
-                    if((turnoEminenteFimObj2Jogador1 == 0 || turnoEminenteFimObj2Jogador1 < numDoTurno) && desafiosSecretosJogador1 === 2){
-                        turnoEminenteFimObj2Jogador1 = numDoTurno+1;
-                    } else if(turnoEminenteFimObj2Jogador1 > 0 && numDoTurno == turnoEminenteFimObj2Jogador1 && desafiosSecretosJogador1 === 2){   
-                        fimDeJogo = true;
-                        nomeJogadorCampeao = nomeJogadorVermelho;
-                        gameOver('Vitória por cumprimento do desafio secreto');
+            if(desafioSecretoLigado){
+                //se suas peças estão cumprindo o desafio secreto
+                if(this.exercito == "cima"){
+                    if(desafioSecretoJogador1 > 0 && objetivos['campo-cima'][desafioSecretoJogador1][this.casaAtual] == this.tipo){
+                        desafiosSecretosJogador1++;
+                        if((turnoEminenteFimObj2Jogador1 == 0 || turnoEminenteFimObj2Jogador1 < numDoTurno) && desafiosSecretosJogador1 === 2){
+                            turnoEminenteFimObj2Jogador1 = numDoTurno+1;
+                        } else if(turnoEminenteFimObj2Jogador1 > 0 && numDoTurno == turnoEminenteFimObj2Jogador1 && desafiosSecretosJogador1 === 2){   
+                            fimDeJogo = true;
+                            nomeJogadorCampeao = nomeJogadorVermelho;
+                            gameOver('Vitória por cumprimento do desafio secreto');
+                        }
                     }
-                }
-            } else {
-                if(desafioSecretoJogador2 > 0 && objetivos['campo-baixo'][desafioSecretoJogador2][this.casaAtual] == this.tipo){
-                    desafiosSecretosJogador2++;
-                    if((turnoEminenteFimObj2Jogador2 == 0 || turnoEminenteFimObj2Jogador2 < numDoTurno) && desafiosSecretosJogador2 === 2){
-                        turnoEminenteFimObj2Jogador2 = numDoTurno+1;
-                    } else if(turnoEminenteFimObj2Jogador2 > 0 && numDoTurno == turnoEminenteFimObj2Jogador2 && desafiosSecretosJogador2 === 2){
-                        fimDeJogo = true;
-                        nomeJogadorCampeao = nomeJogadorAzul;
-                        gameOver('Vitória por cumprimento do desafio secreto');
+                } else {
+                    if(desafioSecretoJogador2 > 0 && objetivos['campo-baixo'][desafioSecretoJogador2][this.casaAtual] == this.tipo){
+                        desafiosSecretosJogador2++;
+                        if((turnoEminenteFimObj2Jogador2 == 0 || turnoEminenteFimObj2Jogador2 < numDoTurno) && desafiosSecretosJogador2 === 2){
+                            turnoEminenteFimObj2Jogador2 = numDoTurno+1;
+                        } else if(turnoEminenteFimObj2Jogador2 > 0 && numDoTurno == turnoEminenteFimObj2Jogador2 && desafiosSecretosJogador2 === 2){
+                            fimDeJogo = true;
+                            nomeJogadorCampeao = nomeJogadorAzul;
+                            gameOver('Vitória por cumprimento do desafio secreto');
+                        }
                     }
                 }
             }
