@@ -3,6 +3,7 @@ var casaMaisAvancada = 0;
 var pecasQuePodemAtacar = [];
 var pecasQuePodemSerAtacadas = [];
 var pecasQuePodemMovimentar = [];
+var pecasQuePodemMovimentarParaFrente = [];
 var casasQuePodemReceberParaquedista = [];
 var decisaoDaIA = "";
 
@@ -18,6 +19,7 @@ function jogarIA(acao){
     } else if(acao == "action2"){
         verificarPossibilidadesDeMovimentacao();
         console.log("IA pode movimentar com: " + pecasQuePodemMovimentar);
+        console.log("IA pode movimentar pra frente com: " + pecasQuePodemMovimentarParaFrente);
     } else if(acao == "action3"){
         verificarPossibilidadesDeParaquedista();
         console.log("IA pode posicionar paraquedista em: " + casasQuePodemReceberParaquedista);
@@ -109,19 +111,27 @@ function verificarPossibilidadesDeParaquedista(){
 /* verifica quais peças podem movimentar-se */
 function verificarPossibilidadesDeMovimentacao(){
     pecasQuePodemMovimentar = [];
+    pecasQuePodemMovimentarParaFrente = [];
     $.each(pecas, function(index){
+        var casaAtual = this.casaAtual;
         //cada peça em jogo do exército
         if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo") {
             if(this.tipo != "aviao" || (this.tipo == "aviao" && this.gasolina > 0)){
                 //verifica cada casa para saber se peça pode se movimentar
                 $.each(casas['campo-cima'], function(index2){
-                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
+                    if(casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                         pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
+                        if(parseInt(numeroCasaOcupada(casaAtual)) > parseInt(numeroCasaOcupada(index2)) && pecasQuePodemMovimentarParaFrente.indexOf(index) == -1){
+                            pecasQuePodemMovimentarParaFrente[pecasQuePodemMovimentarParaFrente.length] = index;
+                        }
                     }
                 });
                 $.each(casas['campo-baixo'], function(index2){
-                    if(this.casaAtual != index2 && validaMovimentacaoPeca(index, 'baixo', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
+                    if(casaAtual != index2 && validaMovimentacaoPeca(index, 'baixo', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                         pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
+                        if(parseInt(numeroCasaOcupada(casaAtual)) > parseInt(numeroCasaOcupada(index2)) && pecasQuePodemMovimentarParaFrente.indexOf(index) == -1){
+                            pecasQuePodemMovimentarParaFrente[pecasQuePodemMovimentarParaFrente.length] = index;
+                        }
                     }
                 });
             }
@@ -160,10 +170,12 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
                 //verifica cada peça inimiga para saber se está no campo de ataque
                 $.each(pecas, function(index2){
                     if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
-                        if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
-                            pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
-                            if(pecasQuePodemSerAtacadas.indexOf(index2) == -1){
-                                pecasQuePodemSerAtacadas[pecasQuePodemSerAtacadas.length] = index2;
+                        if(this.tipo != "sniper" || (this.tipo == "sniper" && this.tiros != "0")){
+                            if(pecaEstaNoCampoDeAtaque(index2) == true && pecasQuePodemAtacar.indexOf(index) == -1){
+                                pecasQuePodemAtacar[pecasQuePodemAtacar.length] = index;
+                                if(pecasQuePodemSerAtacadas.indexOf(index2) == -1){
+                                    pecasQuePodemSerAtacadas[pecasQuePodemSerAtacadas.length] = index2;
+                                }
                             }
                         }
                     }
@@ -276,6 +288,9 @@ function executaAcao(){
             }
         });
         console.log("casa mais avançada que pode mover-se ocupada pela IA: " + casaMaisAvancada);
+        if(casaMaisAvancada == 2){
+            pecasQuePodemMovimentar = pecasQuePodemMovimentarParaFrente;
+        }
         //elimina peça que não esteja na linha mais avançada
         $.each(pecasQuePodemMovimentar, function(index, value){
             var casaOcupada = numeroCasaOcupada(pecas[value].casaAtual);
@@ -283,6 +298,9 @@ function executaAcao(){
                 pecasQuePodemMovimentarFiltradas[pecasQuePodemMovimentarFiltradas.length] = value;
             }
         });
+        if(pecasQuePodemMovimentarFiltradas.length == 0){
+            pecasQuePodemMovimentarFiltradas = pecasQuePodemMovimentar;
+        }
         console.log("melhores peças para movimentar: " + pecasQuePodemMovimentarFiltradas);
         //seleciona uma peça aleatória para mover-se
         var aleatoria = Math.floor(Math.random() * pecasQuePodemMovimentarFiltradas.length);

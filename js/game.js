@@ -162,11 +162,11 @@ function reorganizaTabuleiro(){
     var tamanhoCampoH = ($('#palco').height()/2)-($('#titulo-game').height()/2)-15-20 //desconta a metade dos tamanhos da divisao, titulo, painel geral e coordenadas
     tamanhoCasasW = (tamanhoCampoW/7)-(40/7)-2;
     tamanhoCasasH = tamanhoCampoH/5;
-    tamanhoCasasW = tamanhoCasasH; //remover esta linha para tabueiro preencher a tela
-    tamanhoCampoW = (tamanhoCasasW*7)+45;  //remover esta linha para tabueiro preencher a tela
+    //tamanhoCasasW = tamanhoCasasH; //descomentar esta linha para tabueiro ficar com as casas quadradas
+    //tamanhoCampoW = (tamanhoCasasW*7)+45;  //descomentar esta linha para tabueiro ficar com as casas quadradas
     marginLeftCampos = (getDocWidth()-300-tamanhoCampoW)/2;
     tamanhoDivisaoH = $('#palco .divisao').height();
-    $('#palco .campo').width(tamanhoCampoW);  //remover esta linha para tabueiro preencher a tela
+    //$('#palco .campo').width(tamanhoCampoW);  //descomentar esta linha para tabueiro ficar com as casas quadradas
     $('#palco .campo .coordenada.letra').css('width',tamanhoCasasW+'px');
     $('#palco .campo .coordenada.numeral').css('height',tamanhoCasasH+'px').css('line-height',tamanhoCasasH+'px');
     $('#palco .campo .casa').css('width',tamanhoCasasW+'px').css('height',tamanhoCasasH+'px');
