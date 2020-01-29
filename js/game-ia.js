@@ -39,6 +39,68 @@ function numeroCasaOcupada(quadrante){
     return casaOcupada;
 }
 
+function casasAoEntorno(casaAtual){
+    var arrCasasAoEntorno = [];
+    var indexCasasAleatoriasCima = casasAleatorias('cima');
+    var indexCasasAleatoriasBaixo = casasAleatorias('baixo');
+    //verifica cada casa
+    $.each(indexCasasAleatoriasCima, function(index, value){
+        if(casas['campo-cima'][value].tipo == 'normal' && quantidadeDeMovimentos(casaAtual, value) == "1" && arrCasasAoEntorno.indexOf(value) == -1){
+            arrCasasAoEntorno[arrCasasAoEntorno.length] = value;
+        }
+    });
+    $.each(indexCasasAleatoriasBaixo, function(index, value){
+        if(casas['campo-baixo'][value].tipo == 'normal' && quantidadeDeMovimentos(casaAtual, value) == "1" && arrCasasAoEntorno.indexOf(value) == -1){
+            arrCasasAoEntorno[arrCasasAoEntorno.length] = value;
+        }
+    });
+    return arrCasasAoEntorno;
+}
+
+/* encontra o melhor caminho */
+function encontraMelhorCaminho(casaAtual, casaDestinoFinal){
+    var chegouNoDestino = false;
+    var listaAberta = [];
+    var listaFechada = [];
+    var listaDeCustos = {};
+    var listaFiliacao = [];
+    var adicinalCustoTotal = 1;
+    while(!chegouNoDestino){
+        listaDeCustos = {};
+        //remove da lista aberta
+        var indexCasaAtual = listaAberta.indexOf(casaAtual);
+        if(indexCasaAtual > -1){
+            listaAberta.splice(indexCasaAtual, 1);
+        }
+        //inclui na lista fechada
+        listaFechada[listaFechada.length] = casaAtual;
+        //casas ao entorno
+        $.each(casasAoEntorno(casaAtual), function(index, value){
+            if(listaAberta.indexOf(value) == -1){
+                listaAberta[listaAberta.length] = value;
+            }
+        });
+        listaFiliacao[casaAtual] = casasAoEntorno(casaAtual);
+        //trata custos da lista aberta
+        $.each(listaAberta, function(index, value){
+            listaDeCustos[value] = (quantidadeDeMovimentos(value, casaDestinoFinal)+adicinalCustoTotal);
+            if(value == casaDestinoFinal){
+                chegouNoDestino = true;
+            }
+        });
+        //ordena pelo menor custo
+        var menorCusto = 100;
+        $.each(listaDeCustos, function(index, value){
+            if(value < menorCusto){
+                menorCusto = value;
+                casaAtual = index;
+            }
+        });
+        adicinalCustoTotal++;
+    }
+    return listaFechada;
+}
+
 /* Verifica se IA está em vantagem */
 function verificaVantagem(){
     
@@ -306,6 +368,10 @@ function executaAcao(){
         var aleatoria = Math.floor(Math.random() * pecasQuePodemMovimentarFiltradas.length);
         var pecaMovente = pecasQuePodemMovimentarFiltradas[aleatoria];
         console.log("selecionado para mover-se: " + pecaMovente);
+        var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[pecaMovente].casaAtual, "c1");
+        var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[pecaMovente].casaAtual, "e1");
+        var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
+        console.log("Melhor caminho identificado passa pelas casas: " + arrMelhorCaminho);
         //verifica qual casa será ocupada
         //se estiver em vatagem prefere avançar a recuar
         var campoASerOcupado = "";
@@ -317,7 +383,7 @@ function executaAcao(){
             if(validaMovimentacaoPeca(pecaMovente, 'cima', value2, false) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'cima';
                 casaASerOcupadaProvisoria = value2;
-                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
+                if(IAEmVantagem && (parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2)) || arrMelhorCaminho.indexOf(value2) !== -1)){
                     casaASerOcupada = value2;
                 }
             }
@@ -326,7 +392,7 @@ function executaAcao(){
             if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2, false) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'baixo';
                 casaASerOcupadaProvisoria = value2;
-                if(IAEmVantagem && parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))){
+                if(IAEmVantagem && (parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2)) || arrMelhorCaminho.indexOf(value2) !== -1)){
                     casaASerOcupada = value2;
                 }
             }
@@ -352,7 +418,7 @@ function executaAcao(){
                     }
                 });
                 $.each(valuesEliminar, function(index, value){
-                var indexPeca = pecasQuePodemMovimentar.indexOf(value);
+                    var indexPeca = pecasQuePodemMovimentar.indexOf(value);
                     if(indexPeca > -1){
                         pecasQuePodemMovimentar.splice(indexPeca, 1);
                     }

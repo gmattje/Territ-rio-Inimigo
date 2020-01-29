@@ -633,7 +633,7 @@ function ativaControlesMouse(){
         if(validaMovimento != true){
             retornaMovimentoDaPeca(idPecaMovimentada, validaMovimento);
         } else {
-            var movimentos = quantidadeDeCasasMovimentada(idPecaMovimentada, casa);
+            var movimentos = quantidadeDeMovimentos(pecas[idPecaMovimentada].casaAtual, casa);
             if(pecas[idPecaMovimentada].tipo == "aviao") {
                 if(pecas[idPecaMovimentada].gasolina >= movimentos) {
                     if(casas['campo-' + campo][casa].ocupacao1 != "" && casas['campo-' + campo][casa].ocupacao2 == "") {
@@ -675,11 +675,10 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino, ignoraTurno){
         //validacoes do sniper
         if(pecas[peca].tipo == "sniper") {
             validado = 'Os atiradores de elite não podem se mover';
-        }
-        //validacoes do aviao
-        if(pecas[peca].tipo == "aviao") {
+            //validacoes do aviao
+        } else if(pecas[peca].tipo == "aviao") {
             //valida quantidade de casas movimentadas
-            var movimentos = quantidadeDeCasasMovimentada(peca, casaDestino);
+            var movimentos = quantidadeDeMovimentos(pecas[peca].casaAtual, casaDestino);
             if(pecas[peca].gasolina >= movimentos) {
                 //verifica casa livre
                 if(casas['campo-' + campoDestino][casaDestino].ocupacao1 != "" && casas['campo-' + campoDestino][casaDestino].ocupacao2 != "") {
@@ -688,11 +687,10 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino, ignoraTurno){
             } else {
                 validado = 'Este avião não tem gasolina o suficiente';
             }
-        }
         //validacoes de outras pecas
-        if(pecas[peca].tipo != "sniper" && pecas[peca].tipo != "aviao") {
+        } else if(pecas[peca].tipo != "sniper" && pecas[peca].tipo != "aviao") {
             //valida quantidade de casas movimentadas
-            var movimentos = quantidadeDeCasasMovimentada(peca, casaDestino);
+            var movimentos = quantidadeDeMovimentos(pecas[peca].casaAtual, casaDestino);
             if(movimentos == 1) {
                 if(casas['campo-' + campoDestino][casaDestino].tipo == "montanha"){
                     validado = 'Esta peça não pode se mover sobre montanhas';
@@ -713,21 +711,17 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino, ignoraTurno){
     }
 }
 
-function quantidadeDeCasasMovimentada(peca, casaFinal) {
-    if(peca == "" || peca == null || peca == undefined){
-        console.log('Para receber a quantidade de casas movimentadas é necessário informar uma peça');
-        return false;
-    }
-    if(casaFinal == "" || casaFinal == null || casaFinal == undefined){
-        console.log('Para receber a quantidade de casas movimentadas é necessário informar a casa final');
+function quantidadeDeMovimentos(casaInicial, casaFinal) {
+    if(casaInicial == "" || casaInicial == null || casaInicial == undefined || casaFinal == "" || casaFinal == null || casaFinal == undefined){
+        console.log('Para receber a quantidade de casas movimentadas é necessário informar a casa inicial e a casa final');
         return false;
     }
     var widthCasa = Math.round(tamanhoCasasW);
     var heightCasa = Math.round(tamanhoCasasH);
     var xFinal = Math.round($('.casa.' + casaFinal).position().left);
     var yFinal = Math.round($('.casa.' + casaFinal).offset().top);
-    var xAtual = Math.round(pecas[peca].xAtual);
-    var yAtual = Math.round(pecas[peca].yAtual);
+    var xAtual = Math.round($('.casa.' + casaInicial).position().left);
+    var yAtual = Math.round($('.casa.' + casaInicial).offset().top);
     
     //calcula quantidades de movimentos eixo x
     var qtdX = Math.round(Math.abs(xFinal-xAtual)/widthCasa);
@@ -756,7 +750,7 @@ function gravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao, espelh
     ocupacaoUltimaCasaDestino = ocupacao;
     if(pecas[peca].tipo == "aviao") {
         if(espelhoOutroJogador == false) {
-            gasolinaConsumidaTurno = quantidadeDeCasasMovimentada(peca, casaDestino);
+            gasolinaConsumidaTurno = quantidadeDeMovimentos(pecas[peca].casaAtual, casaDestino);
             pecas[peca].gasolina = pecas[peca].gasolina - gasolinaConsumidaTurno;
         } else {
             pecas[peca].gasolina = pecas[peca].gasolina - gasolinaConsumidaTurno;
