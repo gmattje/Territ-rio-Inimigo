@@ -8,25 +8,26 @@ var casasQuePodemReceberParaquedista = [];
 var decisaoDaIA = "";
 
 function jogarIA(acao){
-    pecasQuePodemAtacar = [];
-    pecasQuePodemMovimentar = [];
-    verificaVantagem();
-    console.log("IA em vantagem: " + IAEmVantagem);
-    if(acao == "action1"){
-        verificarPossibilidadesDeAtaque(null);
+    if(!fimDeJogo){
+        pecasQuePodemAtacar = [];
+        pecasQuePodemMovimentar = [];
+        verificaVantagem();
+        console.log("IA em vantagem: " + IAEmVantagem);
         verificarPossibilidadesDeMovimentacao();
-        console.log("IA pode atacar com: " + pecasQuePodemAtacar);
-    } else if(acao == "action2"){
-        verificarPossibilidadesDeMovimentacao();
-        console.log("IA pode movimentar com: " + pecasQuePodemMovimentar);
-        console.log("IA pode movimentar pra frente com: " + pecasQuePodemMovimentarParaFrente);
-    } else if(acao == "action3"){
-        verificarPossibilidadesDeParaquedista();
-        console.log("IA pode posicionar paraquedista em: " + casasQuePodemReceberParaquedista);
+        if(acao == "action1"){
+            verificarPossibilidadesDeAtaque(null);
+            console.log("IA pode atacar com: " + pecasQuePodemAtacar);
+        } else if(acao == "action2"){
+            console.log("IA pode movimentar com: " + pecasQuePodemMovimentar);
+            console.log("IA pode movimentar pra frente com: " + pecasQuePodemMovimentarParaFrente);
+        } else if(acao == "action3"){
+            verificarPossibilidadesDeParaquedista();
+            console.log("IA pode posicionar paraquedista em: " + casasQuePodemReceberParaquedista);
+        }
+        arvoreDeDecisao();
+        console.log("IA decidiu: " + decisaoDaIA);
+        executaAcao();
     }
-    arvoreDeDecisao();
-    console.log("IA decidiu: " + decisaoDaIA);
-    executaAcao();
 }
 
 /* retorna o número da casa ocupada com base no quadrante */
@@ -60,11 +61,10 @@ function casasAoEntorno(casaAtual){
 /* encontra o melhor caminho */
 function encontraMelhorCaminho(casaAtual, casaDestinoFinal){
     var chegouNoDestino = false;
+    var casaOriginal = casaAtual;
     var listaAberta = [];
     var listaFechada = [];
     var listaDeCustos = {};
-    var listaFiliacao = [];
-    var adicinalCustoTotal = 1;
     while(!chegouNoDestino){
         listaDeCustos = {};
         //remove da lista aberta
@@ -76,16 +76,18 @@ function encontraMelhorCaminho(casaAtual, casaDestinoFinal){
         listaFechada[listaFechada.length] = casaAtual;
         //casas ao entorno
         $.each(casasAoEntorno(casaAtual), function(index, value){
-            if(listaAberta.indexOf(value) == -1){
+            if(listaAberta.indexOf(value) == -1 && listaFechada.indexOf(value) == -1){
                 listaAberta[listaAberta.length] = value;
             }
         });
-        listaFiliacao[casaAtual] = casasAoEntorno(casaAtual);
         //trata custos da lista aberta
         $.each(listaAberta, function(index, value){
-            listaDeCustos[value] = (quantidadeDeMovimentos(value, casaDestinoFinal)+adicinalCustoTotal);
-            if(value == casaDestinoFinal){
-                chegouNoDestino = true;
+            if(listaDeCustos[value] == undefined){
+                listaDeCustos[value] = quantidadeDeMovimentos(value, casaDestinoFinal);
+                if(value == casaDestinoFinal){
+                    listaFechada[listaFechada.length] = casaDestinoFinal;
+                    chegouNoDestino = true;
+                }
             }
         });
         //ordena pelo menor custo
@@ -95,22 +97,38 @@ function encontraMelhorCaminho(casaAtual, casaDestinoFinal){
                 menorCusto = value;
                 casaAtual = index;
             }
-        });
-        adicinalCustoTotal++;
+        });        
     }
-    return listaFechada;
+    //percorre lista fechada de traz pra frente
+    listaFechada.reverse();
+    var percorreuCaminho = false;
+    var indexComparar = 0;
+    while(!percorreuCaminho){
+        var casaAnterior = listaFechada[indexComparar+1];
+        if(casasAoEntorno(listaFechada[indexComparar]).indexOf(casaAnterior) == -1){
+            listaFechada.splice(indexComparar+1, 1);
+            indexComparar--;
+        } else if(casaOriginal == casaAnterior){
+            percorreuCaminho = true;
+        }
+        indexComparar++;
+    }
+    //inverte novamente
+    return listaFechada.reverse();
 }
 
 /* Verifica se IA está em vantagem */
 function verificaVantagem(){
     
     IAEmVantagem = true;
+    var qtdPecasExercitoCima = 0;
+    var qtdPecasExercitoBaixo = 0;
     
     //primeiro testa se tem peça do inimigo em seu território, a partir da segunda linha (7)
     $.each(pecas, function(index){
         if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
             var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-            if(casaOcupada >= 7 && casaOcupada <= 10){
+            if(casaOcupada >= 8 && casaOcupada <= 10){
                 IAEmVantagem = false;
             }
         }
@@ -118,8 +136,8 @@ function verificaVantagem(){
     
     //se continua em vantagem, vê pela quantidade de peças em jogo
     if(IAEmVantagem) {
-        var qtdPecasExercitoCima = 0;
-        var qtdPecasExercitoBaixo = 0;
+        qtdPecasExercitoCima = 0;
+        qtdPecasExercitoBaixo = 0;
         $.each(pecas, function(index){
             //se a peça já não tenha sido perdida pelo exercito
             if(this.campoAtual != 0 && this.casaAtual != 0) {
@@ -148,6 +166,25 @@ function verificaVantagem(){
             }
         });
         if(parseInt(casaMaisAvancada) <= 3){
+            IAEmVantagem = true;
+        }
+    }
+    
+    //se tanto o adversário quanto a IA tiver 4 peças ou menos, considera vantagem
+    if(!IAEmVantagem){
+        qtdPecasExercitoCima = 0;
+        qtdPecasExercitoBaixo = 0;
+        $.each(pecas, function(index){
+            //se a peça já não tenha sido perdida pelo exercito
+            if(this.campoAtual != 0 && this.casaAtual != 0) {
+                if(this.exercito == "cima") {
+                    qtdPecasExercitoCima++;
+                } else {
+                    qtdPecasExercitoBaixo++;
+                }
+            }
+        });
+        if(qtdPecasExercitoCima <= 5 && qtdPecasExercitoBaixo <= 5){
             IAEmVantagem = true;
         }
     }
@@ -183,7 +220,7 @@ function verificarPossibilidadesDeMovimentacao(){
                 $.each(casas['campo-cima'], function(index2){
                     if(casaAtual != index2 && validaMovimentacaoPeca(index, 'cima', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                         pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
-                        if(parseInt(numeroCasaOcupada(casaAtual)) > parseInt(numeroCasaOcupada(index2)) && pecasQuePodemMovimentarParaFrente.indexOf(index) == -1){
+                        if(parseInt(numeroCasaOcupada(casaAtual)) >= parseInt(numeroCasaOcupada(index2)) && pecasQuePodemMovimentarParaFrente.indexOf(index) == -1){
                             pecasQuePodemMovimentarParaFrente[pecasQuePodemMovimentarParaFrente.length] = index;
                         }
                     }
@@ -191,7 +228,7 @@ function verificarPossibilidadesDeMovimentacao(){
                 $.each(casas['campo-baixo'], function(index2){
                     if(casaAtual != index2 && validaMovimentacaoPeca(index, 'baixo', index2, false) === true && pecasQuePodemMovimentar.indexOf(index) == -1){
                         pecasQuePodemMovimentar[pecasQuePodemMovimentar.length] = index;
-                        if(parseInt(numeroCasaOcupada(casaAtual)) > parseInt(numeroCasaOcupada(index2)) && pecasQuePodemMovimentarParaFrente.indexOf(index) == -1){
+                        if(parseInt(numeroCasaOcupada(casaAtual)) >= parseInt(numeroCasaOcupada(index2)) && pecasQuePodemMovimentarParaFrente.indexOf(index) == -1){
                             pecasQuePodemMovimentarParaFrente[pecasQuePodemMovimentarParaFrente.length] = index;
                         }
                     }
@@ -321,7 +358,8 @@ function executaAcao(){
         var pecaAtacante = pecasQuePodemAtacarFiltradas[aleatoria];
         selecionaPecaParaTurno(pecaAtacante, false);
         console.log("selecionado para atacar: " + pecaAtacante);
-        //verifica qual peça será atacada
+        //verifica qual peça será atacada, prefere atacar a que está mais avançada em caso de desvantagem ou
+        //a que esteja no melhor caminho até o objetivo
         var pecaASerAtacada = "";
         $.each(pecas, function(index2){
             if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
@@ -334,6 +372,20 @@ function executaAcao(){
                 }
             }
         });
+        //se estiver em vantagem, procura por peça que esteja no seu melhor caminho
+        if(IAEmVantagem && pecas[pecaAtacante].tipo != "aviao"){
+            var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[pecaAtacante].casaAtual, casasQueIndicamVitoriaCampoCima1);
+            var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[pecaAtacante].casaAtual, casasQueIndicamVitoriaCampoCima2);
+            var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
+            $.each(pecas, function(index2){
+                if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
+                    if (pecaEstaNoCampoDeAtaque(index2) == true && arrMelhorCaminho.indexOf(this.casaAtual) !== -1){
+                        pecaASerAtacada = index2;
+                        selecionaPecaParaTurno(index2, false);
+                    }
+                }
+            });
+        }
         console.log("selecionado para ser atacada: " + pecaASerAtacada);
         rodaAtaque(false);
         
@@ -364,14 +416,31 @@ function executaAcao(){
             pecasQuePodemMovimentarFiltradas = pecasQuePodemMovimentar;
         }
         console.log("melhores peças para movimentar: " + pecasQuePodemMovimentarFiltradas);
-        //seleciona uma peça aleatória para mover-se
-        var aleatoria = Math.floor(Math.random() * pecasQuePodemMovimentarFiltradas.length);
-        var pecaMovente = pecasQuePodemMovimentarFiltradas[aleatoria];
+        //entre as peças mais avançadas escolhe a que esta mais perto de chegar, se não for avião
+        var qtdCasasParaOObjetivo = 100;
+        $.each(pecasQuePodemMovimentarFiltradas, function(index, value){
+            if(pecas[value].tipo != "aviao"){
+                var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[value].casaAtual, casasQueIndicamVitoriaCampoCima1);
+                var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[value].casaAtual, casasQueIndicamVitoriaCampoCima2);
+                var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
+                if(arrMelhorCaminho.length < qtdCasasParaOObjetivo){
+                    qtdCasasParaOObjetivo = arrMelhorCaminho.length;
+                    pecaMovente = value;
+                }
+            }
+        });
+        //se não foi selecionada, seleciona uma peça aleatória para mover-se
+        if(pecaMovente == "" || pecaMovente == undefined){
+            var aleatoria = Math.floor(Math.random() * pecasQuePodemMovimentarFiltradas.length);
+            var pecaMovente = pecasQuePodemMovimentarFiltradas[aleatoria];
+        }
         console.log("selecionado para mover-se: " + pecaMovente);
-        var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[pecaMovente].casaAtual, "c1");
-        var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[pecaMovente].casaAtual, "e1");
-        var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
-        console.log("Melhor caminho identificado passa pelas casas: " + arrMelhorCaminho);
+        if(pecas[pecaMovente].tipo != "aviao"){
+            var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[pecaMovente].casaAtual, casasQueIndicamVitoriaCampoCima1);
+            var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[pecaMovente].casaAtual, casasQueIndicamVitoriaCampoCima2);
+            var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
+            console.log("Melhor caminho identificado passa pelas casas: " + arrMelhorCaminho);
+        }
         //verifica qual casa será ocupada
         //se estiver em vatagem prefere avançar a recuar
         var campoASerOcupado = "";
@@ -491,7 +560,6 @@ function executaAcao(){
 /* árvore de decisão da IA */
 function arvoreDeDecisao(){
     decisaoDaIA = "";
-    //se tiver como atacar
     if(pecasQuePodemAtacar.length > 0){
         decisaoDaIA = "atacar";
     } else if(pecasQuePodemMovimentar.length > 0) {

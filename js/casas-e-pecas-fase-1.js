@@ -356,6 +356,11 @@ var casas = {
     }
 }
 
+var casasQueIndicamVitoriaCampoCima1 = "c1";
+var casasQueIndicamVitoriaCampoCima2 = "e1";
+var casasQueIndicamVitoriaCampoBaixo1 = "c10";
+var casasQueIndicamVitoriaCampoBaixo2 = "e10";
+
 //pecas do tabuleiro
 var pecas = {
     'revolver1CampoCima': {

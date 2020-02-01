@@ -348,7 +348,7 @@ function verificaFimDePartida(){
         //se a peça já não tenha sido perdida pelo exercito
         if(this.campoAtual != 0 && this.casaAtual != 0) {
             //se a peça esta no ultimo nivel do exercito inimigo
-            if(this.exercito == "cima" && (this.casaAtual == "c10" || this.casaAtual == "e10")){
+            if(this.exercito == "cima" && (this.casaAtual == casasQueIndicamVitoriaCampoBaixo1 || this.casaAtual == casasQueIndicamVitoriaCampoBaixo2)){
                 if(turnoEminenteFimObj1Jogador1 == 0 || turnoEminenteFimObj1Jogador1 < numDoTurno) {
                     turnoEminenteFimObj1Jogador1 = numDoTurno+1;
                 } else if(turnoEminenteFimObj1Jogador1 > 0 && numDoTurno == turnoEminenteFimObj1Jogador1) {
@@ -356,7 +356,7 @@ function verificaFimDePartida(){
                     nomeJogadorCampeao = nomeJogadorVermelho;
                     gameOver('Vitória por invasão da base inimiga');
                 }               
-            } else if(this.exercito == "baixo" && (this.casaAtual == "c1" || this.casaAtual == "e1")){
+            } else if(this.exercito == "baixo" && (this.casaAtual == casasQueIndicamVitoriaCampoCima1 || this.casaAtual == casasQueIndicamVitoriaCampoCima2)){
                 if(turnoEminenteFimObj1Jogador2 == 0 || turnoEminenteFimObj1Jogador2 < numDoTurno) {
                     turnoEminenteFimObj1Jogador2 = numDoTurno+1;
                 } else if(turnoEminenteFimObj1Jogador2 > 0 && numDoTurno == turnoEminenteFimObj1Jogador2) {
@@ -637,10 +637,8 @@ function ativaControlesMouse(){
             if(pecas[idPecaMovimentada].tipo == "aviao") {
                 if(pecas[idPecaMovimentada].gasolina >= movimentos) {
                     if(casas['campo-' + campo][casa].ocupacao1 != "" && casas['campo-' + campo][casa].ocupacao2 == "") {
-                        pecas[idPecaMovimentada].gasolina = pecas[idPecaMovimentada].gasolina - movimentos;
                         gravaMovimentacaoPeca(idPecaMovimentada, campo, casa, 'ocupacao2', false);
                     } else if(casas['campo-' + campo][casa].ocupacao1 == "") {
-                        pecas[idPecaMovimentada].gasolina = pecas[idPecaMovimentada].gasolina - movimentos;
                         gravaMovimentacaoPeca(idPecaMovimentada, campo, casa, 'ocupacao1', false);
                     }
                 }
