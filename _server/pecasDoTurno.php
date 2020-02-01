@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 
 //recebendo dados
 $sessao = $_REQUEST['sessao'];
@@ -8,6 +9,6 @@ $pecaDefesa = $_REQUEST['pecaDefesa'];
 $idUnico = md5(time());
     
 //criar arquivo
-$fp = fopen("jogos/".$sessao."/pecasTurno_".$turno.".txt", "w");
-fwrite($fp, $idUnico.",".$pecaAtaque.",".$pecaDefesa);
-fclose($fp);
+$conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$idUnico.",".$pecaAtaque.",".$pecaDefesa;
+$file = "jogos/".$sessao."/pecasTurno_".$turno.".php";
+file_put_contents($file, $conteudo);

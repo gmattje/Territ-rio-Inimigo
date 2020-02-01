@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 
 //recebendo dados
 $sessao = $_REQUEST['sessao'];
@@ -11,6 +12,6 @@ $gasolinaTurno = (int)$_REQUEST['gasolinaTurno'];
 $idUnico = md5(time());
     
 //criar arquivo
-$fp = fopen("jogos/".$sessao."/movimentacaoTurno_".$turno.".txt", "w");
-fwrite($fp, $idUnico.",".$pecaMovimentada.",".$campoDestinatario.",".$casaDestinataria.",".$ocupacaoCasa.",".$gasolinaTurno);
-fclose($fp);
+$conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$idUnico.",".$pecaMovimentada.",".$campoDestinatario.",".$casaDestinataria.",".$ocupacaoCasa.",".$gasolinaTurno;
+$file = "jogos/".$sessao."/movimentacaoTurno_".$turno.".php";
+file_put_contents($file, $conteudo);

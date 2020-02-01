@@ -23,7 +23,7 @@ function nomesDosJogadoresOnLine(){
     if(idSessaoServidor != undefined) {
         $.ajax({
             type: "GET",
-            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/jogador1.txt?_=" + new Date().getTime(),
+            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/jogador1.php?_=" + new Date().getTime(),
             success: function (data) {
                 if(data != "") {
                     nomeJogadorVermelho = data;
@@ -33,7 +33,7 @@ function nomesDosJogadoresOnLine(){
         });
         $.ajax({
             type: "GET",
-            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/jogador2.txt?_=" + new Date().getTime(),
+            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/jogador2.php?_=" + new Date().getTime(),
             success: function (data) {
                 if(data != "") {
                     nomeJogadorAzul = data;
@@ -48,7 +48,7 @@ function sortesDoInicio(){
     if(idSessaoServidor != undefined) {
         $.ajax({
             type: "GET",
-            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/sorteInicial.txt?_=" + new Date().getTime(),
+            url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/sorteInicial.php?_=" + new Date().getTime(),
             success: function (data) {
                 if(data != "") {
                     arrayDados = data.split(',');
@@ -126,7 +126,7 @@ function recebeDadosServidor(tipo){
         if(tipo === "pecasSelecionadasDoTurno") {
             $.ajax({
                 method: "POST",
-                url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/pecasTurno_" + numDoTurno + ".txt?_=" + new Date().getTime(),
+                url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/pecasTurno_" + numDoTurno + ".php?_=" + new Date().getTime(),
                 timeout: tempoSincronizacao,
                 statusCode: {
                     200: function(data) {
@@ -144,7 +144,7 @@ function recebeDadosServidor(tipo){
             if(pecaSelecionadaCampoAtaque != "" && pecaSelecionadaCampoDefesa != "" && rodandoDadosEspelho == false) {
                 $.ajax({
                     method: "POST",
-                    url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/dadosTurno_" + numDoTurno + ".txt?_=" + new Date().getTime(),
+                    url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/dadosTurno_" + numDoTurno + ".php?_=" + new Date().getTime(),
                     timeout: tempoSincronizacao,
                     statusCode: {
                         200: function(data) {
@@ -168,7 +168,7 @@ function recebeDadosServidor(tipo){
             if(rodandoDadosEspelho == false) {
                 $.ajax({
                     method: "POST",
-                    url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/pecaRetiradaTurno_" + numDoTurno + ".txt?_=" + new Date().getTime(),
+                    url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/pecaRetiradaTurno_" + numDoTurno + ".php?_=" + new Date().getTime(),
                     timeout: tempoSincronizacao,
                     statusCode: {
                         200: function(data) {
@@ -185,7 +185,7 @@ function recebeDadosServidor(tipo){
             if(rodandoDadosEspelho == false) {
                 $.ajax({
                     method: "POST",
-                    url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/movimentacaoTurno_" + numDoTurno + ".txt?_=" + new Date().getTime(),
+                    url: urlServerTerritorioInimigo + "/jogos/" + idSessaoServidor + "/movimentacaoTurno_" + numDoTurno + ".php?_=" + new Date().getTime(),
                     timeout: tempoSincronizacao,
                     statusCode: {
                         200: function(data) {

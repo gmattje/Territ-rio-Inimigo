@@ -132,7 +132,7 @@ function aguardandoOutroJogador() {
         var arraySessao = sessao.split(" ");
         $.ajax({
             type: "GET",
-            url: urlServerTerritorioInimigo + "/jogos/" + arraySessao[0] + "/jogador2.txt?_=" + new Date().getTime(),
+            url: urlServerTerritorioInimigo + "/jogos/" + arraySessao[0] + "/jogador2.php?_=" + new Date().getTime(),
             success: function (data) {
                 if(data != ""){
                     $("#aguardando-jogador").html("Muito bem, o jogador <strong>" + data + "</strong> entrou na sessão");

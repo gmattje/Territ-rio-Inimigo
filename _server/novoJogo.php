@@ -1,4 +1,5 @@
 ﻿<?php
+header('Access-Control-Allow-Origin: *');
 
 //se veio nome do jogador 1
 if(isset($_REQUEST['player1'])) {
@@ -12,9 +13,9 @@ if(isset($_REQUEST['player1'])) {
     mkdir("jogos/".$idNovaSessao, 0777, true);
 
     //criar arquivo jogador 1
-    $fp = fopen("jogos/".$idNovaSessao."/jogador1.txt", "w");
-    fwrite($fp, $nomeJogador1);
-    fclose($fp);
+    $conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$nomeJogador1;
+    $file = "jogos/".$idNovaSessao."/jogador1.php";
+    file_put_contents($file, $conteudo);
 
 //se veio nome do jogador 2 e sessao online
 } else if(isset($_REQUEST['player2']) AND isset($_REQUEST['sessao'])) {
@@ -23,15 +24,15 @@ if(isset($_REQUEST['player1'])) {
     $nomeJogador2 = $_REQUEST['player2'];
     
     //criar arquivo jogador 2
-    $fp = fopen("jogos/".$idNovaSessao."/jogador2.txt", "w");
-    fwrite($fp, $nomeJogador2);
-    fclose($fp);
+    $conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$nomeJogador2;
+    $file = "jogos/".$idNovaSessao."/jogador2.php";
+    file_put_contents($file, $conteudo);
     
     //joga dados para definir o iniciante
     $sorteInicial = implode(",", sorteInicial());
-    $fp = fopen("jogos/".$idNovaSessao."/sorteInicial.txt", "w");
-    fwrite($fp, $sorteInicial);
-    fclose($fp);
+    $conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$sorteInicial;
+    $file = "jogos/".$idNovaSessao."/sorteInicial.php";
+    file_put_contents($file, $conteudo);
     
 }
 

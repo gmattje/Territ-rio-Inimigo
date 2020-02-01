@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 
 //se veio sessao
 if(isset($_REQUEST['sessao'])) {

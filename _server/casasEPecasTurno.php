@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 
 //recebendo dados
 $sessao = $_REQUEST['sessao'];
