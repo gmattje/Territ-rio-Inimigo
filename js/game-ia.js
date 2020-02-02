@@ -124,34 +124,34 @@ function verificaVantagem(){
     var qtdPecasExercitoCima = 0;
     var qtdPecasExercitoBaixo = 0;
     
-    //primeiro testa se tem peça do inimigo em seu território, a partir da segunda linha (7)
+    //primeiro testa se tem peça do inimigo em seu território, a partir da segunda linha (8)
     $.each(pecas, function(index){
         if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
             var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-            if(casaOcupada >= 8 && casaOcupada <= 10){
+            if(casaOcupada >= 8){
                 IAEmVantagem = false;
             }
         }
     });
     
     //se continua em vantagem, vê pela quantidade de peças em jogo
-    if(IAEmVantagem) {
-        qtdPecasExercitoCima = 0;
-        qtdPecasExercitoBaixo = 0;
-        $.each(pecas, function(index){
-            //se a peça já não tenha sido perdida pelo exercito
-            if(this.campoAtual != 0 && this.casaAtual != 0) {
-                if(this.exercito == "cima") {
-                    qtdPecasExercitoCima++;
-                } else {
-                    qtdPecasExercitoBaixo++;
-                }
-            }
-        });
-        if(qtdPecasExercitoCima > (qtdPecasExercitoBaixo+3)){
-            IAEmVantagem = false;
-        }
-    }
+//    if(IAEmVantagem) {
+//        qtdPecasExercitoCima = 0;
+//        qtdPecasExercitoBaixo = 0;
+//        $.each(pecas, function(index){
+//            //se a peça já não tenha sido perdida pelo exercito
+//            if(this.campoAtual != 0 && this.casaAtual != 0) {
+//                if(this.exercito == "cima") {
+//                    qtdPecasExercitoCima++;
+//                } else {
+//                    qtdPecasExercitoBaixo++;
+//                }
+//            }
+//        });
+//        if(qtdPecasExercitoCima > (qtdPecasExercitoBaixo+3)){
+//            IAEmVantagem = false;
+//        }
+//    }
     
     //se está na casas da 3ª ou 2ª linha considera vantagem
     if(!IAEmVantagem){
@@ -243,7 +243,12 @@ function verificarPossibilidadesDeAtaque(pecasEspecificasParaReceberAtaque){
     pecasQuePodemAtacar = [];
     pecasQuePodemSerAtacadas = [];
     //se para verificar peças que podem atacar adversários específicos
-    if(pecasEspecificasParaReceberAtaque != null && pecasEspecificasParaReceberAtaque.length > 0) {
+    if(pecasEspecificasParaReceberAtaque != null) {
+        if(!Array.isArray(pecasEspecificasParaReceberAtaque)){
+            var pecaUnica = pecasEspecificasParaReceberAtaque;
+            pecasEspecificasParaReceberAtaque = [];
+            pecasEspecificasParaReceberAtaque[pecasEspecificasParaReceberAtaque.length] = pecaUnica;
+        }
         $.each(pecas, function(index){
             if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "baixo" && this.tiros != "0") {
                 selecionaPecaParaTurno(index, false);
@@ -289,6 +294,7 @@ function executaAcao(){
     var pecasQuePodemAtacarFiltradas = [];
     var pecasQuePodemMovimentarFiltradas = [];
     var pecasAdversariasMaisAvancadas = [];
+    var pecaASerAtacada = "";
     //se decisao da IA é atacar...
     if(decisaoDaIA == "atacar"){
         pecasQuePodemAtacarFiltradas = [];
@@ -317,7 +323,7 @@ function executaAcao(){
             $.each(pecas, function(index){
                 if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima" && this.tipo != "aviao") {
                     var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada) && pecasQuePodemSerAtacadas.indexOf(index) > 0){
+                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada) && pecasQuePodemSerAtacadas.indexOf(index) >= 0){
                         casaMaisAvancada = casaOcupada;
                     }
                 }
@@ -333,8 +339,11 @@ function executaAcao(){
                 }
             });
             console.log("melhores peças a serem atacadas: " + pecasAdversariasMaisAvancadas);
+            //escolhe uma peça aleatória entre as mais avançadas
+            var aleatoria = Math.floor(Math.random() * pecasAdversariasMaisAvancadas.length);
+            pecaASerAtacada = pecasAdversariasMaisAvancadas[aleatoria];
             //escolhe peças da IA que podem atacar essas peças adversárias
-            verificarPossibilidadesDeAtaque(pecasAdversariasMaisAvancadas);
+            verificarPossibilidadesDeAtaque(pecaASerAtacada);
             pecasQuePodemAtacarFiltradas = pecasQuePodemAtacar;
         }
         //se não consegue atacar nenhuma mais avançada
@@ -358,33 +367,36 @@ function executaAcao(){
         var pecaAtacante = pecasQuePodemAtacarFiltradas[aleatoria];
         selecionaPecaParaTurno(pecaAtacante, false);
         console.log("selecionado para atacar: " + pecaAtacante);
-        //verifica qual peça será atacada, prefere atacar a que está mais avançada em caso de desvantagem ou
-        //a que esteja no melhor caminho até o objetivo
-        var pecaASerAtacada = "";
-        $.each(pecas, function(index2){
-            if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
-                if(pecasAdversariasMaisAvancadas.indexOf(index2) == -1 && pecaEstaNoCampoDeAtaque(index2) == true){
-                    pecaASerAtacada = index2;
-                    selecionaPecaParaTurno(index2, false);
-                } else if (pecaEstaNoCampoDeAtaque(index2) == true){
-                    pecaASerAtacada = index2;
-                    selecionaPecaParaTurno(index2, false);
-                }
-            }
-        });
-        //se estiver em vantagem, procura por peça que esteja no seu melhor caminho
-        if(IAEmVantagem && pecas[pecaAtacante].tipo != "aviao"){
-            var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[pecaAtacante].casaAtual, casasQueIndicamVitoriaCampoCima1);
-            var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[pecaAtacante].casaAtual, casasQueIndicamVitoriaCampoCima2);
-            var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
+        if(pecaASerAtacada == ""){
+            //verifica qual peça será atacada, prefere atacar a que está mais avançada em caso de desvantagem ou
+            //a que esteja no melhor caminho até o objetivo
             $.each(pecas, function(index2){
                 if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
-                    if (pecaEstaNoCampoDeAtaque(index2) == true && arrMelhorCaminho.indexOf(this.casaAtual) !== -1){
+                    if(pecasAdversariasMaisAvancadas.indexOf(index2) == -1 && pecaEstaNoCampoDeAtaque(index2) == true){
+                        pecaASerAtacada = index2;
+                        selecionaPecaParaTurno(index2, false);
+                    } else if (pecaEstaNoCampoDeAtaque(index2) == true){
                         pecaASerAtacada = index2;
                         selecionaPecaParaTurno(index2, false);
                     }
                 }
             });
+            //se estiver em vantagem, procura por peça que esteja no seu melhor caminho
+            if(IAEmVantagem && pecas[pecaAtacante].tipo != "aviao" && pecas[pecaAtacante].tipo != "sniper"){
+                var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[pecaAtacante].casaAtual, casasQueIndicamVitoriaCampoCima1);
+                var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[pecaAtacante].casaAtual, casasQueIndicamVitoriaCampoCima2);
+                var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
+                $.each(pecas, function(index2){
+                    if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima") {
+                        if (pecaEstaNoCampoDeAtaque(index2) == true && arrMelhorCaminho.indexOf(this.casaAtual) !== -1){
+                            pecaASerAtacada = index2;
+                            selecionaPecaParaTurno(index2, false);
+                        }
+                    }
+                });
+            }
+        } else {
+            selecionaPecaParaTurno(pecaASerAtacada, false);
         }
         console.log("selecionado para ser atacada: " + pecaASerAtacada);
         rodaAtaque(false);
@@ -419,7 +431,7 @@ function executaAcao(){
         //entre as peças mais avançadas escolhe a que esta mais perto de chegar, se não for avião
         var qtdCasasParaOObjetivo = 100;
         $.each(pecasQuePodemMovimentarFiltradas, function(index, value){
-            if(pecas[value].tipo != "aviao"){
+            if(pecas[value].tipo != "aviao" && pecas[value].tipo != "sniper"){
                 var arrMelhorCaminhoBase1 = encontraMelhorCaminho(pecas[value].casaAtual, casasQueIndicamVitoriaCampoCima1);
                 var arrMelhorCaminhoBase2 = encontraMelhorCaminho(pecas[value].casaAtual, casasQueIndicamVitoriaCampoCima2);
                 var arrMelhorCaminho = [...new Set([...arrMelhorCaminhoBase1 ,...arrMelhorCaminhoBase2])];
@@ -452,7 +464,7 @@ function executaAcao(){
             if(validaMovimentacaoPeca(pecaMovente, 'cima', value2, false) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'cima';
                 casaASerOcupadaProvisoria = value2;
-                if(IAEmVantagem && (parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2)) || arrMelhorCaminho.indexOf(value2) !== -1)){
+                if(IAEmVantagem && ((parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))) || (pecas[pecaMovente].tipo != "aviao" && pecas[pecaMovente].tipo != "sniper" && arrMelhorCaminho.indexOf(value2) !== -1))){
                     casaASerOcupada = value2;
                 }
             }
@@ -461,7 +473,7 @@ function executaAcao(){
             if(validaMovimentacaoPeca(pecaMovente, 'baixo', value2, false) === true && casaASerOcupada == ""){
                 campoASerOcupado = 'baixo';
                 casaASerOcupadaProvisoria = value2;
-                if(IAEmVantagem && (parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2)) || arrMelhorCaminho.indexOf(value2) !== -1)){
+                if(IAEmVantagem && ((parseInt(casaMaisAvancada) > parseInt(numeroCasaOcupada(value2))) || (pecas[pecaMovente].tipo != "aviao" && pecas[pecaMovente].tipo != "sniper" && arrMelhorCaminho.indexOf(value2) !== -1))){
                     casaASerOcupada = value2;
                 }
             }

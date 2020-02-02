@@ -1022,3 +1022,111 @@ var pecas = {
         alcanceAtualH: 0
     }
 }
+
+//objetivos secretos
+var objetivos = {
+    'campo-cima': {
+        1: {
+            'texto': 'Ter uma peça do tipo Revolver na casa B8 e uma do tipo Granada na casa F7',
+            b8: 'revolver',
+            f7: 'granada'
+        },
+        2: {
+            'texto': 'Ter uma peça do tipo Tanque na casa B7 e uma do tipo Metralhadora na casa F7',
+            b7: 'tanque',
+            f7: 'metralhadora'
+        },
+        3: {
+            'texto': 'Ter uma peça do tipo Metralhadora na casa D9 e uma do tipo Revolver na casa E8',
+            d9: 'metralhadora',
+            e8: 'revolver'
+        },
+        4: {
+            'texto': 'Ter uma peça do tipo Avião na casa B6 e uma do tipo Granada na casa F7',
+            b6: 'aviao',
+            f7: 'granada'
+        },
+        5: {
+            'texto': 'Ter uma peça do tipo Tanque na casa C7 e uma do tipo Granada na casa E9',
+            c7: 'tanque',
+            e9: 'granada'
+        },
+        6: {
+            'texto': 'Ter uma peça do tipo Revolver na casa A9 e uma do tipo Metralhadora na casa B7',
+            a9: 'revolver',
+            b7: 'metralhadora'
+        },
+        7: {
+            'texto': 'Ter uma peça do tipo Avião na casa G6 e uma do tipo Tanque na casa B7',
+            g6: 'aviao',
+            b7: 'tanque'
+        },
+        8: {
+            'texto': 'Ter uma peça do tipo Revolver na casa D6 e outra do tipo Revolver na casa E8',
+            d6: 'revolver',
+            e8: 'revolver'
+        },
+        9: {
+            'texto': 'Ter uma peça do tipo Granada na casa A7 e uma do tipo Metralhadora na casa D9',
+            a7: 'granada',
+            d9: 'metralhadora'
+        },
+        10: {
+            'texto': 'Ter uma peça do tipo Granada na casa E8 e uma do tipo Revolver na casa F7',
+            e8: 'granada',
+            f7: 'revolver'
+        }
+    },
+    'campo-baixo': {
+        1: {
+            'texto': 'Ter uma peça do tipo Revolver na casa F3 e uma do tipo Granada na casa C2',
+            f3: 'revolver',
+            c2: 'granada'
+        },
+        2: {
+            'texto': 'Ter uma peça do tipo Tanque na casa F4 e uma do tipo Metralhadora na casa B4',
+            f4: 'tanque',
+            b4: 'metralhadora'
+        },
+        3: {
+            'texto': 'Ter uma peça do tipo Metralhadora na casa D2 e uma do tipo Revolver na casa C3',
+            d2: 'metralhadora',
+            c3: 'revolver'
+        },
+        4: {
+            'texto': 'Ter uma peça do tipo Avião na casa F5 e uma do tipo Granada na casa B4',
+            f5: 'aviao',
+            b4: 'granada'
+        },
+        5: {
+            'texto': 'Ter uma peça do tipo Tanque na casa E4 e uma do tipo Granada na casa C2',
+            e4: 'tanque',
+            c2: 'granada'
+        },
+        6: {
+            'texto': 'Ter uma peça do tipo Revolver na casa G2 e uma do tipo Metralhadora na casa F4',
+            g2: 'revolver',
+            f4: 'metralhadora'
+        },
+        7: {
+            'texto': 'Ter uma peça do tipo Avião na casa A5 e uma do tipo Tanque na casa F4',
+            a5: 'aviao',
+            f4: 'tanque'
+        },
+        8: {
+            'texto': 'Ter uma peça do tipo Revolver na casa D5 e outra do tipo Revolver na casa C3',
+            d5: 'revolver',
+            c3: 'revolver'
+        },
+        9: {
+            'texto': 'Ter uma peça do tipo Granada na casa G4 e uma do tipo Metralhadora na casa D2',
+            g4: 'granada',
+            d2: 'metralhadora'
+        },
+        10: {
+            'texto': 'Ter uma peça do tipo Granada na casa C3 e uma do tipo Revolver na casa B4',
+            c3: 'granada',
+            b4: 'revolver'
+        }
+    }
+}

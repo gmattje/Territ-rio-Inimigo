@@ -542,7 +542,7 @@ function selecionaPecaParaTurno(peca, espelhoOutroJogador){
                 }
             }
             if(pecaSelecionadaCampoAtaque !== "" && pecaSelecionadaCampoDefesa !== "" && vezDoPlayer == true) {
-                enviaDadosServidor("pecasSelecionadasDoTurno");
+                enviaDadosServidor("pecasSelecionadasDoTurno", numDoTurno);
                 habilitaIniciarTurno();
             } else {
                 desabilitaIniciarTurno();
@@ -663,11 +663,17 @@ function ativaControlesMouse(){
 function validaMovimentacaoPeca(peca, campoDestino, casaDestino, ignoraTurno){
     validado = true;
     var casasPossives = casasAleatorias(campoDestino);
+    //se for jogo online
+    if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined && ignoraTurno == false) {
+        if((nomeJogadorVermelho == getUrlVars()["player"] && pecas[peca].exercito == "baixo") || (nomeJogadorAzul == getUrlVars()["player"] && pecas[peca].exercito == "cima")) {
+            validado = "Você não pode mover uma peça do seu adversário.";
+        }
+    }
     if(casasPossives.indexOf(casaDestino) == -1){
         validado = 'A casa '+ casaDestino +' não pertence ao campo '+ campoDestino;
     } else if (bloqueioEscolhaParaquedista == true) {
         validado = 'O jogo está suspenso para escolha do pouso do paraquedista';
-    } else if (pecas[peca].exercito != turnoAtacante && ignoraTurno != true) {    
+    } else if (pecas[peca].exercito != turnoAtacante && ignoraTurno == false) {
         validado = 'Você só pode mover uma peça em seu turno';
     } else {
         //validacoes do sniper
@@ -705,8 +711,8 @@ function validaMovimentacaoPeca(peca, campoDestino, casaDestino, ignoraTurno){
                 validado = 'Esta peça pode mover-se uma casa por vez';
             }
         }
-        return validado;
     }
+    return validado;
 }
 
 function quantidadeDeMovimentos(casaInicial, casaFinal) {
@@ -780,7 +786,7 @@ function gravaMovimentacaoPeca(peca, campoDestino, casaDestino, ocupacao, espelh
     
     if(espelhoOutroJogador == false) {
         //envia para servidor
-        enviaDadosServidor("movimentacaoDoTurno");
+        enviaDadosServidor("movimentacaoDoTurno", numDoTurno);
         gravaPosicoesPecas();
     } else {
         organizaPecas();
@@ -844,7 +850,7 @@ function rodaAtaque(espelhoOutroJogador){
         $('#dados .dado.dado-defesa-' + numeroDadoDefesa).clone().appendTo('.barraLateral.campo-' + turnoDefesa + ' .dados');
     }, tempoExibicaoResultadoDefesa); 
     if(espelhoOutroJogador == false){
-        enviaDadosServidor("dadosDoTurno");
+        enviaDadosServidor("dadosDoTurno", numDoTurno);
     }
     setTimeout(function(){
         //se ataque venceu
@@ -935,7 +941,7 @@ function retiraPecaDoTabuleiro(peca, espelhoOutroJogador){
 
         //envia servidor
         if(espelhoOutroJogador == false){
-            enviaDadosServidor("pecaRemovidaDoTurno");
+            enviaDadosServidor("pecaRemovidaDoTurno", numDoTurno);
         }
 
         organizaPecas();
@@ -1039,7 +1045,7 @@ function liberaMovimentacao(){
 function cancelaPossibilidadeDeMovimentacao(espelhoOutroJogador){
     if(getUrlVars()["pl1"] == undefined && getUrlVars()["pl2"] == undefined && vezDoPlayer == true) {
         //envia para servidor
-        enviaDadosServidor("cancelaMovimentacaoDoTurno");
+        enviaDadosServidor("cancelaMovimentacaoDoTurno", numDoTurno);
         preparaNovoTurno();
     } else if((getUrlVars()["pl1"] != undefined && getUrlVars()["pl2"] != undefined) || espelhoOutroJogador == true) {
         preparaNovoTurno();
