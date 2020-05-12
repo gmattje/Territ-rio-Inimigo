@@ -3,6 +3,7 @@ var sessao = "";
 var nomeJogador1on = "";
 var nomeJogador1off = "";
 var nomeJogador2off = "";
+var faseSelecionada = "";
 var timerNovoJogo = "";
 var dialog1, dialog2, form;
 
@@ -47,12 +48,18 @@ $(function() {
     });
     
     $("select#sessao").on("change", function(){
-        $('#form-novo-jogo .nome-jogador').addClass('oculto');
+        $('#form-novo-jogo .sessao-off').addClass('oculto');
+        $('#form-novo-jogo .sessao-on').addClass('oculto');
         if($(this).val() == "novo-off") {
-            $('#form-novo-jogo .nome-jogador.sessao-off').removeClass('oculto');
+            $('#form-novo-jogo .sessao-off').removeClass('oculto');
         } else {
-            $('#form-novo-jogo .nome-jogador.sessao-on').removeClass('oculto');            
+            $('#form-novo-jogo .sessao-on').removeClass('oculto');            
         }
+    });
+
+    $("label.fase").on("click", function(){
+        $("label.fase").removeClass('selected');
+        $(this).addClass('selected');
     });
 
 });
@@ -79,6 +86,7 @@ function validaDados(){
     nomeJogador1on = $("form #player1-on").val();
     nomeJogador1off = $("form #player1-off").val();
     nomeJogador2off = $("form #player2-off").val();
+    faseSelecionada = $("form input[name='fase']:checked").val();
     if(sessao == ""){
         alert('Antes de começar, defina a sessão');
         return false;
@@ -159,9 +167,9 @@ function cancelaAguardandoOutroJogador(){
 
 function iniciaGame(){
     if(sessao == "novo-off"){
-        window.location.href = "game.html?pl1=" + nomeJogador1off +"&pl2=" + nomeJogador2off;
+        window.location.href = "game.html?pl1=" + nomeJogador1off +"&pl2=" + nomeJogador2off + "&fase=" + faseSelecionada;
     } else if(sessao == "novo-ia"){
-        window.location.href = "game.html?pl1=" + nomeJogador1on +"&pl2=Computador"; 
+        window.location.href = "game.html?pl1=" + nomeJogador1on +"&pl2=Computador&fase=" + faseSelecionada; 
     } else {
         window.location.href = "game.html?sessao=" + sessao + "&player=" + nomeJogador1on;
     }

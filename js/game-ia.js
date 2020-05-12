@@ -135,23 +135,23 @@ function verificaVantagem(){
     });
     
     //se continua em vantagem, vê pela quantidade de peças em jogo
-//    if(IAEmVantagem) {
-//        qtdPecasExercitoCima = 0;
-//        qtdPecasExercitoBaixo = 0;
-//        $.each(pecas, function(index){
-//            //se a peça já não tenha sido perdida pelo exercito
-//            if(this.campoAtual != 0 && this.casaAtual != 0) {
-//                if(this.exercito == "cima") {
-//                    qtdPecasExercitoCima++;
-//                } else {
-//                    qtdPecasExercitoBaixo++;
-//                }
-//            }
-//        });
-//        if(qtdPecasExercitoCima > (qtdPecasExercitoBaixo+3)){
-//            IAEmVantagem = false;
-//        }
-//    }
+    if(IAEmVantagem) {
+        qtdPecasExercitoCima = 0;
+        qtdPecasExercitoBaixo = 0;
+        $.each(pecas, function(index){
+            //se a peça já não tenha sido perdida pelo exercito
+            if(this.campoAtual != 0 && this.casaAtual != 0) {
+                if(this.exercito == "cima") {
+                    qtdPecasExercitoCima++;
+                } else {
+                    qtdPecasExercitoBaixo++;
+                }
+            }
+        });
+        if(qtdPecasExercitoCima > (qtdPecasExercitoBaixo+4)){
+            IAEmVantagem = false;
+        }
+    }
     
     //se está na casas da 3ª ou 2ª linha considera vantagem
     if(!IAEmVantagem){
@@ -322,9 +322,8 @@ function executaAcao(){
             casaMaisAvancada = 1;
             $.each(pecas, function(index){
                 if(this.campoAtual != 0 && this.casaAtual != 0 && this.exercito == "cima" && this.tipo != "aviao") {
-                    var casaOcupada = numeroCasaOcupada(pecas[index].casaAtual);
-                    if(parseInt(casaOcupada) > parseInt(casaMaisAvancada) && pecasQuePodemSerAtacadas.indexOf(index) >= 0){
-                        casaMaisAvancada = casaOcupada;
+                    if(parseInt(numeroCasaOcupada(pecas[index].casaAtual)) > parseInt(casaMaisAvancada) && pecasQuePodemSerAtacadas.indexOf(index) !== -1){
+                        casaMaisAvancada = numeroCasaOcupada(pecas[index].casaAtual);
                     }
                 }
             });

@@ -6,10 +6,10 @@
         <link rel="stylesheet" href="js/jquery-ui-1.12.1.custom/jquery-ui.min.css">
         <link rel="stylesheet" href="js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css">
         <link rel="stylesheet" href="css/normalize.css" type="text/css"/>
-        <link rel="stylesheet" href="css/style-home.css?v=20170713" type="text/css"/>
+        <link rel="stylesheet" href="css/style-home.css?v=20200511" type="text/css"/>
         <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="js/home.js?v=20200126"></script>
+        <script type="text/javascript" src="js/home.js?v=20200511"></script>
     </head>
     <body>
         <div id="form-novo-jogo" class="dialog_ui" title="Novo Jogo">
@@ -21,15 +21,34 @@
                     <option value="novo-on">Novo jogo on-line</option>
                     <option value="novo-ia">Novo jogo contra o computador</option>
                 </select>
-                <div class="nome-jogador sessao-on sessao-ia oculto">
+                <div class="sessao-on sessao-ia oculto">
                     <label for="player1">Seu Nome</label>
                     <input type="text" name="player1-on" id="player1-on" value="" class="text ui-widget-content ui-corner-all">
                 </div>
-                <div class="nome-jogador sessao-off">
+                <div class="sessao-off">
                     <label for="player1">Nome Jogador 1</label>
                     <input type="text" name="player1-off" id="player1-off" value="" class="text ui-widget-content ui-corner-all">
                     <label for="player2">Nome Jogador 2</label>
                     <input type="text" name="player2-off" id="player2-off" value="" class="text ui-widget-content ui-corner-all">
+                </div>
+                <div class="sessao-off">
+                    <label>Escolha a fase</label>
+                    <label for="fase-1" class="fase selected">
+                        <img src="images/img-fase-1.jpg"/>
+                    </label>
+                    <input type="radio" name="fase" id="fase-1" value="fase-1" style="display: none" checked="checked">
+                    <label for="fase-2" class="fase">
+                        <img src="images/img-fase-2.jpg"/>
+                    </label>
+                    <input type="radio" name="fase" id="fase-2" value="fase-2" style="display: none">
+                    <label for="fase-3" class="fase">
+                        <img src="images/img-fase-3.jpg"/>
+                    </label>
+                    <input type="radio" name="fase" id="fase-3" value="fase-3" style="display: none">
+                    <label for="fase-4" class="fase">
+                        <img src="images/img-fase-4.jpg"/>
+                    </label>
+                    <input type="radio" name="fase" id="fase-4" value="fase-4" style="display: none">
                 </div>
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
                 <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
@@ -44,7 +63,7 @@
             <p>Território Inimigo é um jogo de tabuleiro baseado em turnos, para duas pessoas. Cada jogador jogará alternadamente em busca da conquista do território inimigo, devendo-se seguir as regras e características de cada peça escolhida para o turno.</p>
             <h2>OBJETIVO</h2>
             <p>Ganha o jogo o exército que chegar primeiro ao último nível do campo adversário, com qualquer um de suas peças, e lá permanecer por 1 rodada.</p>
-            <p>Perde o jogo o exército que primeiro ficar sem possibilidades de movimentação.</p/>
+            <p>Perde o jogo o exército que primeiro ficar sem possibilidades de movimentação.</p>
             <h2>DESAFIO SECRETO</h2>
             <p>Ganha o jogo o exército que exército que cumprir primeiro o seu desafio secreto, com seus respectivos personagens, e permanecer nas respectivas casas por 1 rodada.</p>
             <h2>PREPARANDO O JOGO</h2>

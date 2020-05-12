@@ -37,12 +37,12 @@ var casas = {
             ocupacao2: ''
         },
         'a2': {
-            tipo: 'normal',
+            tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
         'b2': {
-            tipo: 'normal',
+            tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
@@ -57,7 +57,7 @@ var casas = {
             ocupacao2: ''
         },
         'e2': {
-            tipo: 'montanha',
+            tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
@@ -67,7 +67,7 @@ var casas = {
             ocupacao2: ''
         },
         'g2': {
-            tipo: 'montanha',
+            tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
@@ -284,7 +284,7 @@ var casas = {
             ocupacao2: ''
         },
         'a9': {
-            tipo: 'montanha',
+            tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
@@ -294,7 +294,7 @@ var casas = {
             ocupacao2: ''
         },
         'c9': {
-            tipo: 'montanha',
+            tipo: 'normal',
             ocupacao1: '',
             ocupacao2: ''
         },
@@ -309,12 +309,12 @@ var casas = {
             ocupacao2: ''
         },
         'f9': {
-            tipo: 'normal',
+            tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
         'g9': {
-            tipo: 'normal',
+            tipo: 'montanha',
             ocupacao1: '',
             ocupacao2: ''
         },
