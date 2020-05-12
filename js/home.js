@@ -100,6 +100,9 @@ function validaDados(){
         alert('Antes de começar, digite o nome dos dois jogadores');
         return false;    
     } else {
+        if(sessao == "novo-on" || sessao == "novo-ia"){
+            faseSelecionada = "fase-1";
+        }
         preparaSessao();
     }
 }
