@@ -5,6 +5,7 @@ header('Access-Control-Allow-Origin: *');
 if(isset($_REQUEST['player1'])) {
     
     $nomeJogador1 = $_REQUEST['player1'];
+    $faseSelecionada = $_REQUEST['fase'];
 
     //setando nova sessão
     $idNovaSessao = md5(time());
@@ -16,6 +17,13 @@ if(isset($_REQUEST['player1'])) {
     $conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$nomeJogador1;
     $file = "jogos/".$idNovaSessao."/jogador1.php";
     file_put_contents($file, $conteudo);
+
+    //criar arquivo da fase
+    $conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$faseSelecionada;
+    $file = "jogos/".$idNovaSessao."/fase.php";
+    file_put_contents($file, $conteudo);
+
+    echo $idNovaSessao;
 
 //se veio nome do jogador 2 e sessao online
 } else if(isset($_REQUEST['player2']) AND isset($_REQUEST['sessao'])) {
@@ -33,7 +41,25 @@ if(isset($_REQUEST['player1'])) {
     $conteudo = "<?php header('Access-Control-Allow-Origin: *'); ?>\r\n".$sorteInicial;
     $file = "jogos/".$idNovaSessao."/sorteInicial.php";
     file_put_contents($file, $conteudo);
+
+    echo $idNovaSessao;
     
+//se veio solicitando a fase escolhida
+} else if(isset($_REQUEST['fase']) AND isset($_REQUEST['sessao'])) {
+
+    $idNovaSessao = $_REQUEST['sessao'];
+    $faseSelecionada = "fase-1";
+
+    if(file_exists("jogos/".$idNovaSessao."/fase.php")){
+        $fp = fopen("jogos/".$idNovaSessao."/fase.php", "r");
+        while(!feof($fp)) {
+            $faseSelecionada = fgets($fp, 4096);
+        }
+        fclose ($fp);
+    }
+
+    echo $faseSelecionada;
+
 }
 
 function sorteInicial(){
@@ -47,5 +73,3 @@ function sorteInicial(){
         return array($dadoJogador1, $dadoJogador2, $objetivoSecretoJogador1, $objetivoSecretoJogador2);
     }
 }
-
-echo $idNovaSessao;

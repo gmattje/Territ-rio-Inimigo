@@ -327,8 +327,22 @@ function verificarPossibilidadesDeMovimentacaoGeral(exercito){
 
 function verificaFimDePartida(){
     
+    var empate = true;
     var desafiosSecretosJogador1 = 0;
     var desafiosSecretosJogador2 = 0;
+
+    //se ambos exércitos ficaram sem possibilidade de ataque
+    $.each(pecas, function(index){
+        //se a peça já não tenha sido perdida pelo exercito
+        if(this.campoAtual != 0 && this.casaAtual != 0 && this.tiros != 0) {
+            empate = false;
+        }
+    });
+    if(empate){
+        fimDeJogo = true;
+        nomeJogadorCampeao = '';
+        gameOver('Ambos exércitos ficaram sem nenhuma possibilidade de ataque');
+    }
     
     //se algum exército ficou sem movimentação, o outro é campeão
     verificarPossibilidadesDeMovimentacaoGeral('cima');
@@ -1134,7 +1148,11 @@ function restart(){
 function gameOver(motivo){  
     fimDeJogo = true;
     $(".barraLateral .desafioSecreto").removeClass('oculto');
-    $("#mensagem-final span.mensagem").html('Acabou, ' + nomeJogadorCampeao + ' ganhou o jogo!<br>' + motivo);
+    if(nomeJogadorCampeao != ''){
+        $("#mensagem-final span.mensagem").html('Acabou, ' + nomeJogadorCampeao + ' ganhou o jogo!<br>' + motivo);
+    } else {
+        $("#mensagem-final span.mensagem").html('Acabou, o jogo terminou em empate!<br>' + motivo);
+    }
     
     $("#mensagem-final").dialog({
         closeOnEscape: false,

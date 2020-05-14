@@ -50,10 +50,17 @@ $(function() {
     $("select#sessao").on("change", function(){
         $('#form-novo-jogo .sessao-off').addClass('oculto');
         $('#form-novo-jogo .sessao-on').addClass('oculto');
+        $('#form-novo-jogo .sessao-on-1').addClass('oculto');
+        $('#form-novo-jogo .sessao-ia').addClass('oculto');
         if($(this).val() == "novo-off") {
             $('#form-novo-jogo .sessao-off').removeClass('oculto');
+        } else if($(this).val() == "novo-on") {
+            $('#form-novo-jogo .sessao-on').removeClass('oculto');
+            $('#form-novo-jogo .sessao-on-1').removeClass('oculto');    
+        } else if($(this).val() == "novo-ia") {
+            $('#form-novo-jogo .sessao-ia').removeClass('oculto');
         } else {
-            $('#form-novo-jogo .sessao-on').removeClass('oculto');            
+            $('#form-novo-jogo .sessao-on').removeClass('oculto');
         }
     });
 
@@ -100,7 +107,7 @@ function validaDados(){
         alert('Antes de começar, digite o nome dos dois jogadores');
         return false;    
     } else {
-        if(sessao == "novo-on" || sessao == "novo-ia"){
+        if(sessao == "novo-ia"){
             faseSelecionada = "fase-1";
         }
         preparaSessao();
@@ -116,7 +123,7 @@ function preparaSessao(){
         $.ajax({
             type: "GET",
             url: urlServerTerritorioInimigo + "/novoJogo.php?_=" + new Date().getTime(),
-            data: {player1: nomeJogador1on},
+            data: {player1: nomeJogador1on, fase: faseSelecionada},
             success: function (data) {
                 sessao = data;
                 aguardandoOutroJogador();
@@ -128,6 +135,7 @@ function preparaSessao(){
             url: urlServerTerritorioInimigo + "/novoJogo.php?_=" + new Date().getTime(),
             data: {sessao: sessao, player2: nomeJogador1on},
             success: function (data) {
+                sessao = data;
                 iniciaGame();
             }
         });
@@ -174,6 +182,14 @@ function iniciaGame(){
     } else if(sessao == "novo-ia"){
         window.location.href = "game.html?pl1=" + nomeJogador1on +"&pl2=Computador&fase=" + faseSelecionada; 
     } else {
-        window.location.href = "game.html?sessao=" + sessao + "&player=" + nomeJogador1on;
+        $.ajax({
+            type: "GET",
+            url: urlServerTerritorioInimigo + "/novoJogo.php?_=" + new Date().getTime(),
+            data: {sessao: sessao, fase: 'which'},
+            success: function (data) {
+                faseSelecionada = data;
+                window.location.href = "game.html?sessao=" + sessao + "&player=" + nomeJogador1on + "&fase=" + faseSelecionada;
+            }
+        });        
     }
 }
